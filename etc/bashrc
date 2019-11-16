@@ -1,0 +1,92 @@
+##############################################################################
+# Source this file to use BASHLIB.
+#
+# Usage:
+#   include "/my/library.sh"    Source "/my/library.sh" by its full path.
+#
+#   include "./my/library.sh"   Source "my/library.sh" relative to the script
+#                               directory.
+#
+#   include "my/library.sh"     Source "my/library.sh" from one of the
+#                               directories in BASHLIB_PATH.  If BASHLIB_PATH
+#                               is not set, $BASHLIB/lib is searched.
+#
+# Environment Variables:
+#   BASHLIB_PATH                Colon-separated list of paths in which for
+#                               include() searches for a library.
+
+BASHLIB=$(readlink -f "$(dirname "$(readlink -f "$BASH_SOURCE")")/..")
+
+function include() {
+    local lib=${1-}
+    local fullpath
+    local truepath
+
+    # Check requirements
+    if (( ! $# )); then
+        echo "ERROR: missing argument to include()" 1>&2
+        return 1
+    elif [[ ! -v BASHLIB ]]; then
+        echo "ERROR: environment variable 'BASHLIB' is not set" 1>&2
+        return 1
+    fi
+
+    # Find the library
+    case "$lib" in
+        /*)     # Full path
+                fullpath="$lib"
+                ;;
+
+        .*/*)   # Relative to the calling script's directory
+                fullpath="$(dirname "$(readlink -f "${BASH_SOURCE[1]}")")/$lib"
+                ;;
+
+        *)      # Search $BASHLIB_PATH
+                local search_paths
+                local dir
+
+                # Convert the paths to array
+                if [[ -v BASHLIB_PATH ]]; then
+                    IFS=':' read -r -a search_paths <<<"$BASHLIB_PATH"
+                else
+                    search_paths=( "$BASHLIB/lib" )
+                fi
+
+                # Look for $lib in the search paths
+                for dir in "${search_paths[@]}"; do
+                    if [[ -e "$dir/$lib" ]]; then
+                        fullpath="$dir/$lib"
+                    fi
+                done
+                ;;
+    esac
+
+    if [[ ! -v fullpath ]]; then
+        echo "Cannot find library to include -- $lib" 1>&2
+        return 1
+    fi
+
+    if [[ ! -r "$fullpath" ]]; then
+        echo "Unable to read library for inclusion -- $fullpath" 1>&2
+        return 1
+    fi
+
+    truepath=$(readlink -f "$fullpath")
+
+    if [[ ! -v __BASHLIB_INCLUDED ]]; then
+        declare -gA __BASHLIB_INCLUDED
+    fi
+
+    if [[ ! -v __BASHLIB_INCLUDED["$truepath"] ]]; then
+        __BASHLIB_INCLUDED["$truepath"]=1
+        source "$fullpath"
+        __BASHLIB_INCLUDED["$truepath"]=2
+    elif [[ ${__BASHLIB_INCLUDED["$truepath"]} == 1 ]]; then
+        echo "Circular attempt to include '$truepath'" 1>&2
+        return 1
+    fi
+}
+
+export BASHLIB
+export -f include
+

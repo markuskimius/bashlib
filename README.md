@@ -1,0 +1,2 @@
+# bashlib
+BASH library framework

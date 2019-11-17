@@ -28,7 +28,7 @@ in `BASHLIB_PATH`.  Furthermore:
 ## More Information
 
 BASHLIB itself comes with several useful libraries.  See the [API Reference]
-for the details.  See also [BASH Notes] for some nuances about BASH
+for the details.  See also [BASH Notes] for some notes about BASH
 programming.
 
 

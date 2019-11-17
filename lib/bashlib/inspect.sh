@@ -9,7 +9,6 @@ function typeof() {
     var __bashlib_type=var
 
     case "${__bashlib_declare[1]}" in
-        *i*)    __bashlib_type="int"       ;;
         *a*)    __bashlib_type="array"     ;;
         *A*)    __bashlib_type="map"       ;;
         *f*)    __bashlib_type="function"  ;;
@@ -24,6 +23,7 @@ function typeof() {
                 ;;
 
         \?)     __bashlib_type="undefined" ;;
+        *i*)    __bashlib_type="int"       ;;
         *)      __bashlib_type="var"       ;;
     esac
 

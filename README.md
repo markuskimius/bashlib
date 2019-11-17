@@ -49,10 +49,10 @@ function main() {
     array::push students "Mary"
     array::push students "Steve"
 
-    echo "I have $(array::count students) students in my class:"
+    echo "I have $(array::length students) students in my class:"
 
-    for person in "${array[@]}"; do
-        echo "$person"
+    for person in "${students[@]}"; do
+        echo "* $person"
     done
 }
 

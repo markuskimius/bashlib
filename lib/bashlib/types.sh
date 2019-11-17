@@ -1,5 +1,6 @@
 alias var="declare"
 alias int="declare -i"
+alias const="declare -r"
 alias array="declare -a"
 alias map="declare -A"
 alias ref="declare -n"

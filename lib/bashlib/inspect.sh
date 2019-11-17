@@ -35,12 +35,14 @@ function inspect::__test__() {
 
     int myint=13
     var myvar="Hello, world!"
+    const myconst="Hi there!"
     array myarray=( alpha bravo charlie )
     map mymap=( [first]=one [second]=two [third]=4 )
     ref myref=myarray
 
     [[ "$myint" -eq 13 ]]             || die
     [[ "$myvar" == "Hello, world!" ]] || die
+    [[ "$myconst" == "Hi there!" ]]   || die
     [[ "${myarray[1]}" == "bravo" ]]  || die
     [[ "${mymap[second]}" == "two" ]] || die
     myref+=( "delta" )
@@ -48,6 +50,7 @@ function inspect::__test__() {
 
     [[ $(typeof myint) == "int" ]]           || die
     [[ $(typeof myvar) == "var" ]]           || die
+    [[ $(typeof myconst) == "var" ]]         || die
     [[ $(typeof myarray) == "array" ]]       || die
     [[ $(typeof mymap) == "map" ]]           || die
     [[ $(typeof myref) == "array" ]]         || die

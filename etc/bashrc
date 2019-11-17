@@ -56,6 +56,7 @@ function include() {
                 for dir in "${search_paths[@]}"; do
                     if [[ -e "$dir/$lib" ]]; then
                         fullpath="$dir/$lib"
+                        break
                     fi
                 done
                 ;;

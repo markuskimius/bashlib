@@ -1,5 +1,5 @@
 # bashlib
-A BASH library framework
+A BASH library framework and supporting libraries.
 
 
 ## Usage
@@ -25,7 +25,7 @@ in `BASHLIB_PATH`.  Furthermore:
   in `BASHLIB_PATH`.
 
 
-## Included Libraries
+## Supporting Libraries
 
 BASHLIB itself comes with several useful libraries.  See the [API Reference]
 for the details.  See also [BASH Notes] for some notes about BASH

@@ -25,11 +25,13 @@ in `BASHLIB_PATH`.  Furthermore:
   in `BASHLIB_PATH`.
 
 
-## More Information
+## Included Libraries
 
 BASHLIB itself comes with several useful libraries.  See the [API Reference]
 for the details.  See also [BASH Notes] for some notes about BASH
 programming.
+
+The included libraries require BASH version 4.3 or later.
 
 
 ## Example

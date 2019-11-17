@@ -10,11 +10,52 @@ source /path/to/bashlib/etc/bashrc
 export BASHLIB_PATH="$BASHLIB/lib:/path/to/your/lib:/path/to/more/lib"
 ```
 
-Now your BASH scripts can `include "mylib.sh"` to source `mylib.sh` in a directory in `BASHLIB_PATH`. Furthermore:
+Now your BASH scripts can `include "mylib.sh"` to source `mylib.sh` from a path
+in `BASHLIB_PATH`.  Furthermore:
 
-* You can namespace your libraries by putting them in subdirectories. E.g., `include "mydir/mylib.sh"`sources a file called `mylib.sh` in a subdirectory called `mydir` in any of the directories in `BASHLIB_PATH`.
-* You can include a file local to your running script or library. E.g., `include "./mylib.sh"` sources a file called `mylib.sh` local to the file from which the `include` call is made. This is useful if you want to source one file from another file in the same library and want to guarantee that it is including the file from the same library and not another file with the same name in `BASHLIB_PATH`.
-* You will get an error when attempting to include file that exists under multiple 
+* The filename may be prefixed by a directory name.  E.g., `include
+  "mydir/mylib.sh"`sources a file called `mylib.sh` in a subdirectory called
+  `mydir` in a path in `BASHLIB_PATH`.  This is useful for namespacing the
+  libraries.
+
+* Your script or library can include a file local to its own directory with a
+  `./` prefix.  E.g., `include "./mylib.sh"` sources a file called `mylib.sh`
+  in the same directory as the caller's file.  This is useful for including a
+  file from one's own library even when there is another file by the same name
+  in `BASHLIB_PATH`.
+
+
+## More Information
+
+BASHLIB itself comes with several useful libraries.  See the [API Reference]
+for the details.  See also [BASH Notes] for some nuances about BASH
+programming.
+
+
+## Example
+
+```bash
+include "bashlib/types.sh"
+include "bashlib/array.sh"
+
+function main() {
+    array students
+    var person
+
+    array::push students "John"
+    array::push students "Jane"
+    array::push students "Mary"
+    array::push students "Steve"
+
+    echo "I have $(array::count students) students in my class:"
+
+    for person in "${array[@]}"; do
+        echo "$person"
+    done
+}
+
+main "$@"
+```
 
 
 ## License
@@ -22,4 +63,7 @@ Now your BASH scripts can `include "mylib.sh"` to source `mylib.sh` in a directo
 [Apache 2.0]
 
 
-[Apache 2.0]: <https://github.com/markuskimius/getopt-tcl/blob/master/LICENSE>
+[Apache 2.0]: <https://github.com/markuskimius/bashlib/blob/master/LICENSE>
+[API Reference]: <https://github.com/markuskimius/bashlib/blob/master/doc/api.md>
+[BASH Notes]: <https://github.com/markuskimius/bashlib/blob/master/doc/bash.md>
+

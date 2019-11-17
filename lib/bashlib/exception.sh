@@ -1,3 +1,12 @@
+##############################################################################
+# BASHLIB: BASH library framework
+# https://github.com/markuskimius/bashlib
+#
+# Copyright (c)2019 Mark K. Kim
+# Released under the Apache license 2.0
+# https://github.com/markuskimius/bashlib/blob/master/LICENSE
+##############################################################################
+
 include "./types.sh"
 
 function exception::dump_stacktrace() {

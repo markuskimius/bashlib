@@ -1,4 +1,11 @@
 ##############################################################################
+# BASHLIB: BASH library framework
+# https://github.com/markuskimius/bashlib
+#
+# Copyright (c)2019 Mark K. Kim
+# Released under the Apache license 2.0
+# https://github.com/markuskimius/bashlib/blob/master/LICENSE
+#
 # Source this file to use BASHLIB.
 #
 # Usage:
@@ -14,6 +21,8 @@
 # Environment Variables:
 #   BASHLIB_PATH                Colon-separated list of paths in which for
 #                               include() searches for a library.
+#
+##############################################################################
 
 BASHLIB=$(readlink -f "$(dirname "$(readlink -f "$BASH_SOURCE")")/..")
 

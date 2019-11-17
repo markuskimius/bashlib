@@ -18,7 +18,7 @@ function string::isnonempty() {
 }
 
 function string::escape() {
-    var value=$1
+    string value=$1
 
     value=${value//\\/\\\\}
     value=${value//\$/\\$}
@@ -54,9 +54,9 @@ function string::substr() {
 function string::__test__() {
     include "./exception.sh"
 
-    var mystring="Hello, world!"
-    var evilstring="\$Hello, \"world\\!"
-    var emptystring=""
+    string mystring="Hello, world!"
+    string evilstring="\$Hello, \"world\\!"
+    string emptystring=""
 
     string::isempty $mystring    && die
     string::isempty $emptystring || die

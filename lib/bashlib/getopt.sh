@@ -14,15 +14,15 @@ __bashlib_getopt_bin__=$(command -v getopt)
 
 function getopt::getopt() {
     array -g OPTARRAY
-    var -g OPTOPT
-    var -g OPTARG
-    var shortopts=$1 && shift
-    var longopts=$1 && shift
+    string -g OPTOPT
+    string -g OPTARG
+    string shortopts=$1 && shift
+    string longopts=$1 && shift
     int errcount=0
 
     # Set up the positional parameters
     if ! array::isset OPTARRAY; then
-        var optstring
+        string optstring
         
         optstring=$("$__bashlib_getopt_bin__" -o "$shortopts" --long "$longopts" -- "$@") || errcount=1
         eval set -- "$optstring"

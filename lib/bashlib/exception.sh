@@ -11,7 +11,8 @@ include "./types.sh"
 
 function exception::dump_stacktrace() {
     int frame=${1-0}
-    var lineno func file
+    int lineno
+    string func file
 
     while true; do
         read -r lineno func file <<<$(caller $frame || :)

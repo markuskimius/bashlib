@@ -7,7 +7,7 @@
 # https://github.com/markuskimius/bashlib/blob/master/LICENSE
 ##############################################################################
 
-alias var="declare"
+alias string="declare"
 alias int="declare -i"
 alias const="declare -r"
 alias array="declare -a"

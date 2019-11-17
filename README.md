@@ -42,7 +42,7 @@ include "bashlib/array.sh"
 
 function main() {
     array students
-    var person
+    string person
 
     array::push students "John"
     array::push students "Jane"

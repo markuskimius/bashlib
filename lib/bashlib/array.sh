@@ -35,7 +35,7 @@ function array::clear() {
 
 function array::push() {
     reference __bashlib_array=$1
-    var __bashlib_value=$2
+    string __bashlib_value=$2
 
     __bashlib_array+=( "$__bashlib_value" )
 }
@@ -54,7 +54,7 @@ function array::shift() {
 
 function array::unshift() {
     reference __bashlib_array=$1
-    var __bashlib_value=$2
+    string __bashlib_value=$2
 
     __bashlib_array=( "$__bashlib_value" "${__bashlib_array[@]}" )
 }
@@ -62,7 +62,7 @@ function array::unshift() {
 function array::insert() {
     reference __bashlib_array=$1
     int __bashlib_index=$2
-    var __bashlib_value=$3
+    string __bashlib_value=$3
 
     __bashlib_array=(
         "${__bashlib_array[@]::$__bashlib_index}"
@@ -110,7 +110,7 @@ function array::get() {
 
 function array::indexof() {
     reference __bashlib_array="$1"
-    var __bashlib_value="$2"
+    string __bashlib_value="$2"
     int index=-1
     int i
 
@@ -130,7 +130,7 @@ function array::dump() {
 
     echo "$1 = ("
     for i in "${!__bashlib_array[@]}"; do
-        var escaped_value=$(string::escape "${__bashlib_array[$i]}")
+        string escaped_value=$(string::escape "${__bashlib_array[$i]}")
 
         echo "  [$i] = \"${escaped_value}\""
     done

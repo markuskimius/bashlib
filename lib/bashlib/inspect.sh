@@ -14,8 +14,8 @@ function defined() {
 }
 
 function typeof() {
-    var __bashlib_declare=( $(defined "$1" && declare -p "$1" || echo "? ? ?" ) )
-    var __bashlib_type=var
+    string __bashlib_declare=( $(defined "$1" && declare -p "$1" || echo "? ? ?" ) )
+    string __bashlib_type="string"
 
     case "${__bashlib_declare[1]}" in
         *a*)    __bashlib_type="array"     ;;
@@ -23,7 +23,7 @@ function typeof() {
         *f*)    __bashlib_type="function"  ;;
 
         *n*)    # Reference to another variable
-                var __bashlib_underlying
+                string __bashlib_underlying
                 
                 __bashlib_underlying=${__bashlib_declare[2]#*=}
                 __bashlib_underlying=${__bashlib_underlying#\"}
@@ -33,7 +33,7 @@ function typeof() {
 
         \?)     __bashlib_type="undefined" ;;
         *i*)    __bashlib_type="int"       ;;
-        *)      __bashlib_type="var"       ;;
+        *)      __bashlib_type="string"       ;;
     esac
 
     echo "$__bashlib_type"
@@ -43,14 +43,14 @@ function inspect::__test__() {
     include "./exception.sh"
 
     int myint=13
-    var myvar="Hello, world!"
+    string mystring="Hello, world!"
     const myconst="Hi there!"
     array myarray=( alpha bravo charlie )
     hashmap myhashmap=( [first]=one [second]=two [third]=4 )
     reference myreference=myarray
 
     [[ "$myint" -eq 13 ]]                 || die
-    [[ "$myvar" == "Hello, world!" ]]     || die
+    [[ "$mystring" == "Hello, world!" ]]  || die
     [[ "$myconst" == "Hi there!" ]]       || die
     [[ "${myarray[1]}" == "bravo" ]]      || die
     [[ "${myhashmap[second]}" == "two" ]] || die
@@ -58,8 +58,8 @@ function inspect::__test__() {
     [[ "${myarray[3]}" == "delta" ]]      || die
 
     [[ $(typeof myint) == "int" ]]           || die
-    [[ $(typeof myvar) == "var" ]]           || die
-    [[ $(typeof myconst) == "var" ]]         || die
+    [[ $(typeof mystring) == "string" ]]     || die
+    [[ $(typeof myconst) == "string" ]]      || die
     [[ $(typeof myarray) == "array" ]]       || die
     [[ $(typeof myhashmap) == "hashmap" ]]   || die
     [[ $(typeof myreference) == "array" ]]   || die

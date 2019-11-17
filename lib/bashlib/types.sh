@@ -11,10 +11,9 @@ alias var="declare"
 alias int="declare -i"
 alias const="declare -r"
 alias array="declare -a"
-alias map="declare -A"
-alias ref="declare -n"
+alias hashmap="declare -A"
+alias reference="declare -n"
 
-# Export aliases outside of the sourced file. Unfortunately this has the side
-# effect of alias export outside of the whole script, not just this one file.
+# Enable aliases in the script
 shopt -s expand_aliases
 

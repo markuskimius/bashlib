@@ -19,7 +19,7 @@ function typeof() {
 
     case "${__bashlib_declare[1]}" in
         *a*)    __bashlib_type="array"     ;;
-        *A*)    __bashlib_type="map"       ;;
+        *A*)    __bashlib_type="hashmap"   ;;
         *f*)    __bashlib_type="function"  ;;
 
         *n*)    # Reference to another variable
@@ -46,23 +46,23 @@ function inspect::__test__() {
     var myvar="Hello, world!"
     const myconst="Hi there!"
     array myarray=( alpha bravo charlie )
-    map mymap=( [first]=one [second]=two [third]=4 )
-    ref myref=myarray
+    hashmap myhashmap=( [first]=one [second]=two [third]=4 )
+    reference myreference=myarray
 
-    [[ "$myint" -eq 13 ]]             || die
-    [[ "$myvar" == "Hello, world!" ]] || die
-    [[ "$myconst" == "Hi there!" ]]   || die
-    [[ "${myarray[1]}" == "bravo" ]]  || die
-    [[ "${mymap[second]}" == "two" ]] || die
-    myref+=( "delta" )
-    [[ "${myarray[3]}" == "delta" ]]  || die
+    [[ "$myint" -eq 13 ]]                 || die
+    [[ "$myvar" == "Hello, world!" ]]     || die
+    [[ "$myconst" == "Hi there!" ]]       || die
+    [[ "${myarray[1]}" == "bravo" ]]      || die
+    [[ "${myhashmap[second]}" == "two" ]] || die
+    myreference+=( "delta" )
+    [[ "${myarray[3]}" == "delta" ]]      || die
 
     [[ $(typeof myint) == "int" ]]           || die
     [[ $(typeof myvar) == "var" ]]           || die
     [[ $(typeof myconst) == "var" ]]         || die
     [[ $(typeof myarray) == "array" ]]       || die
-    [[ $(typeof mymap) == "map" ]]           || die
-    [[ $(typeof myref) == "array" ]]         || die
+    [[ $(typeof myhashmap) == "hashmap" ]]   || die
+    [[ $(typeof myreference) == "array" ]]   || die
     [[ $(typeof mynothing) == "undefined" ]] || die
 
     echo "Done!"

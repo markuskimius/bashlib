@@ -28,39 +28,39 @@ function array::isnonempty() {
 }
 
 function array::clear() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
 
     __bashlib_array=()
 }
 
 function array::push() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
     var __bashlib_value=$2
 
     __bashlib_array+=( "$__bashlib_value" )
 }
 
 function array::pop() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
 
     unset __bashlib_array[-1]
 }
 
 function array::shift() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
 
     __bashlib_array=("${__bashlib_array[@]:1}")
 }
 
 function array::unshift() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
     var __bashlib_value=$2
 
     __bashlib_array=( "$__bashlib_value" "${__bashlib_array[@]}" )
 }
 
 function array::insert() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
     int __bashlib_index=$2
     var __bashlib_value=$3
 
@@ -72,7 +72,7 @@ function array::insert() {
 }
 
 function array::delete() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
     int __bashlib_index=$2
     int __bashlib_count=${3-1}
     int __bashlib_index_plus=$((__bashlib_index+__bashlib_count))
@@ -84,32 +84,32 @@ function array::delete() {
 }
 
 function array::length() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
 
     echo ${#__bashlib_array[@]}
 }
 
 function array::front() {
-    ref __bashlib_array=$1
+    reference __bashlib_array=$1
 
     echo "${__bashlib_array[0]}"
 }
 
 function array::back() {
-    ref __bashlib_array="$1"
+    reference __bashlib_array="$1"
 
     echo "${__bashlib_array[-1]}"
 }
 
 function array::get() {
-    ref __bashlib_array="$1"
+    reference __bashlib_array="$1"
     int __bashlib_index="$2"
 
     echo "${__bashlib_array[$__bashlib_index]}"
 }
 
 function array::indexof() {
-    ref __bashlib_array="$1"
+    reference __bashlib_array="$1"
     var __bashlib_value="$2"
     int index=-1
     int i
@@ -125,7 +125,7 @@ function array::indexof() {
 }
 
 function array::dump() {
-    ref __bashlib_array="$1"
+    reference __bashlib_array="$1"
     int i
 
     echo "$1 = ("

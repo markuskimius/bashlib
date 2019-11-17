@@ -35,6 +35,8 @@ programming.
 ## Example
 
 ```bash
+#!/bin/bash
+
 include "bashlib/types.sh"
 include "bashlib/array.sh"
 

@@ -116,6 +116,26 @@ references.  In BASHLIB, all references are namedspaced with the prefix
 `__bashlib_` to reduce the chances of such error.
 
 
+## <a name="quoting"></a>Quoting
+
+Variables and values containing one or more whitespace are almost always
+required to be quoted.  Since it's rarely known in advance whether a variable
+contains a whitespace, variables should almost always be quoted.
+
+Frustratingly, occasionally quoting does not yield the expected result.  For
+example, `[[]]` supports wildcard matching:
+
+```
+[[ "Hello, world!" == *world* ]] && echo true || echo false
+```
+The above code outputs `true` because the word `world` appears in `Hello,
+world!`.  However, if the word `*world*` were quoted, it is matched literally,
+resulting in the output `false`.
+
+The best practice is to quote all variables and values, but remove them if
+there is a good reason.
+
+
 ## <a name="boolean"></a>Boolean Logic
 
 Deviating from the common convention, BASH treats 0 as true and nonzero as

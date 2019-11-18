@@ -255,8 +255,8 @@ In particular, `(())` and `let` should not be used alone in the following
 manner:
 
 ```bash
-((i=i-1))     # Don't do this!
-let "i=i-1"   # Don't do this!
+((i = i - 1))     # Don't do this!
+let "i = i - 1"   # Don't do this!
 ```
 Not consuming the value returned by `(())` or `let` could cause its return
 value to be interpreted by BASHLIB as an error and print the stack trace.

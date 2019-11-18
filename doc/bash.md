@@ -48,7 +48,7 @@ The scope of a variable is the function within which it is declared.
 
 BASH also extends the scope of a variable to any called function, so a called
 function may modify the variables of its caller.  The exception to this rule is
-if the function is called within a subshell using `$()`, `()`, or ``, frequently
+if the function is called within a subshell using `$()`, `()`, or `` ` ` ``, frequently
 used to assign the return string of a function to a variable. (see [Returning
 a Value](#return)).
 
@@ -79,8 +79,8 @@ As noted in the [scope section](#scope), however, any modification made to the
 environment within the subshell are lost upon its completion, so a function
 called in such manner must be stateless.
 
-To write a stateful function that returns a value, the value must be returned
-using another technique.  One such technique is for the caller to pass the name
+To write a stateful function that also returns a value, the value must be
+returned without a subshell using a different technique.  One such technique is for the caller to pass the name
 of a variable to the function to which it wants the value(s) written.  For
 example:
 
@@ -156,6 +156,8 @@ To avoid confusion, use the following rules:
 * Never use the return value from a function or a program inside `(())` or
   `[[]]`.
 
+See [Groupings](#grouping) for more details.
+
 
 ## Operations
 
@@ -198,6 +200,83 @@ mode::strict
 
 a=$((1-1))   # Ok
 ```
+
+## <a name='grouping'></a>Groupings (Or, confusingly similar things)
+
+These are used to execute commands:
+
+|           | Usage                   | Notes                                                           |
+|:---------:| ----------------------- | --------------------------------------------------------------- |
+| `()`      | `(command)`             | Execute `command` in a subshell.                                |
+| `$()`     | `variable=$(command)`   | Execute `command` and assign its output (stdout) to `variable`. |
+| `` ` ` `` | ``variable=`command` `` | Same as `$()` but cannot be nested. Avoid its use.              |
+
+All commands execute within a subshell (see [Scope](#scope)) and may return an error code.
+If the returned error code is nonzero, BASHLIB will consider it an error and print the
+stack trace.
+
+These are used to do arithmetic:
+
+|           | Usage                  | Notes                                       |
+|:---------:| ---------------------- | ------------------------------------------- |
+| `$(())`   | `variable=$((3 * 3))`  | Assign the result of `3 * 3` to `variable`. |
+| `(())`    | `((3 * 3))`            | Evaluate `3 * 3`.                           |
+| `let`     | `let "3 * 3"`          | Evaluate `3 * 3`.                           |
+
+Both `(())` and `let` return true (returns 0) if the result of the evaluation is true
+(nonzero), otherwise returns false (returns nonzero) if the evaluation is false (zero).
+See [Boolean Logic](#boolean) for the explanation of this confusing logic.  The returned
+value should be consumed, typically by `if` or `while`:
+
+```bash
+i=10
+
+while (( i >= 0 )); do
+    echo "$i..."
+    i=$(( i - 1 ))
+done
+
+echo "Lift off!"
+```
+or
+
+```bash
+i=10
+
+while let "i >= 0"; do
+    echo "$i..."
+    i=$(( i - 1 ))
+done
+
+echo "Lift off!"
+```
+In particular, `(())` and `let` should not be used alone in the following manner:
+
+```bash
+((i=i-1))     # Don't do this!
+let "i=i-1"   # Don't do this!
+```
+Not consuming the value returned by `(())` or `let` could cause its return value to
+be interpreted by BASHLIB as an error and print the stack trace.
+
+Given that `(())` and `let` are equivalent but `(())` is syntactically more intuitive
+to read in the context in which they should be used, `(())` should always be used and
+`let` should be avoided.
+
+These are used to do string and file analysis:
+
+|        | Usage                              | Notes                                     |
+| ------ | ---------------------------------- | ----------------------------------------- |
+| `[[]]` | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
+| `[]`   | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
+
+Both `[[]]` and `[]` support other string and file operations, but `[[]]` is the newer
+version with more operations so avoid using `[]`.  `[[]]` is also faster on older versions
+of BASH because `[]` was implemented as an external program that required forking a new
+process (see `/usr/bin/[`).  `[]` should be used only when writing a script that needs to
+be backward compatible with older versions of BASH or Bourne Shell.
+
+See the BASH manual for the list of operations available to `[[]]`.
 
 
 ## License

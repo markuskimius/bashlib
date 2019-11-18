@@ -175,31 +175,17 @@ int myint
 
 myint="3**2 + 7"           # myint=16
 ```
-It is also possible to perform an arithmetic calculation and assign it to a
-variable using the `let` keyword or the `(())` compound command.  However,
-using these to change the value of a variable is not recommended because they
-have the side effect of returning a nonzero error code which terminates the
-BASH script when the strict mode is enabled:
-
-```bash
-include "mode.sh"
-
-mode::strict
-
-let a=1-1    # returns nonzero which terminates the script in strict mode
-((a=1-1))    # same.
-```
-
 To perform an arithmetic calculation and assign it to a non-integer variable,
 use `$(())` instead:
 
 ```
-include "mode.sh"
+string myvar
 
-mode::strict
-
-a=$((1-1))   # Ok
+myvar=$((3**2 + 7))        # myvar=16
 ```
+
+For other ways to perform arithmetic calculations, see [Groupings](#grouping)
+
 
 ## <a name='grouping'></a>Groupings (Or, why do they have to be so confusing?)
 
@@ -213,15 +199,17 @@ These are used to execute commands:
 
 All commands execute within a subshell (see [Scope](#scope)) and may return an
 error code.  If the returned error code is nonzero, BASHLIB will consider it an
-error and print the stack trace.
+error and print the stack trace, and also terminate the script if the strict
+mode is enabled.
 
 These are used to do arithmetic:
 
-|           | Usage                  | Notes                                       |
-|:---------:| ---------------------- | ------------------------------------------- |
-| `$(())`   | `variable=$((3 * 3))`  | Assign the result of `3 * 3` to `variable`. |
-| `(())`    | `((3 * 3))`            | Evaluate `3 * 3`.                           |
-| `let`     | `let "3 * 3"`          | Evaluate `3 * 3`.                           |
+|           | Usage                  | Notes                                                                                    |
+|:---------:| ---------------------- | ---------------------------------------------------------------------------------------- |
+| `$(())`   | `variable=$((3 * 3))`  | Assign the result of `3 * 3` to `variable`.                                              |
+| (n/a)     | `intvar="3 * 3"`       | Assign the result of `3 * 3` to `intvar`. Works only if `intvar` is an integer variable. |
+| `(())`    | `((3 * 3))`            | Evaluate `3 * 3`.                                                                        |
+| `let`     | `let "3 * 3"`          | Evaluate `3 * 3`.                                                                        |
 
 Both `(())` and `let` return true (returns 0) if the result of the evaluation
 is true (nonzero), otherwise returns false (returns nonzero) if the evaluation
@@ -259,11 +247,12 @@ manner:
 let "i=i-1"   # Don't do this!
 ```
 Not consuming the value returned by `(())` or `let` could cause its return
-value to be interpreted by BASHLIB as an error and print the stack trace.
+value to be interpreted by BASHLIB as an error and print the stack trace,
+and also terminate the script if the strict mode is enabled.
 
 Given that `(())` and `let` are equivalent but `(())` is syntactically more
-intuitive to read in the context in which they should be used, `(())` should
-always be used and `let` should be avoided.
+intuitive to read in the context in which they should be used, the use of
+`let` is discouraged.
 
 These are used to do string and file analysis:
 

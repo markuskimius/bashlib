@@ -201,7 +201,7 @@ mode::strict
 a=$((1-1))   # Ok
 ```
 
-## <a name='grouping'></a>Groupings (Or, confusingly similar things)
+## <a name='grouping'></a>Groupings (Or, why do they have to be so confusing?)
 
 These are used to execute commands:
 

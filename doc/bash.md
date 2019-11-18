@@ -279,7 +279,7 @@ These are used to do string and file analysis:
 |        | Usage                              | Notes                                     |
 | ------ | ---------------------------------- | ----------------------------------------- |
 | `[[]]` | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
-| `[]`   | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
+| `[]`   | `[ "$mystring" == "Hi there!" ]`   | Return true if the two strings are equal. |
 
 Both `[[]]` and `[]` support other string and file operations, but `[[]]` is
 the newer version with more operations so avoid using `[]`.  `[[]]` is also

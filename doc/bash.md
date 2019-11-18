@@ -80,9 +80,9 @@ environment within the subshell are lost upon its completion, so a function
 called in such manner must be stateless.
 
 To write a stateful function that also returns a value, the value must be
-returned without a subshell using a different technique.  One such technique is for the caller to pass the name
-of a variable to the function to which it wants the value(s) written.  For
-example:
+returned without a subshell using a different technique.  One such technique is
+for the caller to pass the name of a variable to the function to which it wants
+the value(s) written.  For example:
 
 ```bash
 function myfunction() {
@@ -113,14 +113,14 @@ echo $returned
 
 To avoid such error, it is a good practice to use a unique name for all
 references.  In BASHLIB, all references are namedspaced with the prefix
-`__bashlib_` to avoid such error.
+`__bashlib_` to reduce the chances of such error.
 
 
 ## <a name="boolean"></a>Boolean Logic
 
-Deviating from the common convention, BASH treats 0 as true and nonzero as false
-when evaluating the *return value* from a function or a program.  This can be
-seen in the following code:
+Deviating from the common convention, BASH treats 0 as true and nonzero as
+false when evaluating the *return value* from a function or a program.  This
+can be seen in the following code:
 
 ```bash
 $ $( exit 0 ) && echo true || echo false
@@ -176,10 +176,10 @@ int myint
 myint="3**2 + 7"           # myint=16
 ```
 It is also possible to perform an arithmetic calculation and assign it to a
-variable using the `let` keyword or the `(())` compound command.  However, using
-these to change the value of a variable is not recommended because they have the
-side effect of returning a nonzero error code which terminates the BASH script
-when the strict mode is enabled:
+variable using the `let` keyword or the `(())` compound command.  However,
+using these to change the value of a variable is not recommended because they
+have the side effect of returning a nonzero error code which terminates the
+BASH script when the strict mode is enabled:
 
 ```bash
 include "mode.sh"
@@ -211,9 +211,9 @@ These are used to execute commands:
 | `$()`     | `variable=$(command)`   | Execute `command` and assign its output (stdout) to `variable`. |
 | `` ` ` `` | ``variable=`command` `` | Same as `$()` but cannot be nested. Avoid its use.              |
 
-All commands execute within a subshell (see [Scope](#scope)) and may return an error code.
-If the returned error code is nonzero, BASHLIB will consider it an error and print the
-stack trace.
+All commands execute within a subshell (see [Scope](#scope)) and may return an
+error code.  If the returned error code is nonzero, BASHLIB will consider it an
+error and print the stack trace.
 
 These are used to do arithmetic:
 
@@ -223,10 +223,11 @@ These are used to do arithmetic:
 | `(())`    | `((3 * 3))`            | Evaluate `3 * 3`.                           |
 | `let`     | `let "3 * 3"`          | Evaluate `3 * 3`.                           |
 
-Both `(())` and `let` return true (returns 0) if the result of the evaluation is true
-(nonzero), otherwise returns false (returns nonzero) if the evaluation is false (zero).
-See [Boolean Logic](#boolean) for the explanation of this confusing logic.  The returned
-value should be consumed, typically by `if` or `while`:
+Both `(())` and `let` return true (returns 0) if the result of the evaluation
+is true (nonzero), otherwise returns false (returns nonzero) if the evaluation
+is false (zero).  See [Boolean Logic](#boolean) for the explanation of this
+confusing logic.  The returned value should be consumed, typically by `if` or
+`while`:
 
 ```bash
 i=10
@@ -250,18 +251,19 @@ done
 
 echo "Lift off!"
 ```
-In particular, `(())` and `let` should not be used alone in the following manner:
+In particular, `(())` and `let` should not be used alone in the following
+manner:
 
 ```bash
 ((i=i-1))     # Don't do this!
 let "i=i-1"   # Don't do this!
 ```
-Not consuming the value returned by `(())` or `let` could cause its return value to
-be interpreted by BASHLIB as an error and print the stack trace.
+Not consuming the value returned by `(())` or `let` could cause its return
+value to be interpreted by BASHLIB as an error and print the stack trace.
 
-Given that `(())` and `let` are equivalent but `(())` is syntactically more intuitive
-to read in the context in which they should be used, `(())` should always be used and
-`let` should be avoided.
+Given that `(())` and `let` are equivalent but `(())` is syntactically more
+intuitive to read in the context in which they should be used, `(())` should
+always be used and `let` should be avoided.
 
 These are used to do string and file analysis:
 
@@ -270,11 +272,12 @@ These are used to do string and file analysis:
 | `[[]]` | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
 | `[]`   | `[[ "$mystring" == "Hi there!" ]]` | Return true if the two strings are equal. |
 
-Both `[[]]` and `[]` support other string and file operations, but `[[]]` is the newer
-version with more operations so avoid using `[]`.  `[[]]` is also faster on older versions
-of BASH because `[]` was implemented as an external program that required forking a new
-process (see `/usr/bin/[`).  `[]` should be used only when writing a script that needs to
-be backward compatible with older versions of BASH or Bourne Shell.
+Both `[[]]` and `[]` support other string and file operations, but `[[]]` is
+the newer version with more operations so avoid using `[]`.  `[[]]` is also
+faster on older versions of BASH because `[]` was implemented as an external
+program that required forking a new process (see `/usr/bin/[`).  `[]` should be
+used only when writing a script that needs to be backward compatible with older
+versions of BASH or Bourne Shell.
 
 See the BASH manual for the list of operations available to `[[]]`.
 

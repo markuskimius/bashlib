@@ -41,6 +41,9 @@ function typeof() {
 
 function inspect::__test__() {
     include "./exception.sh"
+    include "./mode.sh"
+
+    mode::strict
 
     int myint=13
     string mystring="Hello, world!"

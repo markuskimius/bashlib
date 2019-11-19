@@ -63,6 +63,9 @@ function getopt::getopt() {
 
 function getopt::__test__() {
     include "./exception.sh"
+    include "./mode.sh"
+
+    mode::strict
 
     function main() {
         local OPTARRAY

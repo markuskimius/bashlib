@@ -10,13 +10,16 @@
 include "./types.sh"
 include "./string.sh"
 include "./inspect.sh"
+include "./reference.sh"
 
 function array::exists() {
     [[ $(typeof "$1") == "array" ]] || return 1
 }
 
 function array::isset() {
-    array::exists "$1" && array::isnonempty "$1" || return 1
+    string underlying=$(reference::underlyingof "$1")
+
+    array::exists "$underlying" && [[ $(declare -p "$underlying") == *=* ]] || return 1
 }
 
 function array::isempty() {
@@ -86,7 +89,11 @@ function array::delete() {
 function array::length() {
     reference __bashlib_array=$1
 
-    echo ${#__bashlib_array[@]}
+    if array::isset __bashlib_array; then
+        echo "${#__bashlib_array[@]}"
+    else
+        echo 0
+    fi
 }
 
 function array::front() {
@@ -139,6 +146,9 @@ function array::dump() {
 
 function array::__test__() {
     include "./exception.sh"
+    include "./mode.sh"
+
+    mode::strict
 
     # ( charlie delta echo )
     array myarray=( "charlie" "delta" "echo" )
@@ -228,7 +238,7 @@ function array::__test__() {
     array::exists nosucharray && die
 
     array::isset myarray     || die
-    array::isset emptyarray  && die
+    array::isset emptyarray  || die
     array::isset unsetarray  && die
     array::isset nosucharray && die
 

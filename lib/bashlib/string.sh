@@ -10,11 +10,11 @@
 include "./types.sh"
 
 function string::isempty() {
-    [[ -z "$1" ]]
+    [[ -z "${1-}" ]]
 }
 
 function string::isnonempty() {
-    [[ -n "$1" ]]
+    [[ -n "${1-}" ]]
 }
 
 function string::escape() {
@@ -53,6 +53,9 @@ function string::substr() {
 
 function string::__test__() {
     include "./exception.sh"
+    include "./mode.sh"
+
+    mode::strict
 
     string mystring="Hello, world!"
     string evilstring="\$Hello, \"world\\!"
@@ -60,23 +63,18 @@ function string::__test__() {
 
     string::isempty $mystring    && die
     string::isempty $emptystring || die
-    string::isempty $nosuchstring || die
     string::isnonempty $mystring    || die
     string::isnonempty $emptystring && die
-    string::isnonempty $nosuchstring && die
 
     [[ $(string::escape "$evilstring") == '\$Hello, \"world\\!' ]] || die
 
     [[ $(string::length "$mystring") -eq 13 ]] || die
     [[ $(string::length "$emptystring") -eq 0 ]] || die
-    [[ $(string::length "$nosuchstring") -eq 0 ]] || die
 
     [[ $(string::tolower "$mystring") == "hello, world!" ]] || die
     [[ $(string::toupper "$mystring") == "HELLO, WORLD!" ]] || die
     [[ $(string::tolower "$emptystring") == "" ]] || die
     [[ $(string::toupper "$emptystring") == "" ]] || die
-    [[ $(string::tolower "$nosuchstring") == "" ]] || die
-    [[ $(string::toupper "$nosuchstring") == "" ]] || die
 
     [[ $(string::replacefirst "$mystring" l L)       == "HeLlo, world!" ]] || die
     [[ $(string::replaceall   "$mystring" l L)       == "HeLLo, worLd!" ]] || die
@@ -88,8 +86,6 @@ function string::__test__() {
     [[ $(string::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || die
     [[ $(string::replacefirst "$mystring" ? !)       == "!ello, world!" ]] || die
     [[ $(string::replaceall   "$mystring" ? !)       == "!!!!!!!!!!!!!" ]] || die
-    [[ $(string::replacefirst "$nosuchstring" x X)   == ""              ]] || die
-    [[ $(string::replaceall   "$nosuchstring" x X)   == ""              ]] || die
 
     [[ $(string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || die
     [[ $(string::substr "$mystring" 0  3 ) == "Hel" ]] || die

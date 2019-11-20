@@ -17,9 +17,9 @@ function array::exists() {
 }
 
 function array::isset() {
-    string underlying=$(reference::underlyingof "$1")
+    string varname=$(reference::underlying "$1")
 
-    array::exists "$underlying" && [[ $(declare -p "$underlying") == *=* ]] || return 1
+    array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]] || return 1
 }
 
 function array::isempty() {

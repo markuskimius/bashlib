@@ -15,7 +15,7 @@ function reference::isreference() {
     [[ "${decl[1]}" == *n* ]]
 }
 
-function reference::underlyingof() {
+function reference::underlying() {
     string name="$1"
 
     if reference::isreference "$name"; then
@@ -25,7 +25,7 @@ function reference::underlyingof() {
         name=${name#\"}
         name=${name%\"}
 
-        name=$(reference::underlyingof $name)
+        name=$(reference::underlying $name)
     fi
 
     echo $name

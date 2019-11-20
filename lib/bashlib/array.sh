@@ -13,27 +13,31 @@ include "./inspect.sh"
 include "./reference.sh"
 
 function array::exists() {
-    [[ $(typeof "$1") == "array" ]] || return 1
+    [[ $(typeof "$1") == "array" ]]
 }
 
 function array::isset() {
     string varname=$(reference::underlying "$1")
 
-    array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]] || return 1
+    array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
 }
 
 function array::isempty() {
-    [[ $(array::length "$1") -eq 0 ]] || return 1
+    [[ $(array::length "$1") -eq 0 ]]
 }
 
 function array::isnonempty() {
-    [[ $(array::length "$1") -gt 0 ]] || return 1
+    [[ $(array::length "$1") -gt 0 ]]
 }
 
-function array::clear() {
+function array::length() {
     reference __bashlib_array=$1
 
-    __bashlib_array=()
+    if array::isset __bashlib_array; then
+        echo "${#__bashlib_array[@]}"
+    else
+        echo 0
+    fi
 }
 
 function array::push() {
@@ -86,14 +90,10 @@ function array::delete() {
     )
 }
 
-function array::length() {
+function array::clear() {
     reference __bashlib_array=$1
 
-    if array::isset __bashlib_array; then
-        echo "${#__bashlib_array[@]}"
-    else
-        echo 0
-    fi
+    __bashlib_array=()
 }
 
 function array::front() {

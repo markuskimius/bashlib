@@ -253,6 +253,8 @@ function array::__test__() {
     array::clear myarray
     array::isempty myarray || die
 
+    array::dump myarray
+
     echo "Done!"
 }
 

@@ -51,6 +51,14 @@ function string::substr() {
     echo "${1:$2:$3}"
 }
 
+function string::split() {
+    string __bashlib_string=$1
+    string __bashlib_delim=$2
+    reference __bashlib_array=$3
+
+    IFS="$__bashlib_delim" read -ra __bashlib_array <<< "$__bashlib_string"
+}
+
 function string::__test__() {
     include "./exception.sh"
     include "./mode.sh"
@@ -90,6 +98,11 @@ function string::__test__() {
     [[ $(string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || die
     [[ $(string::substr "$mystring" 0  3 ) == "Hel" ]] || die
     [[ $(string::substr "$mystring" 10 3 ) == "ld!" ]] || die
+
+    array myarray
+    string::split "$mystring" "," myarray
+    [[ "${myarray[0]}" == "Hello" ]] || die
+    [[ "${myarray[1]}" == " world!" ]] || die
 
     echo "Done!"
 }

@@ -108,11 +108,27 @@ function array::back() {
     echo "${__bashlib_array[-1]}"
 }
 
-function array::get() {
+function array::hasindex() {
     reference __bashlib_array="$1"
     int __bashlib_index="$2"
 
-    echo "${__bashlib_array[$__bashlib_index]}"
+    [[ -v __bashlib_array["$__bashlib_index"] ]]
+}
+
+function array::hasvalue() {
+    reference __bashlib_array="$1"
+    string __bashlib_value="$2"
+    string v
+    int hasvalue=0
+
+    for v in "${__bashlib_array[@]}"; do
+        if [[ "$__bashlib_value" == "$v" ]]; then
+            hasvalue=1
+            break
+        fi
+    done
+
+    (( $hasvalue ))
 }
 
 function array::indexof() {
@@ -121,7 +137,7 @@ function array::indexof() {
     int index=-1
     int i
 
-    for i in ${!__bashlib_array[@]}; do
+    for i in "${!__bashlib_array[@]}"; do
         if [[ "$__bashlib_value" == "${__bashlib_array[$i]}" ]]; then
             index=$i
             break
@@ -129,6 +145,13 @@ function array::indexof() {
     done
 
     echo $index
+}
+
+function array::get() {
+    reference __bashlib_array="$1"
+    int __bashlib_index="$2"
+
+    echo "${__bashlib_array[$__bashlib_index]}"
 }
 
 function array::dump() {
@@ -199,6 +222,9 @@ function array::__test__() {
     [[ $(array::get myarray 5) == "foxtrot" ]] || die
     [[ $(array::get myarray 6) == "golf" ]]    || die
 
+    array::hasindex myarray 6       || die
+    array::hasvalue myarray "delta" || die
+
     # ( alpha bravo charlie echo foxtrot golf )
     array::delete myarray 3
     [[ $(array::length myarray) -eq 6 ]]       || die
@@ -206,6 +232,9 @@ function array::__test__() {
     [[ $(array::back myarray) == "golf" ]]     || die
     [[ $(array::get myarray 2) == "charlie" ]] || die
     [[ $(array::get myarray 3) == "echo" ]]    || die
+
+    array::hasindex myarray 6       && die
+    array::hasvalue myarray "delta" && die
 
     # ( bravo charlie echo foxtrot golf )
     array::delete myarray 0

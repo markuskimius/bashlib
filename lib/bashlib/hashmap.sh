@@ -117,9 +117,9 @@ function hashmap::dump() {
 
     echo "$1 = ("
     for k in "${!__bashlib_hashmap[@]}"; do
-        string escaped_value=$(string::escape "${__bashlib_hashmap[$k]}")
+        string encoded_value=$(string::encode "${__bashlib_hashmap[$k]}")
 
-        echo "  [$k] = \"${escaped_value}\""
+        echo "  [$k] = \"${encoded_value}\""
     done
     echo ")"
 }

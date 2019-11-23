@@ -8,32 +8,27 @@
 ##############################################################################
 
 include "./types.sh"
+include "./reference.sh"
 
 function defined() {
     declare -p "$1" >& /dev/null || return 1
 }
 
 function typeof() {
-    string __bashlib_declare=( $(defined "$1" && declare -p "$1" || echo "? ? ?" ) )
+    string __bashlib_declare=$(defined "$1" && declare -p "$1" || echo "? ? ?" )
     string __bashlib_type="string"
 
-    case "${__bashlib_declare[1]}" in
+    __bashlib_declare=${__bashlib_declare#* }
+    __bashlib_declare=${__bashlib_declare%% *}
+
+    case "$__bashlib_declare" in
         *a*)    __bashlib_type="array"     ;;
         *A*)    __bashlib_type="hashmap"   ;;
         *f*)    __bashlib_type="function"  ;;
-
-        *n*)    # Reference to another variable
-                string __bashlib_underlying
-                
-                __bashlib_underlying=${__bashlib_declare[2]#*=}
-                __bashlib_underlying=${__bashlib_underlying#\"}
-                __bashlib_underlying=${__bashlib_underlying%\"}
-                __bashlib_type=$(typeof "${__bashlib_underlying}")
-                ;;
-
+        *n*)    __bashlib_type=$(typeof "$(reference::underlying "$1")") ;;
         \?)     __bashlib_type="undefined" ;;
         *i*)    __bashlib_type="int"       ;;
-        *)      __bashlib_type="string"       ;;
+        *)      __bashlib_type="string"    ;;
     esac
 
     echo "$__bashlib_type"

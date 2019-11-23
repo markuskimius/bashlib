@@ -13,7 +13,9 @@ include "./inspect.sh"
 include "./reference.sh"
 
 function array::exists() {
-    [[ $(typeof "$1") == "array" ]]
+    string varname=$(reference::underlying "$1")
+
+    [[ $(typeof "$varname") == "array" ]]
 }
 
 function array::isset() {
@@ -154,15 +156,51 @@ function array::get() {
     echo "${__bashlib_array[$__bashlib_index]}"
 }
 
+function array::copy() {
+    reference __bashlib_source="$1"
+    reference __bashlib_target="$2"
+    int i
+
+    __bashlib_target=()
+
+    for i in "${!__bashlib_source[@]}"; do
+        __bashlib_target[i]=${__bashlib_source["$i"]}
+    done
+}
+
+function array::map() {
+    reference __bashlib__source="$1"
+    reference __bashlib__target="${3-$1}"
+    string func="$2"
+    int i
+
+    if ! array::isset __bashlib__target; then
+        __bashlib_target=()
+    fi
+
+    for i in "${!__bashlib__source[@]}"; do
+        __bashlib__target[i]=$("$func" "${__bashlib__source["$i"]}")
+    done
+}
+
+function array::sort() {
+    reference __bashlib_source="$1"
+    reference __bashlib_target="${2-$1}"
+
+    array::map __bashlib_source string::encode __bashlib_target
+    IFS=$'\n' __bashlib_target=( $(sort <<<"${__bashlib_target[*]}") )
+    array::map __bashlib_target string::decode
+}
+
 function array::dump() {
     reference __bashlib_array="$1"
     int i
 
     echo "$1 = ("
     for i in "${!__bashlib_array[@]}"; do
-        string escaped_value=$(string::escape "${__bashlib_array[$i]}")
+        string encoded_value=$(string::encode "${__bashlib_array[$i]}")
 
-        echo "  [$i] = \"${escaped_value}\""
+        echo "  [$i] = \"${encoded_value}\""
     done
     echo ")"
 }
@@ -255,6 +293,19 @@ function array::__test__() {
     [[ $(array::indexof myarray "bravo") == 0 ]]   || die
     [[ $(array::indexof myarray "charlie") == 1 ]] || die
     [[ $(array::indexof myarray "foxtrot") == 3 ]] || die
+
+    # newarray=( ravo harlie cho oxtrot )
+    function chopfirst() { echo "${1:1}"; }
+    array::map myarray chopfirst newarray
+    [[ $(array::front newarray) == "ravo" ]]   || die
+    [[ $(array::back newarray)  == "oxtrot" ]] || die
+    [[ $(array::front myarray)  != $(array::front newarray) ]] || die
+    [[ $(array::back myarray)   != $(array::back newarray)  ]] || die
+
+    # newarray=( cho harlie oxtrot ravo )
+    array::sort newarray
+    [[ $(array::front newarray) == "cho" ]]  || die
+    [[ $(array::back newarray)  == "ravo" ]] || die
 
     array::dump myarray
 

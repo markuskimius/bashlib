@@ -18,59 +18,50 @@ function string::isnonempty() {
     [[ -n "${1-}" ]]
 }
 
-function string::escape() {
-    string value=$1
-    string c
-    int i
-
-    for ((i=0; i < $(string::length "$value"); i++)); do
-        c=${value:$i:1}
-
-        case "$c" in
-            "\\") c='\\' ;;
-            "\"") c='\"' ;;
-            "\$") c='\$' ;;
-            $'\r') c='\r' ;;
-            $'\n') c='\n' ;;
-        esac
-
-        echo -n "$c"
-    done
-
-    echo
-}
-
 function string::encode() {
     string value=$1
+    string buffer
+    reference __bashlib_output=${2-buffer}
     string c
     int i
+
+    __bashlib_output=""
 
     for ((i=0; i < $(string::length "$value"); i++)); do
         c=${value:$i:1}
 
         case "$c" in
             "\\") c='\\' ;;
+            $'\t') c='\t' ;;
             $'\r') c='\r' ;;
             $'\n') c='\n' ;;
             *)
                 int o=$(char::ord "$c")
 
-                if (( o <= 0x20 )); then
+                if (( o < 0x20 || o == 0x7f )); then
                     c=$(printf "\\\\x%02x" "$o")
                 fi
                 ;;
         esac
 
-        echo -n "$c"
+        __bashlib_output+="$c"
     done
 
-    echo
+    if (( $# < 2 )); then
+        echo -en "$__bashlib_output"
+    fi
 }
 
 function string::decode() {
     string value=$1
+    string buffer
+    reference __bashlib_output=${2-buffer}
 
-    echo -e "$value"
+    printf -v __bashlib_output "%b" "$value"
+
+    if (( $# < 2 )); then
+        echo -en "$__bashlib_output"
+    fi
 }
 
 function string::length() {
@@ -118,7 +109,7 @@ function string::__test__() {
     mode::strict
 
     string mystring="Hello, world!"
-    string evilstring=$'$Hello,\n"world\\!'
+    string evilstring=$'$Hello, \n"world\\!'
     string emptystring=""
 
     string::isempty $mystring    && die
@@ -126,7 +117,6 @@ function string::__test__() {
     string::isnonempty $mystring    || die
     string::isnonempty $emptystring && die
 
-    [[ $(string::escape "$evilstring") == '\$Hello,\n\"world\\!' ]] || die
     [[ $(string::decode "$(string::encode "$evilstring")") == "$evilstring" ]] || die
 
     [[ $(string::length "$mystring") -eq 13 ]] || die

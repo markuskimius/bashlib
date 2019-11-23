@@ -10,24 +10,26 @@
 include "./types.sh"
 
 function reference::isreference() {
-    string decl=( $(declare -p "$1" 2>/dev/null || echo "? ? ?" ) )
+    string decl=$(declare -p "$1" 2>/dev/null || echo "? ? ?" )
 
-    [[ "${decl[1]}" == *n* ]]
+    decl=${decl#* }
+    decl=${decl%% *}
+
+    [[ "${decl}" == *n* ]]
 }
 
 function reference::underlying() {
     string name="$1"
 
     if reference::isreference "$name"; then
-        string decl=( $(declare -p "$1" || echo "? ? ?" ) )
+        string decl=$(declare -p "$1" || echo "? ? ?" )
 
-        name=${decl[2]#*=}
-        name=${name#\"}
+        name=${decl#*\"}
         name=${name%\"}
 
-        name=$(reference::underlying $name)
+        name=$(reference::underlying "$name")
     fi
 
-    echo $name
+    echo "$name"
 }
 

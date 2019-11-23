@@ -11,11 +11,17 @@ include "./types.sh"
 
 function char::chr() {
     int ord=$1
+    string buffer=""
+    reference __bashlib_output=${2-buffer}
 
     if (( "$ord" < 256 )); then
-        echo -e "\\x$(printf "%02x" "$ord")"
+        printf -v __bashlib_output "\\x$(printf "%02x" "$ord")"
     else
-        echo -e "\\u$(printf "%04x" "$ord")"
+        printf -v __bashlib_output "\\u$(printf "%04x" "$ord")"
+    fi
+
+    if (( $# < 2 )); then
+        echo -en "$__bashlib_output"
     fi
 }
 
@@ -25,6 +31,9 @@ function char::ord() {
 
 function char::__test__() {
     include "./exception.sh"
+    include "./mode.sh"
+
+    mode::strict
 
     [[ $(char::ord 'A') == 65 ]] || die
     [[ $(char::chr 65) == 'A' ]] || die
@@ -33,7 +42,9 @@ function char::__test__() {
     [[ $(char::ord $'\r') == 13 ]] || die
     [[ $(char::chr 13) == $'\r' ]] || die
     [[ $(char::ord $'\n') == 10 ]] || die
-    # [[ $(char::chr 10) == $'\n' ]] || die     # BASH deletes newline
+
+    # BASH deletes newline returned by $() so it needs to be returned differently
+    char::chr 10 c && [[ "$c" == $'\n' ]] || die
 
     echo "Done!"
 }

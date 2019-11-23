@@ -10,13 +10,13 @@
 include "./types.sh"
 include "./reference.sh"
 
-function defined() {
+function bashlib::defined() {
     declare -p "$1" >& /dev/null || return 1
 }
 
-function typeof() {
-    string __bashlib_declare=$(defined "$1" && declare -p "$1" || echo "? ? ?" )
-    string __bashlib_type="string"
+function bashlib::typeof() {
+    bashlib::string __bashlib_declare=$(bashlib::defined "$1" && declare -p "$1" || echo "? ? ?" )
+    bashlib::string __bashlib_type="string"
 
     __bashlib_declare=${__bashlib_declare#* }
     __bashlib_declare=${__bashlib_declare%% *}
@@ -25,7 +25,7 @@ function typeof() {
         *a*)    __bashlib_type="array"     ;;
         *A*)    __bashlib_type="hashmap"   ;;
         *f*)    __bashlib_type="function"  ;;
-        *n*)    __bashlib_type=$(typeof "$(reference::underlying "$1")") ;;
+        *n*)    __bashlib_type=$(bashlib::typeof "$(bashlib::reference::source "$1")") ;;
         \?)     __bashlib_type="undefined" ;;
         *i*)    __bashlib_type="int"       ;;
         *)      __bashlib_type="string"    ;;
@@ -34,34 +34,34 @@ function typeof() {
     echo "$__bashlib_type"
 }
 
-function inspect::__test__() {
+function bashlib::inspect::__test__() {
     include "./exception.sh"
     include "./mode.sh"
 
-    mode::strict
+    bashlib::mode::strict
 
-    int myint=13
-    string mystring="Hello, world!"
-    const myconst="Hi there!"
-    array myarray=( alpha bravo charlie )
-    hashmap myhashmap=( [first]=one [second]=two [third]=4 )
-    reference myreference=myarray
+    bashlib::int myint=13
+    bashlib::string mystring="Hello, world!"
+    bashlib::const myconst="Hi there!"
+    bashlib::array myarray=( alpha bravo charlie )
+    bashlib::hashmap myhashmap=( [first]=one [second]=two [third]=4 )
+    bashlib::reference myreference=myarray
 
-    [[ "$myint" -eq 13 ]]                 || die
-    [[ "$mystring" == "Hello, world!" ]]  || die
-    [[ "$myconst" == "Hi there!" ]]       || die
-    [[ "${myarray[1]}" == "bravo" ]]      || die
-    [[ "${myhashmap[second]}" == "two" ]] || die
+    [[ "$myint" -eq 13 ]]                 || bashlib::die
+    [[ "$mystring" == "Hello, world!" ]]  || bashlib::die
+    [[ "$myconst" == "Hi there!" ]]       || bashlib::die
+    [[ "${myarray[1]}" == "bravo" ]]      || bashlib::die
+    [[ "${myhashmap[second]}" == "two" ]] || bashlib::die
     myreference+=( "delta" )
-    [[ "${myarray[3]}" == "delta" ]]      || die
+    [[ "${myarray[3]}" == "delta" ]]      || bashlib::die
 
-    [[ $(typeof myint) == "int" ]]           || die
-    [[ $(typeof mystring) == "string" ]]     || die
-    [[ $(typeof myconst) == "string" ]]      || die
-    [[ $(typeof myarray) == "array" ]]       || die
-    [[ $(typeof myhashmap) == "hashmap" ]]   || die
-    [[ $(typeof myreference) == "array" ]]   || die
-    [[ $(typeof mynothing) == "undefined" ]] || die
+    [[ $(bashlib::typeof myint) == "int" ]]           || bashlib::die
+    [[ $(bashlib::typeof mystring) == "string" ]]     || bashlib::die
+    [[ $(bashlib::typeof myconst) == "string" ]]      || bashlib::die
+    [[ $(bashlib::typeof myarray) == "array" ]]       || bashlib::die
+    [[ $(bashlib::typeof myhashmap) == "hashmap" ]]   || bashlib::die
+    [[ $(bashlib::typeof myreference) == "array" ]]   || bashlib::die
+    [[ $(bashlib::typeof mynothing) == "undefined" ]] || bashlib::die
 
     echo "Done!"
 }

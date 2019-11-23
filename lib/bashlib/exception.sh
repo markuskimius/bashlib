@@ -9,26 +9,26 @@
 
 include "./types.sh"
 
-trap "exception::__handler__" ERR      # Trap any nonzero return values
+trap "bashlib::exception::__handler__" ERR      # Trap any nonzero return values
 set -o errtrace                        # ERR traps are inherited by function calls
 
-function exception::__handler__() {
+function bashlib::exception::__handler__() {
     echo "Unhandled nonzero return value" 1>&2
 
-    exception::dump_stacktrace ${2-1}
+    bashlib::exception::dump_stacktrace ${2-1}
 }
 
-function die() {
-    echo "${1-"die() called"}" 1>&2
+function bashlib::die() {
+    echo "${1-"bashlib::die() called"}" 1>&2
 
-    exception::dump_stacktrace ${2-1}
+    bashlib::exception::dump_stacktrace ${2-1}
 
     exit 1
 }
 
-function exception::dump_stacktrace() {
-    int frame=${1-0}
-    string lineno func file
+function bashlib::exception::dump_stacktrace() {
+    bashlib::int frame=${1-0}
+    bashlib::string lineno func file
 
     while true; do
         read -r lineno func file <<<$(caller $frame || :)
@@ -39,11 +39,11 @@ function exception::dump_stacktrace() {
     done
 }
 
-function exception::__test__() {
+function bashlib::exception::__test__() {
     include "./mode.sh"
 
     function frame1() {
-        exception::dump_stacktrace ${1-0}
+        bashlib::exception::dump_stacktrace ${1-0}
     }
 
     function frame2() {
@@ -51,17 +51,17 @@ function exception::__test__() {
     }
 
     case "${1-1}" in
-        1)  [[ $(diff <(frame2 2 2>&1) <(frame2 1 2>&1) | grep '^[<>]' | wc -l) == 1 ]] || die
+        1)  [[ $(diff <(frame2 2 2>&1) <(frame2 1 2>&1) | grep '^[<>]' | wc -l) == 1 ]] || bashlib::die
             ;;
 
         2)  let 0
             ;;
 
-        3)  mode::strict
+        3)  bashlib::mode::strict
             let 0
             ;;
 
-        *)  die "No such test: ${1}"
+        *)  bashlib::die "No such test: ${1}"
             ;;
     esac
 

@@ -9,8 +9,8 @@
 
 include "./types.sh"
 
-function reference::isreference() {
-    string decl=$(declare -p "$1" 2>/dev/null || echo "? ? ?" )
+function bashlib::reference::isreference() {
+    bashlib::string decl=$(declare -p "$1" 2>/dev/null || echo "? ? ?" )
 
     decl=${decl#* }
     decl=${decl%% *}
@@ -18,16 +18,16 @@ function reference::isreference() {
     [[ "${decl}" == *n* ]]
 }
 
-function reference::underlying() {
-    string name="$1"
+function bashlib::reference::source() {
+    bashlib::string name="$1"
 
-    if reference::isreference "$name"; then
-        string decl=$(declare -p "$1" || echo "? ? ?" )
+    if bashlib::reference::isreference "$name"; then
+        bashlib::string decl=$(declare -p "$1" || echo "? ? ?" )
 
         name=${decl#*\"}
         name=${name%\"}
 
-        name=$(reference::underlying "$name")
+        name=$(bashlib::reference::source "$name")
     fi
 
     echo "$name"

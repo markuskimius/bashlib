@@ -10,24 +10,24 @@
 include "./types.sh"
 include "./char.sh"
 
-function string::isempty() {
+function bashlib::string::isempty() {
     [[ -z "${1-}" ]]
 }
 
-function string::isnonempty() {
+function bashlib::string::isnonempty() {
     [[ -n "${1-}" ]]
 }
 
-function string::encode() {
-    string value=$1
-    string buffer
-    reference __bashlib_output=${2-buffer}
-    string c
-    int i
+function bashlib::string::encode() {
+    bashlib::string value=$1
+    bashlib::string buffer
+    bashlib::reference __bashlib_output=${2-buffer}
+    bashlib::string c
+    bashlib::int i
 
     __bashlib_output=""
 
-    for ((i=0; i < $(string::length "$value"); i++)); do
+    for ((i=0; i < $(bashlib::string::length "$value"); i++)); do
         c=${value:$i:1}
 
         case "$c" in
@@ -36,7 +36,7 @@ function string::encode() {
             $'\r') c='\r' ;;
             $'\n') c='\n' ;;
             *)
-                int o=$(char::ord "$c")
+                bashlib::int o=$(bashlib::char::ord "$c")
 
                 if (( o < 0x20 || o == 0x7f )); then
                     c=$(printf "\\\\x%02x" "$o")
@@ -52,10 +52,10 @@ function string::encode() {
     fi
 }
 
-function string::decode() {
-    string value=$1
-    string buffer
-    reference __bashlib_output=${2-buffer}
+function bashlib::string::decode() {
+    bashlib::string value=$1
+    bashlib::string buffer
+    bashlib::reference __bashlib_output=${2-buffer}
 
     printf -v __bashlib_output "%b" "$value"
 
@@ -64,89 +64,89 @@ function string::decode() {
     fi
 }
 
-function string::length() {
+function bashlib::string::length() {
     echo "${#1}"
 }
 
-function string::tolower() {
+function bashlib::string::tolower() {
     echo "${1,,}"
 }
 
-function string::toupper() {
+function bashlib::string::toupper() {
     echo "${1^^}"
 }
 
-function string::replacefirst() {
+function bashlib::string::replacefirst() {
     echo "${1/$2/$3}"
 }
 
-function string::replaceall() {
+function bashlib::string::replaceall() {
     echo "${1//$2/$3}"
 }
 
-function string::substr() {
+function bashlib::string::substr() {
     echo "${1:$2:$3}"
 }
 
-function string::split() {
-    string __bashlib_string=$1
-    string __bashlib_delim=$2
-    reference __bashlib_array=$3
+function bashlib::string::split() {
+    bashlib::string __bashlib_string=$1
+    bashlib::string __bashlib_delim=$2
+    bashlib::reference __bashlib_array=$3
 
     IFS="$__bashlib_delim" read -ra __bashlib_array <<< "$__bashlib_string"
 }
 
-function string::join() {
-    string IFS="$1" && shift
+function bashlib::string::join() {
+    bashlib::string IFS="$1" && shift
 
     echo "$*"
 }
 
-function string::__test__() {
+function bashlib::string::__test__() {
     include "./exception.sh"
     include "./mode.sh"
 
-    mode::strict
+    bashlib::mode::strict
 
-    string mystring="Hello, world!"
-    string evilstring=$'$Hello, \n"world\\!'
-    string emptystring=""
+    bashlib::string mystring="Hello, world!"
+    bashlib::string evilstring=$'$Hello, \n"world\\!'
+    bashlib::string emptystring=""
 
-    string::isempty $mystring    && die
-    string::isempty $emptystring || die
-    string::isnonempty $mystring    || die
-    string::isnonempty $emptystring && die
+    bashlib::string::isempty $mystring    && bashlib::die
+    bashlib::string::isempty $emptystring || bashlib::die
+    bashlib::string::isnonempty $mystring    || bashlib::die
+    bashlib::string::isnonempty $emptystring && bashlib::die
 
-    [[ $(string::decode "$(string::encode "$evilstring")") == "$evilstring" ]] || die
+    [[ $(bashlib::string::decode "$(bashlib::string::encode "$evilstring")") == "$evilstring" ]] || bashlib::die
 
-    [[ $(string::length "$mystring") -eq 13 ]] || die
-    [[ $(string::length "$emptystring") -eq 0 ]] || die
+    [[ $(bashlib::string::length "$mystring") -eq 13 ]] || bashlib::die
+    [[ $(bashlib::string::length "$emptystring") -eq 0 ]] || bashlib::die
 
-    [[ $(string::tolower "$mystring") == "hello, world!" ]] || die
-    [[ $(string::toupper "$mystring") == "HELLO, WORLD!" ]] || die
-    [[ $(string::tolower "$emptystring") == "" ]] || die
-    [[ $(string::toupper "$emptystring") == "" ]] || die
+    [[ $(bashlib::string::tolower "$mystring") == "hello, world!" ]] || bashlib::die
+    [[ $(bashlib::string::toupper "$mystring") == "HELLO, WORLD!" ]] || bashlib::die
+    [[ $(bashlib::string::tolower "$emptystring") == "" ]] || bashlib::die
+    [[ $(bashlib::string::toupper "$emptystring") == "" ]] || bashlib::die
 
-    [[ $(string::replacefirst "$mystring" l L)       == "HeLlo, world!" ]] || die
-    [[ $(string::replaceall   "$mystring" l L)       == "HeLLo, worLd!" ]] || die
-    [[ $(string::replacefirst "$mystring" world Joe) == "Hello, Joe!"   ]] || die
-    [[ $(string::replaceall   "$mystring" world Joe) == "Hello, Joe!"   ]] || die
-    [[ $(string::replacefirst "$mystring" x X)       == "Hello, world!" ]] || die
-    [[ $(string::replaceall   "$mystring" x X)       == "Hello, world!" ]] || die
-    [[ $(string::replacefirst "$mystring" ", " --)   == "Hello--world!" ]] || die
-    [[ $(string::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || die
-    [[ $(string::replacefirst "$mystring" ? !)       == "!ello, world!" ]] || die
-    [[ $(string::replaceall   "$mystring" ? !)       == "!!!!!!!!!!!!!" ]] || die
+    [[ $(bashlib::string::replacefirst "$mystring" l L)       == "HeLlo, world!" ]] || bashlib::die
+    [[ $(bashlib::string::replaceall   "$mystring" l L)       == "HeLLo, worLd!" ]] || bashlib::die
+    [[ $(bashlib::string::replacefirst "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::die
+    [[ $(bashlib::string::replaceall   "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::die
+    [[ $(bashlib::string::replacefirst "$mystring" x X)       == "Hello, world!" ]] || bashlib::die
+    [[ $(bashlib::string::replaceall   "$mystring" x X)       == "Hello, world!" ]] || bashlib::die
+    [[ $(bashlib::string::replacefirst "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::die
+    [[ $(bashlib::string::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::die
+    [[ $(bashlib::string::replacefirst "$mystring" ? !)       == "!ello, world!" ]] || bashlib::die
+    [[ $(bashlib::string::replaceall   "$mystring" ? !)       == "!!!!!!!!!!!!!" ]] || bashlib::die
 
-    [[ $(string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || die
-    [[ $(string::substr "$mystring" 0  3 ) == "Hel" ]] || die
-    [[ $(string::substr "$mystring" 10 3 ) == "ld!" ]] || die
+    [[ $(bashlib::string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || bashlib::die
+    [[ $(bashlib::string::substr "$mystring" 0  3 ) == "Hel" ]] || bashlib::die
+    [[ $(bashlib::string::substr "$mystring" 10 3 ) == "ld!" ]] || bashlib::die
 
-    array myarray
-    string::split "$mystring" "," myarray
-    [[ "${myarray[0]}" == "Hello" ]] || die
-    [[ "${myarray[1]}" == " world!" ]] || die
-    [[ $(string::join "," "${myarray[@]}") == "$mystring" ]] || die
+    bashlib::array myarray
+    bashlib::string::split "$mystring" "," myarray
+    [[ "${myarray[0]}" == "Hello" ]] || bashlib::die
+    [[ "${myarray[1]}" == " world!" ]] || bashlib::die
+    [[ $(bashlib::string::join "," "${myarray[@]}") == "$mystring" ]] || bashlib::die
 
     echo "Done!"
 }

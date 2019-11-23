@@ -9,10 +9,10 @@
 
 include "./types.sh"
 
-function char::chr() {
-    int ord=$1
-    string buffer=""
-    reference __bashlib_output=${2-buffer}
+function bashlib::char::chr() {
+    bashlib::int ord=$1
+    bashlib::string buffer=""
+    bashlib::reference __bashlib_output=${2-buffer}
 
     if (( "$ord" < 256 )); then
         printf -v __bashlib_output "\\x$(printf "%02x" "$ord")"
@@ -25,26 +25,26 @@ function char::chr() {
     fi
 }
 
-function char::ord() {
+function bashlib::char::ord() {
     printf "%d" "'${1}"
 }
 
-function char::__test__() {
+function bashlib::char::__test__() {
     include "./exception.sh"
     include "./mode.sh"
 
-    mode::strict
+    bashlib::mode::strict
 
-    [[ $(char::ord 'A') == 65 ]] || die
-    [[ $(char::chr 65) == 'A' ]] || die
-    [[ $(char::ord ' ') == 32 ]] || die
-    [[ $(char::chr 32) == ' ' ]] || die
-    [[ $(char::ord $'\r') == 13 ]] || die
-    [[ $(char::chr 13) == $'\r' ]] || die
-    [[ $(char::ord $'\n') == 10 ]] || die
+    [[ $(bashlib::char::ord 'A') == 65 ]] || bashlib::die
+    [[ $(bashlib::char::chr 65) == 'A' ]] || bashlib::die
+    [[ $(bashlib::char::ord ' ') == 32 ]] || bashlib::die
+    [[ $(bashlib::char::chr 32) == ' ' ]] || bashlib::die
+    [[ $(bashlib::char::ord $'\r') == 13 ]] || bashlib::die
+    [[ $(bashlib::char::chr 13) == $'\r' ]] || bashlib::die
+    [[ $(bashlib::char::ord $'\n') == 10 ]] || bashlib::die
 
     # BASH deletes newline returned by $() so it needs to be returned differently
-    char::chr 10 c && [[ "$c" == $'\n' ]] || die
+    bashlib::char::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::die
 
     echo "Done!"
 }

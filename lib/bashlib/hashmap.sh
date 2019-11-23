@@ -12,46 +12,46 @@ include "./string.sh"
 include "./inspect.sh"
 include "./reference.sh"
 
-function hashmap::exists() {
-    [[ $(typeof "$1") == "hashmap" ]]
+function bashlib::hashmap::exists() {
+    [[ $(bashlib::typeof "$1") == "hashmap" ]]
 }
 
-function hashmap::isset() {
-    string varname=$(reference::underlying "$1")
+function bashlib::hashmap::isset() {
+    bashlib::string varname=$(bashlib::reference::source "$1")
 
-    hashmap::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
+    bashlib::hashmap::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
 }
 
-function hashmap::isempty() {
-    [[ $(hashmap::length "$1") -eq 0 ]]
+function bashlib::hashmap::isempty() {
+    [[ $(bashlib::hashmap::length "$1") -eq 0 ]]
 }
 
-function hashmap::isnonempty() {
-    [[ $(hashmap::length "$1") -gt 0 ]]
+function bashlib::hashmap::isnonempty() {
+    [[ $(bashlib::hashmap::length "$1") -gt 0 ]]
 }
 
-function hashmap::length() {
-    reference __bashlib_hashmap=$1
+function bashlib::hashmap::length() {
+    bashlib::reference __bashlib_hashmap=$1
 
-    if hashmap::isset __bashlib_hashmap; then
+    if bashlib::hashmap::isset __bashlib_hashmap; then
         echo "${#__bashlib_hashmap[@]}"
     else
         echo 0
     fi
 }
 
-function hashmap::haskey() {
-    reference __bashlib_array="$1"
-    string __bashlib_key="$2"
+function bashlib::hashmap::haskey() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::string __bashlib_key="$2"
 
     [[ -v __bashlib_array["$__bashlib_key"] ]]
 }
 
-function hashmap::hasvalue() {
-    reference __bashlib_array="$1"
-    string __bashlib_value="$2"
-    string v
-    int haskey=0
+function bashlib::hashmap::hasvalue() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::string __bashlib_value="$2"
+    bashlib::string v
+    bashlib::int haskey=0
 
     for v in "${__bashlib_array[@]}"; do
         if [[ "$__bashlib_value" == "$v" ]]; then
@@ -63,11 +63,11 @@ function hashmap::hasvalue() {
     (( $haskey ))
 }
 
-function hashmap::keyof() {
-    reference __bashlib_hashmap="$1"
-    string __bashlib_value="$2"
-    string value
-    string k
+function bashlib::hashmap::keyof() {
+    bashlib::reference __bashlib_hashmap="$1"
+    bashlib::string __bashlib_value="$2"
+    bashlib::string value
+    bashlib::string k
 
     for k in "${!__bashlib_hashmap[@]}"; do
         value="${__bashlib_hashmap[$k]}"
@@ -79,9 +79,9 @@ function hashmap::keyof() {
     done
 }
 
-function hashmap::get() {
-    reference __bashlib_hashmap="$1"
-    string key="$2"
+function bashlib::hashmap::get() {
+    bashlib::reference __bashlib_hashmap="$1"
+    bashlib::string key="$2"
 
     if [[ -v __bashlib_hashmap["$key"] ]]; then
         echo "${__bashlib_hashmap[$key]}"
@@ -90,106 +90,106 @@ function hashmap::get() {
     fi
 }
 
-function hashmap::set() {
-    reference __bashlib_hashmap="$1"
-    string key="$2"
-    string value="$3"
+function bashlib::hashmap::set() {
+    bashlib::reference __bashlib_hashmap="$1"
+    bashlib::string key="$2"
+    bashlib::string value="$3"
 
     __bashlib_hashmap["$key"]="${value}"
 }
 
-function hashmap::delete() {
-    reference __bashlib_hashmap="$1"
-    string key="$2"
+function bashlib::hashmap::delete() {
+    bashlib::reference __bashlib_hashmap="$1"
+    bashlib::string key="$2"
 
     unset __bashlib_hashmap["$key"]
 }
 
-function hashmap::clear() {
-    reference __bashlib_hashmap=$1
+function bashlib::hashmap::clear() {
+    bashlib::reference __bashlib_hashmap=$1
 
     __bashlib_hashmap=()
 }
 
-function hashmap::dump() {
-    reference __bashlib_hashmap="$1"
-    string k
+function bashlib::hashmap::dump() {
+    bashlib::reference __bashlib_hashmap="$1"
+    bashlib::string k
 
     echo "$1 = ("
     for k in "${!__bashlib_hashmap[@]}"; do
-        string encoded_value=$(string::encode "${__bashlib_hashmap[$k]}")
+        bashlib::string encoded_value=$(bashlib::string::encode "${__bashlib_hashmap[$k]}")
 
         echo "  [$k] = \"${encoded_value}\""
     done
     echo ")"
 }
 
-function hashmap::__test__() {
+function bashlib::hashmap::__test__() {
     include "./exception.sh"
     include "./mode.sh"
 
-    mode::strict
+    bashlib::mode::strict
 
-    hashmap myhashmap=( ["alpha one"]="duck duck" ["bravo two"]="duck goose" ["charlie three"]="goose goose" )
+    bashlib::hashmap myhashmap=( ["alpha one"]="duck duck" ["bravo two"]="duck goose" ["charlie three"]="goose goose" )
 
-    [[ $(hashmap::length myhashmap) -eq 3 ]] || die
-    hashmap::haskey myhashmap "bravo two"         || die
-    hashmap::hasvalue myhashmap "duck goose"      || die
-    [[ $(hashmap::get myhashmap "bravo two") == "duck goose" ]]   || die
-    [[ $(hashmap::keyof myhashmap "duck goose") == "bravo two" ]] || die
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
+    bashlib::hashmap::hasvalue myhashmap "duck goose"      || bashlib::die
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck goose" ]]   || bashlib::die
+    [[ $(bashlib::hashmap::keyof myhashmap "duck goose") == "bravo two" ]] || bashlib::die
 
-    hashmap::set myhashmap "bravo two" "duck duck goose"
-    [[ $(hashmap::length myhashmap) -eq 3 ]] || die
-    hashmap::haskey myhashmap "bravo two"         || die
-    hashmap::hasvalue myhashmap "duck duck goose" || die
-    [[ $(hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || die
-    [[ $(hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || die
+    bashlib::hashmap::set myhashmap "bravo two" "duck duck goose"
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::die
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::die
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::die
 
-    hashmap::set myhashmap "duck duck goose" "charlie three"
-    [[ $(hashmap::length myhashmap) -eq 4 ]] || die
-    hashmap::haskey myhashmap "duck duck goose"   || die
-    hashmap::hasvalue myhashmap "charlie three"   || die
-    [[ $(hashmap::get myhashmap "duck duck goose") == "charlie three" ]]   || die
-    [[ $(hashmap::keyof myhashmap "charlie three") == "duck duck goose" ]] || die
-    hashmap::haskey myhashmap "bravo two"         || die
-    hashmap::hasvalue myhashmap "duck duck goose" || die
-    [[ $(hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || die
-    [[ $(hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || die
+    bashlib::hashmap::set myhashmap "duck duck goose" "charlie three"
+    [[ $(bashlib::hashmap::length myhashmap) -eq 4 ]] || bashlib::die
+    bashlib::hashmap::haskey myhashmap "duck duck goose"   || bashlib::die
+    bashlib::hashmap::hasvalue myhashmap "charlie three"   || bashlib::die
+    [[ $(bashlib::hashmap::get myhashmap "duck duck goose") == "charlie three" ]]   || bashlib::die
+    [[ $(bashlib::hashmap::keyof myhashmap "charlie three") == "duck duck goose" ]] || bashlib::die
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::die
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::die
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::die
 
-    hashmap::delete myhashmap "bravo two"
-    [[ $(hashmap::length myhashmap) -eq 3 ]] || die
-    hashmap::haskey myhashmap "bravo two"         && die
-    hashmap::hasvalue myhashmap "duck duck goose" && die
-    [[ $(hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && die
-    [[ $(hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && die
+    bashlib::hashmap::delete myhashmap "bravo two"
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
+    bashlib::hashmap::haskey myhashmap "bravo two"         && bashlib::die
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" && bashlib::die
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::die
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && bashlib::die
 
-    hashmap::dump myhashmap
+    bashlib::hashmap::dump myhashmap
 
-    hashmap emptyhashmap=()
-    hashmap unsethashmap
+    bashlib::hashmap emptyhashmap=()
+    bashlib::hashmap unsethashmap
 
-    hashmap::exists myhashmap     || die
-    hashmap::exists emptyhashmap  || die
-    hashmap::exists unsethashmap  || die
-    hashmap::exists nosuchhashmap && die
+    bashlib::hashmap::exists myhashmap     || bashlib::die
+    bashlib::hashmap::exists emptyhashmap  || bashlib::die
+    bashlib::hashmap::exists unsethashmap  || bashlib::die
+    bashlib::hashmap::exists nosuchhashmap && bashlib::die
 
-    hashmap::isset myhashmap     || die
-    hashmap::isset emptyhashmap  || die
-    hashmap::isset unsethashmap  && die
-    hashmap::isset nosuchhashmap && die
+    bashlib::hashmap::isset myhashmap     || bashlib::die
+    bashlib::hashmap::isset emptyhashmap  || bashlib::die
+    bashlib::hashmap::isset unsethashmap  && bashlib::die
+    bashlib::hashmap::isset nosuchhashmap && bashlib::die
 
-    hashmap::isempty myhashmap     && die
-    hashmap::isempty emptyhashmap  || die
-    hashmap::isempty unsethashmap  || die
+    bashlib::hashmap::isempty myhashmap     && bashlib::die
+    bashlib::hashmap::isempty emptyhashmap  || bashlib::die
+    bashlib::hashmap::isempty unsethashmap  || bashlib::die
 
-    hashmap::isnonempty myhashmap     || die
-    hashmap::isnonempty emptyhashmap  && die
-    hashmap::isnonempty unsethashmap  && die
+    bashlib::hashmap::isnonempty myhashmap     || bashlib::die
+    bashlib::hashmap::isnonempty emptyhashmap  && bashlib::die
+    bashlib::hashmap::isnonempty unsethashmap  && bashlib::die
 
-    hashmap::clear myhashmap
-    hashmap::isempty myhashmap || die
+    bashlib::hashmap::clear myhashmap
+    bashlib::hashmap::isempty myhashmap || bashlib::die
 
-    hashmap::dump myhashmap
+    bashlib::hashmap::dump myhashmap
 
     echo "Done!"
 }

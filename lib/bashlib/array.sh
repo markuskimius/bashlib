@@ -12,66 +12,66 @@ include "./string.sh"
 include "./inspect.sh"
 include "./reference.sh"
 
-function array::exists() {
-    string varname=$(reference::underlying "$1")
+function bashlib::array::exists() {
+    bashlib::string varname=$(bashlib::reference::source "$1")
 
-    [[ $(typeof "$varname") == "array" ]]
+    [[ $(bashlib::typeof "$varname") == "array" ]]
 }
 
-function array::isset() {
-    string varname=$(reference::underlying "$1")
+function bashlib::array::isset() {
+    bashlib::string varname=$(bashlib::reference::source "$1")
 
-    array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
+    bashlib::array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
 }
 
-function array::isempty() {
-    [[ $(array::length "$1") -eq 0 ]]
+function bashlib::array::isempty() {
+    [[ $(bashlib::array::length "$1") -eq 0 ]]
 }
 
-function array::isnonempty() {
-    [[ $(array::length "$1") -gt 0 ]]
+function bashlib::array::isnonempty() {
+    [[ $(bashlib::array::length "$1") -gt 0 ]]
 }
 
-function array::length() {
-    reference __bashlib_array=$1
+function bashlib::array::length() {
+    bashlib::reference __bashlib_array=$1
 
-    if array::isset __bashlib_array; then
+    if bashlib::array::isset __bashlib_array; then
         echo "${#__bashlib_array[@]}"
     else
         echo 0
     fi
 }
 
-function array::push() {
-    reference __bashlib_array=$1
-    string __bashlib_value=$2
+function bashlib::array::push() {
+    bashlib::reference __bashlib_array=$1
+    bashlib::string __bashlib_value=$2
 
     __bashlib_array+=( "$__bashlib_value" )
 }
 
-function array::pop() {
-    reference __bashlib_array=$1
+function bashlib::array::pop() {
+    bashlib::reference __bashlib_array=$1
 
     unset __bashlib_array[-1]
 }
 
-function array::shift() {
-    reference __bashlib_array=$1
+function bashlib::array::shift() {
+    bashlib::reference __bashlib_array=$1
 
     __bashlib_array=("${__bashlib_array[@]:1}")
 }
 
-function array::unshift() {
-    reference __bashlib_array=$1
-    string __bashlib_value=$2
+function bashlib::array::unshift() {
+    bashlib::reference __bashlib_array=$1
+    bashlib::string __bashlib_value=$2
 
     __bashlib_array=( "$__bashlib_value" "${__bashlib_array[@]}" )
 }
 
-function array::insert() {
-    reference __bashlib_array=$1
-    int __bashlib_index=$2
-    string __bashlib_value=$3
+function bashlib::array::insert() {
+    bashlib::reference __bashlib_array=$1
+    bashlib::int __bashlib_index=$2
+    bashlib::string __bashlib_value=$3
 
     __bashlib_array=(
         "${__bashlib_array[@]::$__bashlib_index}"
@@ -80,11 +80,11 @@ function array::insert() {
     )
 }
 
-function array::delete() {
-    reference __bashlib_array=$1
-    int __bashlib_index=$2
-    int __bashlib_count=${3-1}
-    int __bashlib_index_plus=$((__bashlib_index+__bashlib_count))
+function bashlib::array::delete() {
+    bashlib::reference __bashlib_array=$1
+    bashlib::int __bashlib_index=$2
+    bashlib::int __bashlib_count=${3-1}
+    bashlib::int __bashlib_index_plus=$((__bashlib_index+__bashlib_count))
 
     __bashlib_array=(
         "${__bashlib_array[@]::$__bashlib_index}"
@@ -92,36 +92,36 @@ function array::delete() {
     )
 }
 
-function array::clear() {
-    reference __bashlib_array=$1
+function bashlib::array::clear() {
+    bashlib::reference __bashlib_array=$1
 
     __bashlib_array=()
 }
 
-function array::front() {
-    reference __bashlib_array=$1
+function bashlib::array::front() {
+    bashlib::reference __bashlib_array=$1
 
     echo "${__bashlib_array[0]}"
 }
 
-function array::back() {
-    reference __bashlib_array="$1"
+function bashlib::array::back() {
+    bashlib::reference __bashlib_array="$1"
 
     echo "${__bashlib_array[-1]}"
 }
 
-function array::hasindex() {
-    reference __bashlib_array="$1"
-    int __bashlib_index="$2"
+function bashlib::array::hasindex() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::int __bashlib_index="$2"
 
     [[ -v __bashlib_array["$__bashlib_index"] ]]
 }
 
-function array::hasvalue() {
-    reference __bashlib_array="$1"
-    string __bashlib_value="$2"
-    string v
-    int hasvalue=0
+function bashlib::array::hasvalue() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::string __bashlib_value="$2"
+    bashlib::string v
+    bashlib::int hasvalue=0
 
     for v in "${__bashlib_array[@]}"; do
         if [[ "$__bashlib_value" == "$v" ]]; then
@@ -133,11 +133,11 @@ function array::hasvalue() {
     (( $hasvalue ))
 }
 
-function array::indexof() {
-    reference __bashlib_array="$1"
-    string __bashlib_value="$2"
-    int index=-1
-    int i
+function bashlib::array::indexof() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::string __bashlib_value="$2"
+    bashlib::int index=-1
+    bashlib::int i
 
     for i in "${!__bashlib_array[@]}"; do
         if [[ "$__bashlib_value" == "${__bashlib_array[$i]}" ]]; then
@@ -149,17 +149,17 @@ function array::indexof() {
     echo $index
 }
 
-function array::get() {
-    reference __bashlib_array="$1"
-    int __bashlib_index="$2"
+function bashlib::array::get() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::int __bashlib_index="$2"
 
     echo "${__bashlib_array[$__bashlib_index]}"
 }
 
-function array::copy() {
-    reference __bashlib_source="$1"
-    reference __bashlib_target="$2"
-    int i
+function bashlib::array::copy() {
+    bashlib::reference __bashlib_source="$1"
+    bashlib::reference __bashlib_target="$2"
+    bashlib::int i
 
     __bashlib_target=()
 
@@ -168,13 +168,13 @@ function array::copy() {
     done
 }
 
-function array::map() {
-    reference __bashlib__source="$1"
-    reference __bashlib__target="${3-$1}"
-    string func="$2"
-    int i
+function bashlib::array::map() {
+    bashlib::reference __bashlib__source="$1"
+    bashlib::reference __bashlib__target="${3-$1}"
+    bashlib::string func="$2"
+    bashlib::int i
 
-    if ! array::isset __bashlib__target; then
+    if ! bashlib::array::isset __bashlib__target; then
         __bashlib_target=()
     fi
 
@@ -183,157 +183,157 @@ function array::map() {
     done
 }
 
-function array::sort() {
-    reference __bashlib_source="$1"
-    reference __bashlib_target="${2-$1}"
+function bashlib::array::sort() {
+    bashlib::reference __bashlib_source="$1"
+    bashlib::reference __bashlib_target="${2-$1}"
 
-    array::map __bashlib_source string::encode __bashlib_target
+    bashlib::array::map __bashlib_source bashlib::string::encode __bashlib_target
     IFS=$'\n' __bashlib_target=( $(sort <<<"${__bashlib_target[*]}") )
-    array::map __bashlib_target string::decode
+    bashlib::array::map __bashlib_target bashlib::string::decode
 }
 
-function array::dump() {
-    reference __bashlib_array="$1"
-    int i
+function bashlib::array::dump() {
+    bashlib::reference __bashlib_array="$1"
+    bashlib::int i
 
     echo "$1 = ("
     for i in "${!__bashlib_array[@]}"; do
-        string encoded_value=$(string::encode "${__bashlib_array[$i]}")
+        bashlib::string encoded_value=$(bashlib::string::encode "${__bashlib_array[$i]}")
 
         echo "  [$i] = \"${encoded_value}\""
     done
     echo ")"
 }
 
-function array::__test__() {
+function bashlib::array::__test__() {
     include "./exception.sh"
     include "./mode.sh"
 
-    mode::strict
+    bashlib::mode::strict
 
     # ( charlie delta echo )
-    array myarray=( "charlie" "delta" "echo" )
-    [[ $(array::length myarray) -eq 3 ]]       || die
-    [[ $(array::front myarray) == "charlie" ]] || die
-    [[ $(array::back myarray) == "echo" ]]     || die
+    bashlib::array myarray=( "charlie" "delta" "echo" )
+    [[ $(bashlib::array::length myarray) -eq 3 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "charlie" ]] || bashlib::die
+    [[ $(bashlib::array::back myarray) == "echo" ]]     || bashlib::die
 
     # ( delta echo )
-    array::shift myarray
-    [[ $(array::length myarray) -eq 2 ]]     || die
-    [[ $(array::front myarray) == "delta" ]] || die
-    [[ $(array::back myarray) == "echo" ]]   || die
+    bashlib::array::shift myarray
+    [[ $(bashlib::array::length myarray) -eq 2 ]]     || bashlib::die
+    [[ $(bashlib::array::front myarray) == "delta" ]] || bashlib::die
+    [[ $(bashlib::array::back myarray) == "echo" ]]   || bashlib::die
 
     # ( delta echo foxtrot )
-    array::push myarray "foxtrot"
-    [[ $(array::length myarray) -eq 3 ]]      || die
-    [[ $(array::front myarray) == "delta" ]]  || die
-    [[ $(array::back myarray) == "foxtrot" ]] || die
+    bashlib::array::push myarray "foxtrot"
+    [[ $(bashlib::array::length myarray) -eq 3 ]]      || bashlib::die
+    [[ $(bashlib::array::front myarray) == "delta" ]]  || bashlib::die
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
 
     # ( bravo delta echo foxtrot )
-    array::unshift myarray "bravo"
-    [[ $(array::length myarray) -eq 4 ]]      || die
-    [[ $(array::front myarray) == "bravo" ]]  || die
-    [[ $(array::back myarray) == "foxtrot" ]] || die
+    bashlib::array::unshift myarray "bravo"
+    [[ $(bashlib::array::length myarray) -eq 4 ]]      || bashlib::die
+    [[ $(bashlib::array::front myarray) == "bravo" ]]  || bashlib::die
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
 
     # ( bravo charlie delta echo foxtrot )
-    array::insert myarray 1 "charlie"
-    [[ $(array::length myarray) -eq 5 ]]       || die
-    [[ $(array::front myarray) == "bravo" ]]   || die
-    [[ $(array::back myarray) == "foxtrot" ]]  || die
-    [[ $(array::get myarray 0) == "bravo" ]]   || die
-    [[ $(array::get myarray 1) == "charlie" ]] || die
-    [[ $(array::get myarray 2) == "delta" ]]   || die
+    bashlib::array::insert myarray 1 "charlie"
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::die
+    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::die
+    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 2) == "delta" ]]   || bashlib::die
 
     # ( alpha bravo charlie delta echo foxtrot )
-    array::insert myarray 0 "alpha"
-    [[ $(array::length myarray) -eq 6 ]]      || die
-    [[ $(array::front myarray) == "alpha" ]]  || die
-    [[ $(array::back myarray) == "foxtrot" ]] || die
-    [[ $(array::get myarray 0) == "alpha" ]]  || die
-    [[ $(array::get myarray 1) == "bravo" ]]  || die
+    bashlib::array::insert myarray 0 "alpha"
+    [[ $(bashlib::array::length myarray) -eq 6 ]]      || bashlib::die
+    [[ $(bashlib::array::front myarray) == "alpha" ]]  || bashlib::die
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 0) == "alpha" ]]  || bashlib::die
+    [[ $(bashlib::array::get myarray 1) == "bravo" ]]  || bashlib::die
 
     # ( alpha bravo charlie delta echo foxtrot golf )
-    array::insert myarray 6 "golf"
-    [[ $(array::length myarray) -eq 7 ]]       || die
-    [[ $(array::front myarray) == "alpha" ]]   || die
-    [[ $(array::back myarray) == "golf" ]]     || die
-    [[ $(array::get myarray 5) == "foxtrot" ]] || die
-    [[ $(array::get myarray 6) == "golf" ]]    || die
+    bashlib::array::insert myarray 6 "golf"
+    [[ $(bashlib::array::length myarray) -eq 7 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::die
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
+    [[ $(bashlib::array::get myarray 5) == "foxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 6) == "golf" ]]    || bashlib::die
 
-    array::hasindex myarray 6       || die
-    array::hasvalue myarray "delta" || die
+    bashlib::array::hasindex myarray 6       || bashlib::die
+    bashlib::array::hasvalue myarray "delta" || bashlib::die
 
     # ( alpha bravo charlie echo foxtrot golf )
-    array::delete myarray 3
-    [[ $(array::length myarray) -eq 6 ]]       || die
-    [[ $(array::front myarray) == "alpha" ]]   || die
-    [[ $(array::back myarray) == "golf" ]]     || die
-    [[ $(array::get myarray 2) == "charlie" ]] || die
-    [[ $(array::get myarray 3) == "echo" ]]    || die
+    bashlib::array::delete myarray 3
+    [[ $(bashlib::array::length myarray) -eq 6 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::die
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
+    [[ $(bashlib::array::get myarray 2) == "charlie" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 3) == "echo" ]]    || bashlib::die
 
-    array::hasindex myarray 6       && die
-    array::hasvalue myarray "delta" && die
+    bashlib::array::hasindex myarray 6       && bashlib::die
+    bashlib::array::hasvalue myarray "delta" && bashlib::die
 
     # ( bravo charlie echo foxtrot golf )
-    array::delete myarray 0
-    [[ $(array::length myarray) -eq 5 ]]       || die
-    [[ $(array::front myarray) == "bravo" ]]   || die
-    [[ $(array::back myarray) == "golf" ]]     || die
+    bashlib::array::delete myarray 0
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
 
     # ( bravo charlie echo foxtrot )
-    array::delete myarray 4
-    [[ $(array::length myarray) -eq 4 ]]       || die
-    [[ $(array::front myarray) == "bravo" ]]   || die
-    [[ $(array::back myarray) == "foxtrot" ]]  || die
+    bashlib::array::delete myarray 4
+    [[ $(bashlib::array::length myarray) -eq 4 ]]       || bashlib::die
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::die
 
-    [[ $(array::get myarray 0) == "bravo" ]]   || die
-    [[ $(array::get myarray 1) == "charlie" ]] || die
-    [[ $(array::get myarray 3) == "foxtrot" ]] || die
+    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::die
+    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 3) == "foxtrot" ]] || bashlib::die
 
-    [[ $(array::indexof myarray "bravo") == 0 ]]   || die
-    [[ $(array::indexof myarray "charlie") == 1 ]] || die
-    [[ $(array::indexof myarray "foxtrot") == 3 ]] || die
+    [[ $(bashlib::array::indexof myarray "bravo") == 0 ]]   || bashlib::die
+    [[ $(bashlib::array::indexof myarray "charlie") == 1 ]] || bashlib::die
+    [[ $(bashlib::array::indexof myarray "foxtrot") == 3 ]] || bashlib::die
 
     # newarray=( ravo harlie cho oxtrot )
     function chopfirst() { echo "${1:1}"; }
-    array::map myarray chopfirst newarray
-    [[ $(array::front newarray) == "ravo" ]]   || die
-    [[ $(array::back newarray)  == "oxtrot" ]] || die
-    [[ $(array::front myarray)  != $(array::front newarray) ]] || die
-    [[ $(array::back myarray)   != $(array::back newarray)  ]] || die
+    bashlib::array::map myarray chopfirst newarray
+    [[ $(bashlib::array::front newarray) == "ravo" ]]   || bashlib::die
+    [[ $(bashlib::array::back newarray)  == "oxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::front myarray)  != $(bashlib::array::front newarray) ]] || bashlib::die
+    [[ $(bashlib::array::back myarray)   != $(bashlib::array::back newarray)  ]] || bashlib::die
 
     # newarray=( cho harlie oxtrot ravo )
-    array::sort newarray
-    [[ $(array::front newarray) == "cho" ]]  || die
-    [[ $(array::back newarray)  == "ravo" ]] || die
+    bashlib::array::sort newarray
+    [[ $(bashlib::array::front newarray) == "cho" ]]  || bashlib::die
+    [[ $(bashlib::array::back newarray)  == "ravo" ]] || bashlib::die
 
-    array::dump myarray
+    bashlib::array::dump myarray
 
-    array emptyarray=()
-    array unsetarray
+    bashlib::array emptyarray=()
+    bashlib::array unsetarray
 
-    array::exists myarray     || die
-    array::exists emptyarray  || die
-    array::exists unsetarray  || die
-    array::exists nosucharray && die
+    bashlib::array::exists myarray     || bashlib::die
+    bashlib::array::exists emptyarray  || bashlib::die
+    bashlib::array::exists unsetarray  || bashlib::die
+    bashlib::array::exists nosucharray && bashlib::die
 
-    array::isset myarray     || die
-    array::isset emptyarray  || die
-    array::isset unsetarray  && die
-    array::isset nosucharray && die
+    bashlib::array::isset myarray     || bashlib::die
+    bashlib::array::isset emptyarray  || bashlib::die
+    bashlib::array::isset unsetarray  && bashlib::die
+    bashlib::array::isset nosucharray && bashlib::die
 
-    array::isempty myarray     && die
-    array::isempty emptyarray  || die
-    array::isempty unsetarray  || die
+    bashlib::array::isempty myarray     && bashlib::die
+    bashlib::array::isempty emptyarray  || bashlib::die
+    bashlib::array::isempty unsetarray  || bashlib::die
 
-    array::isnonempty myarray     || die
-    array::isnonempty emptyarray  && die
-    array::isnonempty unsetarray  && die
+    bashlib::array::isnonempty myarray     || bashlib::die
+    bashlib::array::isnonempty emptyarray  && bashlib::die
+    bashlib::array::isnonempty unsetarray  && bashlib::die
 
-    array::clear myarray
-    array::isempty myarray || die
+    bashlib::array::clear myarray
+    bashlib::array::isempty myarray || bashlib::die
 
-    array::dump myarray
+    bashlib::array::dump myarray
 
     echo "Done!"
 }

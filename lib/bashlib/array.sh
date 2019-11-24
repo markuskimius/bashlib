@@ -207,9 +207,6 @@ function bashlib::array::dump() {
 
 function bashlib::array::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     # ( charlie delta echo )
     bashlib::array myarray=( "charlie" "delta" "echo" )

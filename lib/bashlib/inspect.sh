@@ -46,9 +46,6 @@ function bashlib::typeof() {
 
 function bashlib::inspect::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     bashlib::int myint=13
     bashlib::string mystring="Hello, world!"

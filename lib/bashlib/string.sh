@@ -104,9 +104,6 @@ function bashlib::string::join() {
 
 function bashlib::string::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     bashlib::string mystring="Hello, world!"
     bashlib::string evilstring=$'$Hello, \n"world\\!'

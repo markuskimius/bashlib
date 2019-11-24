@@ -126,9 +126,6 @@ function bashlib::hashmap::dump() {
 
 function bashlib::hashmap::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     bashlib::hashmap myhashmap=( ["alpha one"]="duck duck" ["bravo two"]="duck goose" ["charlie three"]="goose goose" )
 

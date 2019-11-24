@@ -31,9 +31,6 @@ function bashlib::char::ord() {
 
 function bashlib::char::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     [[ $(bashlib::char::ord 'A') == 65 ]] || bashlib::die
     [[ $(bashlib::char::chr 65) == 'A' ]] || bashlib::die

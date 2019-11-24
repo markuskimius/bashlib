@@ -63,9 +63,6 @@ function bashlib::getopt() {
 
 function bashlib::getopt::__test__() {
     include "./exception.sh"
-    include "./mode.sh"
-
-    bashlib::mode::strict
 
     function main() {
         local OPTARRAY

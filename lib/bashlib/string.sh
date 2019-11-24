@@ -31,10 +31,10 @@ function bashlib::string::encode() {
         c=${value:$i:1}
 
         case "$c" in
-            "\\") c='\\' ;;
-            $'\t') c='\t' ;;
-            $'\r') c='\r' ;;
-            $'\n') c='\n' ;;
+            "\\") c='\\\\' ;;
+            $'\t') c='\\t' ;;
+            $'\r') c='\\r' ;;
+            $'\n') c='\\n' ;;
             *)
                 bashlib::int o=$(bashlib::char::ord "$c")
 
@@ -90,10 +90,10 @@ function bashlib::string::substr() {
 
 function bashlib::string::split() {
     bashlib::string __bashlib_string=$1
-    bashlib::string __bashlib_delim=$2
+    bashlib::string IFS="$2"
     bashlib::reference __bashlib_array=$3
 
-    IFS="$__bashlib_delim" read -ra __bashlib_array <<< "$__bashlib_string"
+    read -ra __bashlib_array <<< "$__bashlib_string"
 }
 
 function bashlib::string::join() {
@@ -114,7 +114,8 @@ function bashlib::string::__test__() {
     bashlib::string::isnonempty $mystring    || bashlib::die
     bashlib::string::isnonempty $emptystring && bashlib::die
 
-    [[ $(bashlib::string::decode "$(bashlib::string::encode "$evilstring")") == "$evilstring" ]] || bashlib::die
+    [[ "$(bashlib::string::encode "$evilstring")" == '$Hello, \n"world\\!' ]]  || bashlib::die
+    [[ "$(bashlib::string::decode "$(bashlib::string::encode "$evilstring")")" == "$evilstring" ]] || bashlib::die
 
     [[ $(bashlib::string::length "$mystring") -eq 13 ]] || bashlib::die
     [[ $(bashlib::string::length "$emptystring") -eq 0 ]] || bashlib::die

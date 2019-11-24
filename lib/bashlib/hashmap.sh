@@ -12,14 +12,14 @@ include "./string.sh"
 include "./inspect.sh"
 include "./reference.sh"
 
-function bashlib::hashmap::exists() {
+function bashlib::hashmap::defined() {
     [[ $(bashlib::typeof "$1") == "hashmap" ]]
 }
 
 function bashlib::hashmap::isset() {
     bashlib::string varname=$(bashlib::reference::source "$1")
 
-    bashlib::hashmap::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
+    bashlib::hashmap::defined "$varname" && [[ $(declare -p "$varname") == *=* ]]
 }
 
 function bashlib::hashmap::isempty() {
@@ -168,10 +168,10 @@ function bashlib::hashmap::__test__() {
     bashlib::hashmap emptyhashmap=()
     bashlib::hashmap unsethashmap
 
-    bashlib::hashmap::exists myhashmap     || bashlib::die
-    bashlib::hashmap::exists emptyhashmap  || bashlib::die
-    bashlib::hashmap::exists unsethashmap  || bashlib::die
-    bashlib::hashmap::exists nosuchhashmap && bashlib::die
+    bashlib::hashmap::defined myhashmap     || bashlib::die
+    bashlib::hashmap::defined emptyhashmap  || bashlib::die
+    bashlib::hashmap::defined unsethashmap  || bashlib::die
+    bashlib::hashmap::defined nosuchhashmap && bashlib::die
 
     bashlib::hashmap::isset myhashmap     || bashlib::die
     bashlib::hashmap::isset emptyhashmap  || bashlib::die

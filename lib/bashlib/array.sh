@@ -12,7 +12,7 @@ include "./string.sh"
 include "./inspect.sh"
 include "./reference.sh"
 
-function bashlib::array::exists() {
+function bashlib::array::defined() {
     bashlib::string varname=$(bashlib::reference::source "$1")
 
     [[ $(bashlib::typeof "$varname") == "array" ]]
@@ -21,7 +21,7 @@ function bashlib::array::exists() {
 function bashlib::array::isset() {
     bashlib::string varname=$(bashlib::reference::source "$1")
 
-    bashlib::array::exists "$varname" && [[ $(declare -p "$varname") == *=* ]]
+    bashlib::array::defined "$varname" && [[ $(declare -p "$varname") == *=* ]]
 }
 
 function bashlib::array::isempty() {
@@ -312,10 +312,10 @@ function bashlib::array::__test__() {
     bashlib::array emptyarray=()
     bashlib::array unsetarray
 
-    bashlib::array::exists myarray     || bashlib::die
-    bashlib::array::exists emptyarray  || bashlib::die
-    bashlib::array::exists unsetarray  || bashlib::die
-    bashlib::array::exists nosucharray && bashlib::die
+    bashlib::array::defined myarray     || bashlib::die
+    bashlib::array::defined emptyarray  || bashlib::die
+    bashlib::array::defined unsetarray  || bashlib::die
+    bashlib::array::defined nosucharray && bashlib::die
 
     bashlib::array::isset myarray     || bashlib::die
     bashlib::array::isset emptyarray  || bashlib::die

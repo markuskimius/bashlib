@@ -33,11 +33,11 @@ function bashlib::function::__test__() {
 
     function myfunction() { :; }
 
-    bashlib::function::defined myfunction     || bashlib::die
-    bashlib::function::defined nosuchfunction && bashlib::die
-    [[ $(bashlib::function::names) == *myfunction* ]]     || bashlib::die
-    [[ $(bashlib::function::names) == *nosuchfunction* ]] && bashlib::die
-    [[ $(bashlib::function::get myfunction | wc -l) -gt 0 ]] || bashlib::die
+    bashlib::function::defined myfunction     || bashlib::throw
+    bashlib::function::defined nosuchfunction && bashlib::throw
+    [[ $(bashlib::function::names) == *myfunction* ]]     || bashlib::throw
+    [[ $(bashlib::function::names) == *nosuchfunction* ]] && bashlib::throw
+    [[ $(bashlib::function::get myfunction | wc -l) -gt 0 ]] || bashlib::throw
 
     echo "[PASS]"
 }

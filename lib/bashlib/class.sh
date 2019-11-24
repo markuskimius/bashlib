@@ -59,7 +59,7 @@ function bashlib::class::instantiate() {
                     if bashlib::function::defined "\${method2}"; then
                         "\${method2}" "${__bashlib_object}" "\$@" || return \$?
                     else
-                        bashlib::die "Unknown method: \${method2}"
+                        bashlib::throw "Unknown method: \${method2}"
                     fi
                     ;;
             esac
@@ -126,11 +126,11 @@ function bashlib::class::__test__() {
         bashlib::string this=$1
         bashlib::int counter=$($this __get__ counter)
 
-        $this __has__ counter   || bashlib::die
+        $this __has__ counter   || bashlib::throw
         $this __unset__ counter
-        $this __has__ counter   && bashlib::die
+        $this __has__ counter   && bashlib::throw
         $this __set__ counter $counter
-        $this __has__ counter   || bashlib::die
+        $this __has__ counter   || bashlib::throw
     }
 
     function IncrementingClass::__destructor__() {
@@ -163,11 +163,11 @@ function bashlib::class::__test__() {
         bashlib::string this=$1
         bashlib::int counter=$($this __get__ counter)
 
-        $this __has__ counter   || bashlib::die
+        $this __has__ counter   || bashlib::throw
         $this __unset__ counter
-        $this __has__ counter   && bashlib::die
+        $this __has__ counter   && bashlib::throw
         $this __set__ counter $counter
-        $this __has__ counter   || bashlib::die
+        $this __has__ counter   || bashlib::throw
     }
 
     function DecrementingClass::__destructor__() {
@@ -181,25 +181,25 @@ function bashlib::class::__test__() {
     bashlib::class::instantiate DecrementingClass decr1  9
     bashlib::class::instantiate DecrementingClass decr2 25
 
-    $incr1 next && [[ $($incr1 get) -eq  4 ]] || bashlib::die
-    $incr2 next && [[ $($incr2 get) -eq 18 ]] || bashlib::die
-    $decr1 next && [[ $($decr1 get) -eq  8 ]] || bashlib::die
-    $decr2 next && [[ $($decr2 get) -eq 24 ]] || bashlib::die
+    $incr1 next && [[ $($incr1 get) -eq  4 ]] || bashlib::throw
+    $incr2 next && [[ $($incr2 get) -eq 18 ]] || bashlib::throw
+    $decr1 next && [[ $($decr1 get) -eq  8 ]] || bashlib::throw
+    $decr2 next && [[ $($decr2 get) -eq 24 ]] || bashlib::throw
 
-    $incr1 next && [[ $($incr1 get) -eq  5 ]] || bashlib::die
-    $incr2 next && [[ $($incr2 get) -eq 19 ]] || bashlib::die
-    $decr1 next && [[ $($decr1 get) -eq  7 ]] || bashlib::die
-    $decr2 next && [[ $($decr2 get) -eq 23 ]] || bashlib::die
+    $incr1 next && [[ $($incr1 get) -eq  5 ]] || bashlib::throw
+    $incr2 next && [[ $($incr2 get) -eq 19 ]] || bashlib::throw
+    $decr1 next && [[ $($decr1 get) -eq  7 ]] || bashlib::throw
+    $decr2 next && [[ $($decr2 get) -eq 23 ]] || bashlib::throw
 
-    $incr1 test || bashlib::die
-    $incr2 test || bashlib::die
-    $decr1 test || bashlib::die
-    $decr2 test || bashlib::die
+    $incr1 test || bashlib::throw
+    $incr2 test || bashlib::throw
+    $decr1 test || bashlib::throw
+    $decr2 test || bashlib::throw
 
-    [[ $(bashlib::class::destroy $incr1) == 5  ]] || bashlib::die
-    [[ $(bashlib::class::destroy $incr2) == 19 ]] || bashlib::die
-    [[ $(bashlib::class::destroy $decr1) == 7  ]] || bashlib::die
-    [[ $(bashlib::class::destroy $decr2) == 23 ]] || bashlib::die
+    [[ $(bashlib::class::destroy $incr1) == 5  ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $incr2) == 19 ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $decr1) == 7  ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $decr2) == 23 ]] || bashlib::throw
 
     echo "[PASS]"
 }

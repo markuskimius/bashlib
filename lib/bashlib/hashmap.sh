@@ -129,67 +129,67 @@ function bashlib::hashmap::__test__() {
 
     bashlib::hashmap myhashmap=( ["alpha one"]="duck duck" ["bravo two"]="duck goose" ["charlie three"]="goose goose" )
 
-    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
-    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
-    bashlib::hashmap::hasvalue myhashmap "duck goose"      || bashlib::die
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck goose" ]]   || bashlib::die
-    [[ $(bashlib::hashmap::keyof myhashmap "duck goose") == "bravo two" ]] || bashlib::die
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
+    bashlib::hashmap::hasvalue myhashmap "duck goose"      || bashlib::throw
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::keyof myhashmap "duck goose") == "bravo two" ]] || bashlib::throw
 
     bashlib::hashmap::set myhashmap "bravo two" "duck duck goose"
-    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
-    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
-    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::die
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::die
-    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::die
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::throw
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::throw
 
     bashlib::hashmap::set myhashmap "duck duck goose" "charlie three"
-    [[ $(bashlib::hashmap::length myhashmap) -eq 4 ]] || bashlib::die
-    bashlib::hashmap::haskey myhashmap "duck duck goose"   || bashlib::die
-    bashlib::hashmap::hasvalue myhashmap "charlie three"   || bashlib::die
-    [[ $(bashlib::hashmap::get myhashmap "duck duck goose") == "charlie three" ]]   || bashlib::die
-    [[ $(bashlib::hashmap::keyof myhashmap "charlie three") == "duck duck goose" ]] || bashlib::die
-    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::die
-    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::die
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::die
-    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::die
+    [[ $(bashlib::hashmap::length myhashmap) -eq 4 ]] || bashlib::throw
+    bashlib::hashmap::haskey myhashmap "duck duck goose"   || bashlib::throw
+    bashlib::hashmap::hasvalue myhashmap "charlie three"   || bashlib::throw
+    [[ $(bashlib::hashmap::get myhashmap "duck duck goose") == "charlie three" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::keyof myhashmap "charlie three") == "duck duck goose" ]] || bashlib::throw
+    bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::throw
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::throw
 
     bashlib::hashmap::delete myhashmap "bravo two"
-    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::die
-    bashlib::hashmap::haskey myhashmap "bravo two"         && bashlib::die
-    bashlib::hashmap::hasvalue myhashmap "duck duck goose" && bashlib::die
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::die
-    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && bashlib::die
+    [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
+    bashlib::hashmap::haskey myhashmap "bravo two"         && bashlib::throw
+    bashlib::hashmap::hasvalue myhashmap "duck duck goose" && bashlib::throw
+    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::throw
+    [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && bashlib::throw
 
-    [[ $(bashlib::hashmap::dump myhashmap) == *alpha?one*duck?duck* ]]           || bashlib::die
-    [[ $(bashlib::hashmap::dump myhashmap) == *duck?duck?goose*charlie?three* ]] || bashlib::die
-    [[ $(bashlib::hashmap::dump myhashmap) == *charlie?three*goose?goose* ]]     || bashlib::die
-    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 5 ]]                      || bashlib::die
+    [[ $(bashlib::hashmap::dump myhashmap) == *alpha?one*duck?duck* ]]           || bashlib::throw
+    [[ $(bashlib::hashmap::dump myhashmap) == *duck?duck?goose*charlie?three* ]] || bashlib::throw
+    [[ $(bashlib::hashmap::dump myhashmap) == *charlie?three*goose?goose* ]]     || bashlib::throw
+    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 5 ]]                      || bashlib::throw
 
     bashlib::hashmap emptyhashmap=()
     bashlib::hashmap unsethashmap
 
-    bashlib::hashmap::defined myhashmap     || bashlib::die
-    bashlib::hashmap::defined emptyhashmap  || bashlib::die
-    bashlib::hashmap::defined unsethashmap  || bashlib::die
-    bashlib::hashmap::defined nosuchhashmap && bashlib::die
+    bashlib::hashmap::defined myhashmap     || bashlib::throw
+    bashlib::hashmap::defined emptyhashmap  || bashlib::throw
+    bashlib::hashmap::defined unsethashmap  || bashlib::throw
+    bashlib::hashmap::defined nosuchhashmap && bashlib::throw
 
-    bashlib::hashmap::isset myhashmap     || bashlib::die
-    bashlib::hashmap::isset emptyhashmap  || bashlib::die
-    bashlib::hashmap::isset unsethashmap  && bashlib::die
-    bashlib::hashmap::isset nosuchhashmap && bashlib::die
+    bashlib::hashmap::isset myhashmap     || bashlib::throw
+    bashlib::hashmap::isset emptyhashmap  || bashlib::throw
+    bashlib::hashmap::isset unsethashmap  && bashlib::throw
+    bashlib::hashmap::isset nosuchhashmap && bashlib::throw
 
-    bashlib::hashmap::isempty myhashmap     && bashlib::die
-    bashlib::hashmap::isempty emptyhashmap  || bashlib::die
-    bashlib::hashmap::isempty unsethashmap  || bashlib::die
+    bashlib::hashmap::isempty myhashmap     && bashlib::throw
+    bashlib::hashmap::isempty emptyhashmap  || bashlib::throw
+    bashlib::hashmap::isempty unsethashmap  || bashlib::throw
 
-    bashlib::hashmap::isnonempty myhashmap     || bashlib::die
-    bashlib::hashmap::isnonempty emptyhashmap  && bashlib::die
-    bashlib::hashmap::isnonempty unsethashmap  && bashlib::die
+    bashlib::hashmap::isnonempty myhashmap     || bashlib::throw
+    bashlib::hashmap::isnonempty emptyhashmap  && bashlib::throw
+    bashlib::hashmap::isnonempty unsethashmap  && bashlib::throw
 
     bashlib::hashmap::clear myhashmap
-    bashlib::hashmap::isempty myhashmap || bashlib::die
+    bashlib::hashmap::isempty myhashmap || bashlib::throw
 
-    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 2 ]] || bashlib::die
+    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 2 ]] || bashlib::throw
 
     echo "[PASS]"
 }

@@ -79,43 +79,43 @@ function bashlib::file::__test__() {
     rm -f "$mylink"
     ln -s "$myfile2" "$mylink"
 
-    bashlib::file::exists "$mydir"   || ( on_exit && bashlib::die )
-    bashlib::file::exists "$myfile1" || ( on_exit && bashlib::die )
+    bashlib::file::exists "$mydir"   || ( on_exit && bashlib::throw )
+    bashlib::file::exists "$myfile1" || ( on_exit && bashlib::throw )
 
-    bashlib::file::isdir "$mydir"   || ( on_exit && bashlib::die )
-    bashlib::file::isdir "$myfile1" && ( on_exit && bashlib::die )
+    bashlib::file::isdir "$mydir"   || ( on_exit && bashlib::throw )
+    bashlib::file::isdir "$myfile1" && ( on_exit && bashlib::throw )
 
-    bashlib::file::isfile "$mydir"   && ( on_exit && bashlib::die )
-    bashlib::file::isfile "$myfile1" || ( on_exit && bashlib::die )
+    bashlib::file::isfile "$mydir"   && ( on_exit && bashlib::throw )
+    bashlib::file::isfile "$myfile1" || ( on_exit && bashlib::throw )
 
-    bashlib::file::isreadable "$mydir"   || ( on_exit && bashlib::die )
-    bashlib::file::isreadable "$myfile1" || ( on_exit && bashlib::die )
-    bashlib::file::isreadable "$myfile2" && ( on_exit && bashlib::die )
-    bashlib::file::iswritable "$mydir"   || ( on_exit && bashlib::die )
-    bashlib::file::iswritable "$myfile1" || ( on_exit && bashlib::die )
-    bashlib::file::iswritable "$myfile2" && ( on_exit && bashlib::die )
+    bashlib::file::isreadable "$mydir"   || ( on_exit && bashlib::throw )
+    bashlib::file::isreadable "$myfile1" || ( on_exit && bashlib::throw )
+    bashlib::file::isreadable "$myfile2" && ( on_exit && bashlib::throw )
+    bashlib::file::iswritable "$mydir"   || ( on_exit && bashlib::throw )
+    bashlib::file::iswritable "$myfile1" || ( on_exit && bashlib::throw )
+    bashlib::file::iswritable "$myfile2" && ( on_exit && bashlib::throw )
 
-    bashlib::file::isempty "$mydir"   && ( on_exit && bashlib::die )
-    bashlib::file::isempty "$myfile1" || ( on_exit && bashlib::die )
-    bashlib::file::isempty "$myfile2" && ( on_exit && bashlib::die )
+    bashlib::file::isempty "$mydir"   && ( on_exit && bashlib::throw )
+    bashlib::file::isempty "$myfile1" || ( on_exit && bashlib::throw )
+    bashlib::file::isempty "$myfile2" && ( on_exit && bashlib::throw )
 
-    bashlib::file::isexecutable "$mydir"   || ( on_exit && bashlib::die )
-    bashlib::file::isexecutable "$myfile1" && ( on_exit && bashlib::die )
-    bashlib::file::isexecutable "$myfile2" || ( on_exit && bashlib::die )
+    bashlib::file::isexecutable "$mydir"   || ( on_exit && bashlib::throw )
+    bashlib::file::isexecutable "$myfile1" && ( on_exit && bashlib::throw )
+    bashlib::file::isexecutable "$myfile2" || ( on_exit && bashlib::throw )
 
-    bashlib::file::issymlink "$mydir"   && ( on_exit && bashlib::die )
-    bashlib::file::issymlink "$myfile1" && ( on_exit && bashlib::die )
-    bashlib::file::issymlink "$myfile2" && ( on_exit && bashlib::die )
-    bashlib::file::issymlink "$mylink"  || ( on_exit && bashlib::die )
+    bashlib::file::issymlink "$mydir"   && ( on_exit && bashlib::throw )
+    bashlib::file::issymlink "$myfile1" && ( on_exit && bashlib::throw )
+    bashlib::file::issymlink "$myfile2" && ( on_exit && bashlib::throw )
+    bashlib::file::issymlink "$mylink"  || ( on_exit && bashlib::throw )
 
-    bashlib::file::is "$myfile1" "$myfile1" || ( on_exit && bashlib::die )
-    bashlib::file::is "$myfile1" "$myfile2" && ( on_exit && bashlib::die )
-    bashlib::file::isnewerthan "$myfile1" "$myfile1" && ( on_exit && bashlib::die )
-    bashlib::file::isnewerthan "$myfile1" "$myfile2" && ( on_exit && bashlib::die )
-    bashlib::file::isnewerthan "$myfile2" "$myfile1" || ( on_exit && bashlib::die )
-    bashlib::file::isolderthan "$myfile1" "$myfile1" && ( on_exit && bashlib::die )
-    bashlib::file::isolderthan "$myfile1" "$myfile2" || ( on_exit && bashlib::die )
-    bashlib::file::isolderthan "$myfile2" "$myfile1" && ( on_exit && bashlib::die )
+    bashlib::file::is "$myfile1" "$myfile1" || ( on_exit && bashlib::throw )
+    bashlib::file::is "$myfile1" "$myfile2" && ( on_exit && bashlib::throw )
+    bashlib::file::isnewerthan "$myfile1" "$myfile1" && ( on_exit && bashlib::throw )
+    bashlib::file::isnewerthan "$myfile1" "$myfile2" && ( on_exit && bashlib::throw )
+    bashlib::file::isnewerthan "$myfile2" "$myfile1" || ( on_exit && bashlib::throw )
+    bashlib::file::isolderthan "$myfile1" "$myfile1" && ( on_exit && bashlib::throw )
+    bashlib::file::isolderthan "$myfile1" "$myfile2" || ( on_exit && bashlib::throw )
+    bashlib::file::isolderthan "$myfile2" "$myfile1" && ( on_exit && bashlib::throw )
 
     on_exit && echo "[PASS]"
 }

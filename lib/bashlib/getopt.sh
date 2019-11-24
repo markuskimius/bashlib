@@ -89,32 +89,32 @@ function bashlib::getopt::__test__() {
         echo "$output"
     }
 
-    [[ "$(main alpha bravo charlie)" == "alpha bravo charlie " ]] || bashlib::die
-    [[ "$(main -s alpha --single bravo)" == "s s alpha bravo " ]] || bashlib::die
-    [[ "$(main -malpha -m bravo --mandatory=charlie --mandatory delta)" == "m=(alpha) m=(bravo) m=(charlie) m=(delta) " ]] || bashlib::die
-    [[ "$(main -oalpha -o bravo --optional=charlie --optional delta)" == "o=(alpha) o=() o=(charlie) o=() bravo delta " ]] || bashlib::die
+    [[ "$(main alpha bravo charlie)" == "alpha bravo charlie " ]] || bashlib::throw
+    [[ "$(main -s alpha --single bravo)" == "s s alpha bravo " ]] || bashlib::throw
+    [[ "$(main -malpha -m bravo --mandatory=charlie --mandatory delta)" == "m=(alpha) m=(bravo) m=(charlie) m=(delta) " ]] || bashlib::throw
+    [[ "$(main -oalpha -o bravo --optional=charlie --optional delta)" == "o=(alpha) o=() o=(charlie) o=() bravo delta " ]] || bashlib::throw
 
-    [[ "$(main -ss alpha bravo charlie)" == "s s alpha bravo charlie " ]]    || bashlib::die
-    [[ "$(main -so alpha bravo charlie)" == "s o=() alpha bravo charlie " ]] || bashlib::die
-    [[ "$(main -sm alpha bravo charlie)" == "s m=(alpha) bravo charlie " ]]  || bashlib::die
+    [[ "$(main -ss alpha bravo charlie)" == "s s alpha bravo charlie " ]]    || bashlib::throw
+    [[ "$(main -so alpha bravo charlie)" == "s o=() alpha bravo charlie " ]] || bashlib::throw
+    [[ "$(main -sm alpha bravo charlie)" == "s m=(alpha) bravo charlie " ]]  || bashlib::throw
 
-    [[ "$(main -soalpha bravo charlie)" == "s o=(alpha) bravo charlie " ]] || bashlib::die
-    [[ "$(main -smalpha bravo charlie)" == "s m=(alpha) bravo charlie " ]] || bashlib::die
+    [[ "$(main -soalpha bravo charlie)" == "s o=(alpha) bravo charlie " ]] || bashlib::throw
+    [[ "$(main -smalpha bravo charlie)" == "s m=(alpha) bravo charlie " ]] || bashlib::throw
 
-    [[ "$(main -s alpha -mbravo -ocharlie)" == "s m=(bravo) o=(charlie) alpha " ]] || bashlib::die
-    [[ "$(main --single alpha --mandatory=bravo --optional=charlie)" == "s m=(bravo) o=(charlie) alpha " ]] || bashlib::die
+    [[ "$(main -s alpha -mbravo -ocharlie)" == "s m=(bravo) o=(charlie) alpha " ]] || bashlib::throw
+    [[ "$(main --single alpha --mandatory=bravo --optional=charlie)" == "s m=(bravo) o=(charlie) alpha " ]] || bashlib::throw
 
-    [[ "$(main -s alpha -m bravo -o charlie)" == "s m=(bravo) o=() alpha charlie " ]] || bashlib::die
-    [[ "$(main --single alpha --mandatory bravo --optional charlie)" == "s m=(bravo) o=() alpha charlie " ]] || bashlib::die
+    [[ "$(main -s alpha -m bravo -o charlie)" == "s m=(bravo) o=() alpha charlie " ]] || bashlib::throw
+    [[ "$(main --single alpha --mandatory bravo --optional charlie)" == "s m=(bravo) o=() alpha charlie " ]] || bashlib::throw
 
-    [[ "$(main -- -s alpha -m bravo -o charlie)" == "-s alpha -m bravo -o charlie " ]] || bashlib::die
-    [[ "$(main -- --single alpha --mandatory bravo --optional charlie)" == "--single alpha --mandatory bravo --optional charlie " ]] || bashlib::die
+    [[ "$(main -- -s alpha -m bravo -o charlie)" == "-s alpha -m bravo -o charlie " ]] || bashlib::throw
+    [[ "$(main -- --single alpha --mandatory bravo --optional charlie)" == "--single alpha --mandatory bravo --optional charlie " ]] || bashlib::throw
 
-    [[ "$(main -s "alpha bravo" -m"charlie delta" -o"echo foxtrot")" == "s m=(charlie delta) o=(echo foxtrot) alpha bravo " ]] || bashlib::die
-    [[ "$(main --single "alpha bravo" --mandatory="charlie delta" --optional="echo foxtrot")" == "s m=(charlie delta) o=(echo foxtrot) alpha bravo " ]] || bashlib::die
+    [[ "$(main -s "alpha bravo" -m"charlie delta" -o"echo foxtrot")" == "s m=(charlie delta) o=(echo foxtrot) alpha bravo " ]] || bashlib::throw
+    [[ "$(main --single "alpha bravo" --mandatory="charlie delta" --optional="echo foxtrot")" == "s m=(charlie delta) o=(echo foxtrot) alpha bravo " ]] || bashlib::throw
 
-    [[ "$(main -i --invalid -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]]      || bashlib::die
-    [[ "$(main -i --invalid=none -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]] || bashlib::die
+    [[ "$(main -i --invalid -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]]      || bashlib::throw
+    [[ "$(main -i --invalid=none -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]] || bashlib::throw
 
     echo "[PASS]"
 }

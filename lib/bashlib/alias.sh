@@ -33,11 +33,11 @@ function bashlib::alias::__test__() {
 
     alias myalias="ls -F"
 
-    bashlib::alias::defined myalias     || bashlib::die
-    bashlib::alias::defined nosuchalias && bashlib::die
-    [[ $(bashlib::alias::names) == *myalias* ]]     || bashlib::die
-    [[ $(bashlib::alias::names) == *nosuchalias* ]] && bashlib::die
-    [[ $(bashlib::alias::get myalias | wc -l) -gt 0 ]] || bashlib::die
+    bashlib::alias::defined myalias     || bashlib::throw
+    bashlib::alias::defined nosuchalias && bashlib::throw
+    [[ $(bashlib::alias::names) == *myalias* ]]     || bashlib::throw
+    [[ $(bashlib::alias::names) == *nosuchalias* ]] && bashlib::throw
+    [[ $(bashlib::alias::get myalias | wc -l) -gt 0 ]] || bashlib::throw
 
     echo "[PASS]"
 }

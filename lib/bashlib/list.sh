@@ -94,17 +94,17 @@ function bashlib::list::__test__() {
     bashlib::string mylist=$(bashlib::list "alpha alpha" "\"bravo bravo\"" $'charlie\ncharlie')
     bashlib::string emptylist=$(bashlib::list)
 
-    [[ $(bashlib::lindex mylist 0) == "alpha alpha" ]]       || bashlib::die
-    [[ $(bashlib::lindex mylist 1) == "\"bravo bravo\"" ]]   || bashlib::die
-    [[ $(bashlib::lindex mylist 2) == $'charlie\ncharlie' ]] || bashlib::die
-    [[ $(bashlib::lsearch mylist "nosuchitem") -eq -1 ]]       || bashlib::die
-    [[ $(bashlib::lsearch mylist "alpha alpha") -eq 0 ]]       || bashlib::die
-    [[ $(bashlib::lsearch mylist "\"bravo bravo\"") -eq 1 ]]   || bashlib::die
-    [[ $(bashlib::lsearch mylist $'charlie\ncharlie') -eq 2 ]] || bashlib::die
-    [[ $(bashlib::llength mylist) -eq 3 ]] || bashlib::die
+    [[ $(bashlib::lindex mylist 0) == "alpha alpha" ]]       || bashlib::throw
+    [[ $(bashlib::lindex mylist 1) == "\"bravo bravo\"" ]]   || bashlib::throw
+    [[ $(bashlib::lindex mylist 2) == $'charlie\ncharlie' ]] || bashlib::throw
+    [[ $(bashlib::lsearch mylist "nosuchitem") -eq -1 ]]       || bashlib::throw
+    [[ $(bashlib::lsearch mylist "alpha alpha") -eq 0 ]]       || bashlib::throw
+    [[ $(bashlib::lsearch mylist "\"bravo bravo\"") -eq 1 ]]   || bashlib::throw
+    [[ $(bashlib::lsearch mylist $'charlie\ncharlie') -eq 2 ]] || bashlib::throw
+    [[ $(bashlib::llength mylist) -eq 3 ]] || bashlib::throw
 
-    [[ $(bashlib::llength emptylist) -eq 0 ]] || bashlib::die
-    [[ $(bashlib::lsearch emptylist "nosuchitem") -eq -1 ]] || bashlib::die
+    [[ $(bashlib::llength emptylist) -eq 0 ]] || bashlib::throw
+    [[ $(bashlib::lsearch emptylist "nosuchitem") -eq -1 ]] || bashlib::throw
 
     echo "[PASS]"
 }

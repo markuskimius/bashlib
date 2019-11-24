@@ -18,8 +18,8 @@ function bashlib::exception::__handler__() {
     bashlib::exception::dump_stacktrace ${2-1}
 }
 
-function bashlib::die() {
-    echo "${1-"bashlib::die() called"}" 1>&2
+function bashlib::throw() {
+    echo "${1-"bashlib::throw() called"}" 1>&2
 
     bashlib::exception::dump_stacktrace ${2-1}
 
@@ -51,7 +51,7 @@ function bashlib::exception::__test__() {
     }
 
     case "${1-1}" in
-        1)  [[ $(diff <(frame2 2 2>&1) <(frame2 1 2>&1) | grep '^[<>]' | wc -l) == 1 ]] || bashlib::die
+        1)  [[ $(diff <(frame2 2 2>&1) <(frame2 1 2>&1) | grep '^[<>]' | wc -l) == 1 ]] || bashlib::throw
             ;;
 
         2)  let 0
@@ -61,7 +61,7 @@ function bashlib::exception::__test__() {
             let 0
             ;;
 
-        *)  bashlib::die "No such test: ${1}"
+        *)  bashlib::throw "No such test: ${1}"
             ;;
     esac
 

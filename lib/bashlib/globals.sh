@@ -14,7 +14,7 @@ bashlib::string -g BASHLIB_SCRIPTNAME="${BASH_SOURCE[-1]}"
 function bashlib::globals::__test__() {
     include "./exception.sh"
 
-    [[ "$BASHLIB_SCRIPTNAME" == *test.sh ]] || bashlib::die
+    [[ "$BASHLIB_SCRIPTNAME" == *test.sh ]] || bashlib::throw
 
     echo "[PASS]"
 }

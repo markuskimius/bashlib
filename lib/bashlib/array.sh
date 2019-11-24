@@ -211,131 +211,131 @@ function bashlib::array::__test__() {
 
     # ( charlie delta echo )
     bashlib::array myarray=( "charlie" "delta" "echo" )
-    [[ $(bashlib::array::length myarray) -eq 3 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "charlie" ]] || bashlib::die
-    [[ $(bashlib::array::back myarray) == "echo" ]]     || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 3 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "charlie" ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "echo" ]]     || bashlib::throw
 
     # ( delta echo )
     bashlib::array::shift myarray
-    [[ $(bashlib::array::length myarray) -eq 2 ]]     || bashlib::die
-    [[ $(bashlib::array::front myarray) == "delta" ]] || bashlib::die
-    [[ $(bashlib::array::back myarray) == "echo" ]]   || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 2 ]]     || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "delta" ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "echo" ]]   || bashlib::throw
 
     # ( delta echo foxtrot )
     bashlib::array::push myarray "foxtrot"
-    [[ $(bashlib::array::length myarray) -eq 3 ]]      || bashlib::die
-    [[ $(bashlib::array::front myarray) == "delta" ]]  || bashlib::die
-    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 3 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "delta" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
 
     # ( bravo delta echo foxtrot )
     bashlib::array::unshift myarray "bravo"
-    [[ $(bashlib::array::length myarray) -eq 4 ]]      || bashlib::die
-    [[ $(bashlib::array::front myarray) == "bravo" ]]  || bashlib::die
-    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 4 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
 
     # ( bravo charlie delta echo foxtrot )
     bashlib::array::insert myarray 1 "charlie"
-    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
-    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::die
-    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::die
-    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::die
-    [[ $(bashlib::array::get myarray 2) == "delta" ]]   || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::throw
+    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::throw
+    [[ $(bashlib::array::get myarray 2) == "delta" ]]   || bashlib::throw
 
     # ( alpha bravo charlie delta echo foxtrot )
     bashlib::array::insert myarray 0 "alpha"
-    [[ $(bashlib::array::length myarray) -eq 6 ]]      || bashlib::die
-    [[ $(bashlib::array::front myarray) == "alpha" ]]  || bashlib::die
-    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::die
-    [[ $(bashlib::array::get myarray 0) == "alpha" ]]  || bashlib::die
-    [[ $(bashlib::array::get myarray 1) == "bravo" ]]  || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 6 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
+    [[ $(bashlib::array::get myarray 0) == "alpha" ]]  || bashlib::throw
+    [[ $(bashlib::array::get myarray 1) == "bravo" ]]  || bashlib::throw
 
     # ( alpha bravo charlie delta echo foxtrot golf )
     bashlib::array::insert myarray 6 "golf"
-    [[ $(bashlib::array::length myarray) -eq 7 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::die
-    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
-    [[ $(bashlib::array::get myarray 5) == "foxtrot" ]] || bashlib::die
-    [[ $(bashlib::array::get myarray 6) == "golf" ]]    || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 7 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
+    [[ $(bashlib::array::get myarray 5) == "foxtrot" ]] || bashlib::throw
+    [[ $(bashlib::array::get myarray 6) == "golf" ]]    || bashlib::throw
 
-    bashlib::array::hasindex myarray 6       || bashlib::die
-    bashlib::array::hasvalue myarray "delta" || bashlib::die
+    bashlib::array::hasindex myarray 6       || bashlib::throw
+    bashlib::array::hasvalue myarray "delta" || bashlib::throw
 
     # ( alpha bravo charlie echo foxtrot golf )
     bashlib::array::delete myarray 3
-    [[ $(bashlib::array::length myarray) -eq 6 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::die
-    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
-    [[ $(bashlib::array::get myarray 2) == "charlie" ]] || bashlib::die
-    [[ $(bashlib::array::get myarray 3) == "echo" ]]    || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 6 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
+    [[ $(bashlib::array::get myarray 2) == "charlie" ]] || bashlib::throw
+    [[ $(bashlib::array::get myarray 3) == "echo" ]]    || bashlib::throw
 
-    bashlib::array::hasindex myarray 6       && bashlib::die
-    bashlib::array::hasvalue myarray "delta" && bashlib::die
+    bashlib::array::hasindex myarray 6       && bashlib::throw
+    bashlib::array::hasvalue myarray "delta" && bashlib::throw
 
     # ( bravo charlie echo foxtrot golf )
     bashlib::array::delete myarray 0
-    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
-    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
 
     # ( bravo charlie echo foxtrot )
     bashlib::array::delete myarray 4
-    [[ $(bashlib::array::length myarray) -eq 4 ]]       || bashlib::die
-    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::die
-    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::die
+    [[ $(bashlib::array::length myarray) -eq 4 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::throw
 
-    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::die
-    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::die
-    [[ $(bashlib::array::get myarray 3) == "foxtrot" ]] || bashlib::die
+    [[ $(bashlib::array::get myarray 0) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::get myarray 1) == "charlie" ]] || bashlib::throw
+    [[ $(bashlib::array::get myarray 3) == "foxtrot" ]] || bashlib::throw
 
-    [[ $(bashlib::array::indexof myarray "bravo") == 0 ]]   || bashlib::die
-    [[ $(bashlib::array::indexof myarray "charlie") == 1 ]] || bashlib::die
-    [[ $(bashlib::array::indexof myarray "foxtrot") == 3 ]] || bashlib::die
+    [[ $(bashlib::array::indexof myarray "bravo") == 0 ]]   || bashlib::throw
+    [[ $(bashlib::array::indexof myarray "charlie") == 1 ]] || bashlib::throw
+    [[ $(bashlib::array::indexof myarray "foxtrot") == 3 ]] || bashlib::throw
 
     # newarray=( ravo harlie cho oxtrot )
     function chopfirst() { echo "${1:1}"; }
     bashlib::array::map myarray chopfirst newarray
-    [[ $(bashlib::array::front newarray) == "ravo" ]]   || bashlib::die
-    [[ $(bashlib::array::back newarray)  == "oxtrot" ]] || bashlib::die
-    [[ $(bashlib::array::front myarray)  != $(bashlib::array::front newarray) ]] || bashlib::die
-    [[ $(bashlib::array::back myarray)   != $(bashlib::array::back newarray)  ]] || bashlib::die
+    [[ $(bashlib::array::front newarray) == "ravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back newarray)  == "oxtrot" ]] || bashlib::throw
+    [[ $(bashlib::array::front myarray)  != $(bashlib::array::front newarray) ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray)   != $(bashlib::array::back newarray)  ]] || bashlib::throw
 
     # newarray=( cho harlie oxtrot ravo )
     bashlib::array::sort newarray
-    [[ $(bashlib::array::front newarray) == "cho" ]]  || bashlib::die
-    [[ $(bashlib::array::back newarray)  == "ravo" ]] || bashlib::die
+    [[ $(bashlib::array::front newarray) == "cho" ]]  || bashlib::throw
+    [[ $(bashlib::array::back newarray)  == "ravo" ]] || bashlib::throw
 
-    [[ $(bashlib::array::dump myarray) == *0*bravo*   ]] || bashlib::die
-    [[ $(bashlib::array::dump myarray) == *1*charlie* ]] || bashlib::die
-    [[ $(bashlib::array::dump myarray) == *2*echo*    ]] || bashlib::die
-    [[ $(bashlib::array::dump myarray) == *3*foxtrot* ]] || bashlib::die
-    [[ $(bashlib::array::dump myarray | wc -l) -eq 6 ]]  || bashlib::die
+    [[ $(bashlib::array::dump myarray) == *0*bravo*   ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *1*charlie* ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *2*echo*    ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *3*foxtrot* ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 6 ]]  || bashlib::throw
 
     bashlib::array emptyarray=()
     bashlib::array unsetarray
 
-    bashlib::array::defined myarray     || bashlib::die
-    bashlib::array::defined emptyarray  || bashlib::die
-    bashlib::array::defined unsetarray  || bashlib::die
-    bashlib::array::defined nosucharray && bashlib::die
+    bashlib::array::defined myarray     || bashlib::throw
+    bashlib::array::defined emptyarray  || bashlib::throw
+    bashlib::array::defined unsetarray  || bashlib::throw
+    bashlib::array::defined nosucharray && bashlib::throw
 
-    bashlib::array::isset myarray     || bashlib::die
-    bashlib::array::isset emptyarray  || bashlib::die
-    bashlib::array::isset unsetarray  && bashlib::die
-    bashlib::array::isset nosucharray && bashlib::die
+    bashlib::array::isset myarray     || bashlib::throw
+    bashlib::array::isset emptyarray  || bashlib::throw
+    bashlib::array::isset unsetarray  && bashlib::throw
+    bashlib::array::isset nosucharray && bashlib::throw
 
-    bashlib::array::isempty myarray     && bashlib::die
-    bashlib::array::isempty emptyarray  || bashlib::die
-    bashlib::array::isempty unsetarray  || bashlib::die
+    bashlib::array::isempty myarray     && bashlib::throw
+    bashlib::array::isempty emptyarray  || bashlib::throw
+    bashlib::array::isempty unsetarray  || bashlib::throw
 
-    bashlib::array::isnonempty myarray     || bashlib::die
-    bashlib::array::isnonempty emptyarray  && bashlib::die
-    bashlib::array::isnonempty unsetarray  && bashlib::die
+    bashlib::array::isnonempty myarray     || bashlib::throw
+    bashlib::array::isnonempty emptyarray  && bashlib::throw
+    bashlib::array::isnonempty unsetarray  && bashlib::throw
 
     bashlib::array::clear myarray
-    bashlib::array::isempty myarray || bashlib::die
+    bashlib::array::isempty myarray || bashlib::throw
 
-    [[ $(bashlib::array::dump myarray | wc -l) -eq 2 ]] || bashlib::die
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 2 ]] || bashlib::throw
 
     echo "[PASS]"
 }

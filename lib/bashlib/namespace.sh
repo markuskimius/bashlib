@@ -32,7 +32,7 @@ function bashlib::using() {
             done
 
             if (( ! $count )); then
-                bashlib::die "Invalid namespace -- '${namespace}'"
+                bashlib::throw "Invalid namespace -- '${namespace}'"
             fi
             ;;
 
@@ -51,12 +51,12 @@ function bashlib::using() {
             fi
 
             if (( ! $count )); then
-                bashlib::die "Invalid function or alias -- '$what'"
+                bashlib::throw "Invalid function or alias -- '$what'"
             fi
             ;;
 
         *)
-            bashlib::die "Invalid argument to 'bashlib::using' -- '$what'"
+            bashlib::throw "Invalid argument to 'bashlib::using' -- '$what'"
             ;;
     esac
 }
@@ -70,44 +70,44 @@ function bashlib::namespace::__test__() {
     alias mynamespace::myalias2='echo "myalias 2"'
     alias mynamespace::myalias3='echo "myalias 3"'
 
-    bashlib::function::defined myfunction1 && bashlib::die
-    bashlib::function::defined myfunction2 && bashlib::die
-    bashlib::function::defined myfunction3 && bashlib::die
-    bashlib::alias::defined myalias1 && bashlib::die
-    bashlib::alias::defined myalias2 && bashlib::die
-    bashlib::alias::defined myalias3 && bashlib::die
+    bashlib::function::defined myfunction1 && bashlib::throw
+    bashlib::function::defined myfunction2 && bashlib::throw
+    bashlib::function::defined myfunction3 && bashlib::throw
+    bashlib::alias::defined myalias1 && bashlib::throw
+    bashlib::alias::defined myalias2 && bashlib::throw
+    bashlib::alias::defined myalias3 && bashlib::throw
 
     bashlib::using mynamespace::myfunction2
-    bashlib::function::defined myfunction1 && bashlib::die
-    bashlib::function::defined myfunction2 || bashlib::die
-    bashlib::function::defined myfunction3 && bashlib::die
-    bashlib::alias::defined myalias1 && bashlib::die
-    bashlib::alias::defined myalias2 && bashlib::die
-    bashlib::alias::defined myalias3 && bashlib::die
-    [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::die
+    bashlib::function::defined myfunction1 && bashlib::throw
+    bashlib::function::defined myfunction2 || bashlib::throw
+    bashlib::function::defined myfunction3 && bashlib::throw
+    bashlib::alias::defined myalias1 && bashlib::throw
+    bashlib::alias::defined myalias2 && bashlib::throw
+    bashlib::alias::defined myalias3 && bashlib::throw
+    [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::throw
 
     bashlib::using mynamespace::myalias2
-    bashlib::function::defined myfunction1 && bashlib::die
-    bashlib::function::defined myfunction2 || bashlib::die
-    bashlib::function::defined myfunction3 && bashlib::die
-    bashlib::alias::defined myalias1 && bashlib::die
-    bashlib::alias::defined myalias2 || bashlib::die
-    bashlib::alias::defined myalias3 && bashlib::die
-    [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::die
+    bashlib::function::defined myfunction1 && bashlib::throw
+    bashlib::function::defined myfunction2 || bashlib::throw
+    bashlib::function::defined myfunction3 && bashlib::throw
+    bashlib::alias::defined myalias1 && bashlib::throw
+    bashlib::alias::defined myalias2 || bashlib::throw
+    bashlib::alias::defined myalias3 && bashlib::throw
+    [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::throw
 
     bashlib::using namespace mynamespace
-    bashlib::function::defined myfunction1 || bashlib::die
-    bashlib::function::defined myfunction2 || bashlib::die
-    bashlib::function::defined myfunction3 || bashlib::die
-    bashlib::alias::defined myalias1 || bashlib::die
-    bashlib::alias::defined myalias2 || bashlib::die
-    bashlib::alias::defined myalias3 || bashlib::die
-    [[ $(myfunction1) == $(mynamespace::myfunction1) ]] || bashlib::die
-    [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::die
-    [[ $(myfunction3) == $(mynamespace::myfunction3) ]] || bashlib::die
-    [[ $(myalias1) == $(mynamespace::myalias1) ]] || bashlib::die
-    [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::die
-    [[ $(myalias3) == $(mynamespace::myalias3) ]] || bashlib::die
+    bashlib::function::defined myfunction1 || bashlib::throw
+    bashlib::function::defined myfunction2 || bashlib::throw
+    bashlib::function::defined myfunction3 || bashlib::throw
+    bashlib::alias::defined myalias1 || bashlib::throw
+    bashlib::alias::defined myalias2 || bashlib::throw
+    bashlib::alias::defined myalias3 || bashlib::throw
+    [[ $(myfunction1) == $(mynamespace::myfunction1) ]] || bashlib::throw
+    [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::throw
+    [[ $(myfunction3) == $(mynamespace::myfunction3) ]] || bashlib::throw
+    [[ $(myalias1) == $(mynamespace::myalias1) ]] || bashlib::throw
+    [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::throw
+    [[ $(myalias3) == $(mynamespace::myalias3) ]] || bashlib::throw
 
     echo "[PASS]"
 }

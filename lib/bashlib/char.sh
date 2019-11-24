@@ -32,16 +32,16 @@ function bashlib::char::ord() {
 function bashlib::char::__test__() {
     include "./exception.sh"
 
-    [[ $(bashlib::char::ord 'A') == 65 ]] || bashlib::die
-    [[ $(bashlib::char::chr 65) == 'A' ]] || bashlib::die
-    [[ $(bashlib::char::ord ' ') == 32 ]] || bashlib::die
-    [[ $(bashlib::char::chr 32) == ' ' ]] || bashlib::die
-    [[ $(bashlib::char::ord $'\r') == 13 ]] || bashlib::die
-    [[ $(bashlib::char::chr 13) == $'\r' ]] || bashlib::die
-    [[ $(bashlib::char::ord $'\n') == 10 ]] || bashlib::die
+    [[ $(bashlib::char::ord 'A') == 65 ]] || bashlib::throw
+    [[ $(bashlib::char::chr 65) == 'A' ]] || bashlib::throw
+    [[ $(bashlib::char::ord ' ') == 32 ]] || bashlib::throw
+    [[ $(bashlib::char::chr 32) == ' ' ]] || bashlib::throw
+    [[ $(bashlib::char::ord $'\r') == 13 ]] || bashlib::throw
+    [[ $(bashlib::char::chr 13) == $'\r' ]] || bashlib::throw
+    [[ $(bashlib::char::ord $'\n') == 10 ]] || bashlib::throw
 
     # BASH deletes newline returned by $() so it needs to be returned differently
-    bashlib::char::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::die
+    bashlib::char::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::throw
 
     echo "[PASS]"
 }

@@ -33,13 +33,13 @@ function bashlib::logger::__test__() {
 
     unset BASHLIB_LOGLEVEL
     bashlib::writelog "Hello, world!"
-    [[ $(bashlib::writelog "Hello, world!" 2>&1) == "" ]] || bashlib::die
-    [[ $(bashlib::writelog ERROR "Hello, world!" 2>&1) == *Hello,?world! ]] || bashlib::die
+    [[ $(bashlib::writelog "Hello, world!" 2>&1) == "" ]] || bashlib::throw
+    [[ $(bashlib::writelog ERROR "Hello, world!" 2>&1) == *Hello,?world! ]] || bashlib::throw
 
     BASHLIB_LOGLEVEL="INFO LEVEL1"
-    [[ $(bashlib::writelog "Hello, world!" 2>&1) == *Hello,?world! ]]        || bashlib::die
-    [[ $(bashlib::writelog LEVEL1 "Hello, world!" 2>&1) == *Hello,?world! ]] || bashlib::die
-    [[ $(bashlib::writelog LEVEL2 "Hello, world!" 2>&1) == "" ]]             || bashlib::die
+    [[ $(bashlib::writelog "Hello, world!" 2>&1) == *Hello,?world! ]]        || bashlib::throw
+    [[ $(bashlib::writelog LEVEL1 "Hello, world!" 2>&1) == *Hello,?world! ]] || bashlib::throw
+    [[ $(bashlib::writelog LEVEL2 "Hello, world!" 2>&1) == "" ]]             || bashlib::throw
 
     echo "[PASS]"
 }

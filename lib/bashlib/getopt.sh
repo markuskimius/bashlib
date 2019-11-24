@@ -119,6 +119,6 @@ function bashlib::getopt::__test__() {
     [[ "$(main -i --invalid -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]]      || bashlib::die
     [[ "$(main -i --invalid=none -s alpha -mbravo -ocharlie 2>/dev/null)" == "PARSE s m=(bravo) o=(charlie) alpha " ]] || bashlib::die
 
-    echo "[OK]"
+    echo "[PASS]"
 }
 

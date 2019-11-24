@@ -39,7 +39,7 @@ function bashlib::alias::__test__() {
     [[ $(bashlib::alias::names) == *nosuchalias* ]] && bashlib::die
     [[ $(bashlib::alias::get myalias | wc -l) -gt 0 ]] || bashlib::die
 
-    echo "[OK]"
+    echo "[PASS]"
 }
 
 shopt -s expand_aliases

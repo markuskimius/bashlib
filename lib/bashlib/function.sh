@@ -39,5 +39,5 @@ function bashlib::function::__test__() {
     [[ $(bashlib::function::names) == *nosuchfunction* ]] && bashlib::die
     [[ $(bashlib::function::get myfunction | wc -l) -gt 0 ]] || bashlib::die
 
-    echo "[OK]"
+    echo "[PASS]"
 }

@@ -194,6 +194,6 @@ function bashlib::hashmap::__test__() {
 
     [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 2 ]] || bashlib::die
 
-    echo "[OK]"
+    echo "[PASS]"
 }
 

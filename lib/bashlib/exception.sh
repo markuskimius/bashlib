@@ -65,5 +65,5 @@ function bashlib::exception::__test__() {
             ;;
     esac
 
-    echo "[OK]"
+    echo "[PASS]"
 }

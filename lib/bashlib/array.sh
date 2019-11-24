@@ -339,6 +339,6 @@ function bashlib::array::__test__() {
 
     [[ $(bashlib::array::dump myarray | wc -l) -eq 2 ]] || bashlib::die
 
-    echo "[OK]"
+    echo "[PASS]"
 }
 

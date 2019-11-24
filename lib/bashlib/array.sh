@@ -186,9 +186,10 @@ function bashlib::array::map() {
 function bashlib::array::sort() {
     bashlib::reference __bashlib_source="$1"
     bashlib::reference __bashlib_target="${2-$1}"
+    bashlib::string IFS=$'\n'
 
     bashlib::array::map __bashlib_source bashlib::string::encode __bashlib_target
-    IFS=$'\n' __bashlib_target=( $(sort <<<"${__bashlib_target[*]}") )
+    __bashlib_target=( $(sort <<<"${__bashlib_target[*]}") )
     bashlib::array::map __bashlib_target bashlib::string::decode
 }
 

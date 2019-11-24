@@ -87,6 +87,6 @@ function bashlib::inspect::__test__() {
     bashlib::defined myfunction  || bashlib::die
     bashlib::defined myalias     || bashlib::die
 
-    echo "Done!"
+    echo "[OK]"
 }
 

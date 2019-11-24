@@ -148,6 +148,6 @@ function bashlib::string::__test__() {
     [[ "${myarray[1]}" == " world!" ]] || bashlib::die
     [[ $(bashlib::string::join "," "${myarray[@]}") == "$mystring" ]] || bashlib::die
 
-    echo "Done!"
+    echo "[OK]"
 }
 

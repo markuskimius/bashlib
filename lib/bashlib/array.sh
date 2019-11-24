@@ -307,7 +307,11 @@ function bashlib::array::__test__() {
     [[ $(bashlib::array::front newarray) == "cho" ]]  || bashlib::die
     [[ $(bashlib::array::back newarray)  == "ravo" ]] || bashlib::die
 
-    bashlib::array::dump myarray
+    [[ $(bashlib::array::dump myarray) == *0*bravo*   ]] || bashlib::die
+    [[ $(bashlib::array::dump myarray) == *1*charlie* ]] || bashlib::die
+    [[ $(bashlib::array::dump myarray) == *2*echo*    ]] || bashlib::die
+    [[ $(bashlib::array::dump myarray) == *3*foxtrot* ]] || bashlib::die
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 6 ]]  || bashlib::die
 
     bashlib::array emptyarray=()
     bashlib::array unsetarray
@@ -333,8 +337,8 @@ function bashlib::array::__test__() {
     bashlib::array::clear myarray
     bashlib::array::isempty myarray || bashlib::die
 
-    bashlib::array::dump myarray
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 2 ]] || bashlib::die
 
-    echo "Done!"
+    echo "[OK]"
 }
 

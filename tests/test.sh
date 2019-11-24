@@ -1,11 +1,13 @@
 #!/bin/bash
 
-for file in $(grep -l '__test__' $BASHLIB/lib/*/*.sh); do
+cd "$BASHLIB/lib"
+
+for file in $(grep -l '__test__' */*.sh); do
+    include "$file"
+
     name=$(basename "$file" .sh)
 
-    include "$file"
-    bashlib::${name}::__test__
+    printf "%-32s" "Testing ${file}..."
+    bashlib::$name::__test__
 done
-
-# for i in $(grep -l '__test__' *); do n=$(basename $i .sh); echo "== $i =="; bash -c "source $i && bashlib::$n::__test__"; done
 

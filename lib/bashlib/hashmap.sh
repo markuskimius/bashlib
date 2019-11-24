@@ -163,7 +163,10 @@ function bashlib::hashmap::__test__() {
     [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::die
     [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && bashlib::die
 
-    bashlib::hashmap::dump myhashmap
+    [[ $(bashlib::hashmap::dump myhashmap) == *alpha?one*duck?duck* ]]           || bashlib::die
+    [[ $(bashlib::hashmap::dump myhashmap) == *duck?duck?goose*charlie?three* ]] || bashlib::die
+    [[ $(bashlib::hashmap::dump myhashmap) == *charlie?three*goose?goose* ]]     || bashlib::die
+    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 5 ]]                      || bashlib::die
 
     bashlib::hashmap emptyhashmap=()
     bashlib::hashmap unsethashmap
@@ -189,8 +192,8 @@ function bashlib::hashmap::__test__() {
     bashlib::hashmap::clear myhashmap
     bashlib::hashmap::isempty myhashmap || bashlib::die
 
-    bashlib::hashmap::dump myhashmap
+    [[ $(bashlib::hashmap::dump myhashmap | wc -l) -eq 2 ]] || bashlib::die
 
-    echo "Done!"
+    echo "[OK]"
 }
 

@@ -46,6 +46,6 @@ function bashlib::char::__test__() {
     # BASH deletes newline returned by $() so it needs to be returned differently
     bashlib::char::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::die
 
-    echo "Done!"
+    echo "[OK]"
 }
 

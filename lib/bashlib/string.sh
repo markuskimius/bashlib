@@ -133,8 +133,8 @@ function bashlib::string::__test__() {
     [[ $(bashlib::string::replaceall   "$mystring" x X)       == "Hello, world!" ]] || bashlib::throw
     [[ $(bashlib::string::replacefirst "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
     [[ $(bashlib::string::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
-    [[ $(bashlib::string::replacefirst "$mystring" ? !)       == "!ello, world!" ]] || bashlib::throw
-    [[ $(bashlib::string::replaceall   "$mystring" ? !)       == "!!!!!!!!!!!!!" ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" "?" "!")   == "!ello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" "?" "!")   == "!!!!!!!!!!!!!" ]] || bashlib::throw
 
     [[ $(bashlib::string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || bashlib::throw
     [[ $(bashlib::string::substr "$mystring" 0  3 ) == "Hel" ]] || bashlib::throw

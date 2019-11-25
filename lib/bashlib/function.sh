@@ -10,7 +10,7 @@
 include "./types.sh"
 
 function bashlib::function::defined() {
-    declare -F "$1" >& /dev/null
+    declare -F "$1" &> /dev/null
 }
 
 function bashlib::function::get() {

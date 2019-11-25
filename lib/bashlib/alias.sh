@@ -10,7 +10,7 @@
 include "./types.sh"
 
 function bashlib::alias::defined() {
-    alias "$1" >& /dev/null
+    alias "$1" &> /dev/null
 }
 
 function bashlib::alias::get() {

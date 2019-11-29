@@ -8,15 +8,13 @@
 ##############################################################################
 
 include "./types.sh"
-include "./hashmap.sh"
-include "./function.sh"
 include "./exception.sh"
 
-if ! bashlib::hashmap::defined __bashlib_class__; then
+if ! bashlib::defined __bashlib_class__; then
     bashlib::hashmap -g __bashlib_class__=( [COUNTER]=0 )
 fi
 
-function bashlib::class::instantiate() {
+function bashlib::create() {
     bashlib::string class=$1 && shift
     bashlib::reference __bashlib_object=$1 && shift
 
@@ -56,7 +54,7 @@ function bashlib::class::instantiate() {
                 *)
                     bashlib::string method2="${class}::\${method}"
 
-                    if bashlib::function::defined "\${method2}"; then
+                    if bashlib::defined "\${method2}"; then
                         "\${method2}" "${__bashlib_object}" "\$@" || return \$?
                     else
                         bashlib::throw "Unknown method: \${method2}"
@@ -72,17 +70,17 @@ EOF
     "${__bashlib_object}" __set__ __objname__ "${__bashlib_object}"
 
     # Call the constructor, if any
-    if bashlib::function::defined "${class}::__constructor__"; then
+    if bashlib::defined "${class}::__constructor__"; then
         "${__bashlib_object}" __constructor__ "$@"
     fi
 }
 
-function bashlib::class::destroy() {
+function bashlib::destroy() {
     bashlib::string object=$1 && shift
     bashlib::string class=$( ${object} __get__ "__classname__" )
 
     # Call the destructor, if any
-    if bashlib::function::defined "${class}::__destructor__"; then
+    if bashlib::defined "${class}::__destructor__"; then
         "${object}" __destructor__
     fi
 
@@ -176,10 +174,10 @@ function bashlib::class::__test__() {
         $this __get__ counter
     }
 
-    bashlib::class::instantiate IncrementingClass incr1  3
-    bashlib::class::instantiate IncrementingClass incr2 17
-    bashlib::class::instantiate DecrementingClass decr1  9
-    bashlib::class::instantiate DecrementingClass decr2 25
+    bashlib::create IncrementingClass incr1  3
+    bashlib::create IncrementingClass incr2 17
+    bashlib::create DecrementingClass decr1  9
+    bashlib::create DecrementingClass decr2 25
 
     $incr1 next && [[ $($incr1 get) -eq  4 ]] || bashlib::throw
     $incr2 next && [[ $($incr2 get) -eq 18 ]] || bashlib::throw
@@ -196,10 +194,10 @@ function bashlib::class::__test__() {
     $decr1 test || bashlib::throw
     $decr2 test || bashlib::throw
 
-    [[ $(bashlib::class::destroy $incr1) == 5  ]] || bashlib::throw
-    [[ $(bashlib::class::destroy $incr2) == 19 ]] || bashlib::throw
-    [[ $(bashlib::class::destroy $decr1) == 7  ]] || bashlib::throw
-    [[ $(bashlib::class::destroy $decr2) == 23 ]] || bashlib::throw
+    [[ $(bashlib::destroy $incr1) == 5  ]] || bashlib::throw
+    [[ $(bashlib::destroy $incr2) == 19 ]] || bashlib::throw
+    [[ $(bashlib::destroy $decr1) == 7  ]] || bashlib::throw
+    [[ $(bashlib::destroy $decr2) == 23 ]] || bashlib::throw
 
     echo "[PASS]"
 }

@@ -8,40 +8,54 @@
 ##############################################################################
 
 include "./types.sh"
-include "./reference.sh"
 
 function bashlib::defined() {
     [[ $(bashlib::typeof "$1") != "undefined" ]]
 }
 
+function bashlib::isset() {
+    bashlib::string varname=$(bashlib::realvar "$1")
+    bashlib::string decl=$(declare -p "$varname" 2>/dev/null || :)
+
+    bashlib::defined "$varname" && [[ "$decl" == *=* ]]
+}
+
+function bashlib::realvar() {
+    bashlib::string varname="$1"
+    bashlib::string decl=$(declare -p "$varname" 2>/dev/null || echo "? ? ?")
+    bashlib::string decl_t=${decl#* } && decl_t=${decl_t%% *}  # 2nd part of declare -p
+
+    if [[ "$decl_t" == *n* ]]; then
+        bashlib::string decl_q=${decl#*\"} && decl_q=${decl_q%\"}  # Quoted part of declare -p
+
+        varname=$(bashlib::realvar "$decl_q")
+    fi
+
+    echo "$varname"
+}
+
 function bashlib::typeof() {
-    bashlib::string __bashlib_declare=$(declare -p "$1" 2>/dev/null || echo "? ? ?")
-    bashlib::string __bashlib_function=$(declare -F "$1" 2>/dev/null || echo "")
-    bashlib::string __bashlib_alias=$(alias declare "$1" 2>/dev/null || echo "")
-    bashlib::string __bashlib_type="string"
+    bashlib::string varname="$1"
+    bashlib::string decl=$(declare -p "$varname" 2>/dev/null || echo "? ? ?")
+    bashlib::string decl_t=${decl#* } && decl_t=${decl_t%% *}  # 2nd part of declare -p
+    bashlib::string return_t
 
-    __bashlib_declare=${__bashlib_declare#* }
-    __bashlib_declare=${__bashlib_declare%% *}
-
-    case "$__bashlib_declare" in
-        *a*)    __bashlib_type="array"     ;;
-        *A*)    __bashlib_type="hashmap"   ;;
-        *i*)    __bashlib_type="int"       ;;
-        *n*)    __bashlib_type=$(bashlib::typeof "$(bashlib::reference::source "$1")")
-                ;;
-        \?)     if [[ -n "$__bashlib_alias" ]]; then
-                    __bashlib_type="alias"
-                elif [[ -n "$__bashlib_function" ]]; then
-                    __bashlib_type="function"
+    case "$decl_t" in
+        *a*)    return_t="array"                                           ;;
+        *A*)    return_t="hashmap"                                         ;;
+        *i*)    return_t="int"                                             ;;
+        *n*)    return_t=$(bashlib::typeof $(bashlib::realvar "$varname")) ;;
+        \?)     if alias "$1" &>/dev/null; then
+                    return_t="alias"
+                elif declare -F "$varname" &>/dev/null; then
+                    return_t="function"
                 else
-                    __bashlib_type="undefined"
-                fi
-                ;;
-        *)      __bashlib_type="string"
-                ;;
+                    return_t="undefined"
+                fi                                                         ;;
+        *)      return_t="string"                                          ;;
     esac
 
-    echo "$__bashlib_type"
+    echo "$return_t"
 }
 
 function bashlib::inspect::__test__() {
@@ -53,6 +67,14 @@ function bashlib::inspect::__test__() {
     bashlib::array myarray=( alpha bravo charlie )
     bashlib::hashmap myhashmap=( [first]=one [second]=two [third]=4 )
     bashlib::reference myreference=myarray
+    bashlib::int unsetint
+    bashlib::string unsetstring
+    bashlib::const unsetconst
+    bashlib::array unsetarray
+    bashlib::hashmap unsethashmap
+    bashlib::reference unsetreference
+    bashlib::reference referencetounset=unsetarray
+
     alias myalias=':'
     function myfunction() { :; }
 
@@ -83,6 +105,15 @@ function bashlib::inspect::__test__() {
     bashlib::defined mynothing   && bashlib::throw
     bashlib::defined myfunction  || bashlib::throw
     bashlib::defined myalias     || bashlib::throw
+
+    bashlib::isset unsetint         && bashlib::throw
+    bashlib::isset unsetstring      && bashlib::throw
+    bashlib::isset unsetconst       && bashlib::throw
+    bashlib::isset unsetarray       && bashlib::throw
+    bashlib::isset unsethashmap     && bashlib::throw
+    bashlib::isset unsetreference   && bashlib::throw
+    bashlib::isset referencetounset && bashlib::throw
+    bashlib::isset unsetnothing     && bashlib::throw
 
     echo "[PASS]"
 }

@@ -9,11 +9,14 @@
 
 include "./types.sh"
 
+# Enable aliases in the script
+shopt -s expand_aliases
+
 function bashlib::alias::defined() {
     alias "$1" &> /dev/null
 }
 
-function bashlib::alias::get() {
+function bashlib::alias::definition_of() {
     alias "$1"
 }
 
@@ -37,9 +40,8 @@ function bashlib::alias::__test__() {
     bashlib::alias::defined nosuchalias && bashlib::throw
     [[ $(bashlib::alias::names) == *myalias* ]]     || bashlib::throw
     [[ $(bashlib::alias::names) == *nosuchalias* ]] && bashlib::throw
-    [[ $(bashlib::alias::get myalias | wc -l) -gt 0 ]] || bashlib::throw
+    [[ $(bashlib::alias::definition_of myalias | wc -l) -gt 0 ]] || bashlib::throw
 
     echo "[PASS]"
 }
 
-shopt -s expand_aliases

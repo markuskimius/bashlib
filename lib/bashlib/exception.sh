@@ -15,18 +15,18 @@ set -o errtrace                        # ERR traps are inherited by function cal
 function bashlib::exception::__handler__() {
     echo "Unhandled nonzero return value" 1>&2
 
-    bashlib::exception::dump_stacktrace ${2-1}
+    bashlib::dump_stacktrace ${2-1}
 }
 
 function bashlib::throw() {
     echo "${1-"bashlib::throw() called"}" 1>&2
 
-    bashlib::exception::dump_stacktrace ${2-1}
+    bashlib::dump_stacktrace ${2-1}
 
     exit 1
 }
 
-function bashlib::exception::dump_stacktrace() {
+function bashlib::dump_stacktrace() {
     bashlib::int frame=${1-0}
     bashlib::string lineno func file
 
@@ -43,7 +43,7 @@ function bashlib::exception::__test__() {
     include "./mode.sh"
 
     function frame1() {
-        bashlib::exception::dump_stacktrace ${1-0}
+        bashlib::dump_stacktrace ${1-0}
     }
 
     function frame2() {
@@ -57,7 +57,7 @@ function bashlib::exception::__test__() {
         2)  let 0
             ;;
 
-        3)  bashlib::mode::strict
+        3)  bashlib::strictmode
             let 0
             ;;
 

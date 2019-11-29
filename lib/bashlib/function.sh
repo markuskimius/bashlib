@@ -13,7 +13,7 @@ function bashlib::function::defined() {
     declare -F "$1" &> /dev/null
 }
 
-function bashlib::function::get() {
+function bashlib::function::definition_of() {
     declare -f "$1"
 }
 
@@ -37,7 +37,7 @@ function bashlib::function::__test__() {
     bashlib::function::defined nosuchfunction && bashlib::throw
     [[ $(bashlib::function::names) == *myfunction* ]]     || bashlib::throw
     [[ $(bashlib::function::names) == *nosuchfunction* ]] && bashlib::throw
-    [[ $(bashlib::function::get myfunction | wc -l) -gt 0 ]] || bashlib::throw
+    [[ $(bashlib::function::definition_of myfunction | wc -l) -gt 0 ]] || bashlib::throw
 
     echo "[PASS]"
 }

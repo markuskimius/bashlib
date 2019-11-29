@@ -42,9 +42,9 @@ function bashlib::hashmap::length() {
 
 function bashlib::hashmap::haskey() {
     bashlib::reference __bashlib_array="$1"
-    bashlib::string __bashlib_key="$2"
+    bashlib::string key="$2"
 
-    [[ -v __bashlib_array["$__bashlib_key"] ]]
+    [[ -v __bashlib_array["$key"] ]]
 }
 
 function bashlib::hashmap::hasvalue() {
@@ -64,22 +64,22 @@ function bashlib::hashmap::hasvalue() {
 }
 
 function bashlib::hashmap::keyof() {
-    bashlib::reference __bashlib_hashmap="$1"
-    bashlib::string __bashlib_value="$2"
-    bashlib::string value
+    bashlib::reference __bashlib_array="$1"
+    bashlib::string value="$2"
+    bashlib::string key="${3-}"
     bashlib::string k
 
-    for k in "${!__bashlib_hashmap[@]}"; do
-        value="${__bashlib_hashmap[$k]}"
-
-        if [[ "$__bashlib_value" == "$value" ]]; then
-            echo "$k"
+    for k in "${!__bashlib_array[@]}"; do
+        if [[ "$value" == "${__bashlib_array[$k]}" ]]; then
+            key=$k
             break
         fi
     done
+
+    echo "$key"
 }
 
-function bashlib::hashmap::get() {
+function bashlib::hashmap::definition_of() {
     bashlib::reference __bashlib_hashmap="$1"
     bashlib::string key="$2"
 
@@ -90,7 +90,7 @@ function bashlib::hashmap::get() {
     fi
 }
 
-function bashlib::hashmap::set() {
+function bashlib::hashmap::add() {
     bashlib::reference __bashlib_hashmap="$1"
     bashlib::string key="$2"
     bashlib::string value="$3"
@@ -132,32 +132,32 @@ function bashlib::hashmap::__test__() {
     [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
     bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
     bashlib::hashmap::hasvalue myhashmap "duck goose"      || bashlib::throw
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::definition_of myhashmap "bravo two") == "duck goose" ]]   || bashlib::throw
     [[ $(bashlib::hashmap::keyof myhashmap "duck goose") == "bravo two" ]] || bashlib::throw
 
-    bashlib::hashmap::set myhashmap "bravo two" "duck duck goose"
+    bashlib::hashmap::add myhashmap "bravo two" "duck duck goose"
     [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
     bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
     bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::throw
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::definition_of myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
     [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::throw
 
-    bashlib::hashmap::set myhashmap "duck duck goose" "charlie three"
+    bashlib::hashmap::add myhashmap "duck duck goose" "charlie three"
     [[ $(bashlib::hashmap::length myhashmap) -eq 4 ]] || bashlib::throw
     bashlib::hashmap::haskey myhashmap "duck duck goose"   || bashlib::throw
     bashlib::hashmap::hasvalue myhashmap "charlie three"   || bashlib::throw
-    [[ $(bashlib::hashmap::get myhashmap "duck duck goose") == "charlie three" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::definition_of myhashmap "duck duck goose") == "charlie three" ]]   || bashlib::throw
     [[ $(bashlib::hashmap::keyof myhashmap "charlie three") == "duck duck goose" ]] || bashlib::throw
     bashlib::hashmap::haskey myhashmap "bravo two"         || bashlib::throw
     bashlib::hashmap::hasvalue myhashmap "duck duck goose" || bashlib::throw
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
+    [[ $(bashlib::hashmap::definition_of myhashmap "bravo two") == "duck duck goose" ]]   || bashlib::throw
     [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] || bashlib::throw
 
     bashlib::hashmap::delete myhashmap "bravo two"
     [[ $(bashlib::hashmap::length myhashmap) -eq 3 ]] || bashlib::throw
     bashlib::hashmap::haskey myhashmap "bravo two"         && bashlib::throw
     bashlib::hashmap::hasvalue myhashmap "duck duck goose" && bashlib::throw
-    [[ $(bashlib::hashmap::get myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::throw
+    [[ $(bashlib::hashmap::definition_of myhashmap "bravo two") == "duck duck goose" ]]   && bashlib::throw
     [[ $(bashlib::hashmap::keyof myhashmap "duck duck goose") == "bravo two" ]] && bashlib::throw
 
     [[ $(bashlib::hashmap::dump myhashmap) == *alpha?one*duck?duck* ]]           || bashlib::throw

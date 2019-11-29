@@ -22,12 +22,12 @@ function bashlib::using() {
             bashlib::int count=0
 
             for target in $(bashlib::function::names "^${namespace}::"); do
-                source <(bashlib::function::get "$target" | sed "s/^${namespace}:://")
+                source <(bashlib::function::definition_of "$target" | sed "s/^${namespace}:://")
                 count="count + 1"
             done
 
             for target in $(bashlib::alias::names "^${namespace}::"); do
-                source <(bashlib::alias::get "$target" | sed "s/^alias ${namespace}::/alias /i")
+                source <(bashlib::alias::definition_of "$target" | sed "s/^alias ${namespace}::/alias /i")
                 count="count + 1"
             done
 
@@ -41,12 +41,12 @@ function bashlib::using() {
             bashlib::int count=0
 
             if bashlib::function::defined "$what"; then
-                source <(bashlib::function::get "$what" | sed "s/^${namespace}:://i")
+                source <(bashlib::function::definition_of "$what" | sed "s/^${namespace}:://i")
                 count="count + 1"
             fi
 
             if bashlib::alias::defined "$what"; then
-                source <(bashlib::alias::get "$what" | sed "s/^alias ${namespace}::/alias /i")
+                source <(bashlib::alias::definition_of "$what" | sed "s/^alias ${namespace}::/alias /i")
                 count="count + 1"
             fi
 

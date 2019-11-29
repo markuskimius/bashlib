@@ -3,7 +3,7 @@
 include "bashlib/types.sh"
 include "bashlib/mode.sh"
 
-bashlib::mode::strict
+bashlib::strictmode
 
 function main() {
     bashlib::string regex=""

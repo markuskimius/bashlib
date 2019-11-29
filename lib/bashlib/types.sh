@@ -7,13 +7,13 @@
 # https://github.com/markuskimius/bashlib/blob/master/LICENSE
 ##############################################################################
 
+# Enable aliases in the script
+shopt -s expand_aliases
+
 alias bashlib::string="declare"
 alias bashlib::int="declare -i"
 alias bashlib::const="declare -r"
 alias bashlib::array="declare -a"
 alias bashlib::hashmap="declare -A"
 alias bashlib::reference="declare -n"
-
-# Enable aliases in the script
-shopt -s expand_aliases
 

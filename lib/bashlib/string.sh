@@ -36,7 +36,7 @@ function bashlib::string::encode() {
             $'\r') c='\\r' ;;
             $'\n') c='\\n' ;;
             *)
-                bashlib::int o=$(bashlib::char::ord "$c")
+                bashlib::int o=$(bashlib::ord "$c")
 
                 if (( o < 0x20 || o == 0x7f )); then
                     c=$(printf "\\\\x%02x" "$o")

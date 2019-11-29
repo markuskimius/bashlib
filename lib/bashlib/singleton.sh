@@ -1,17 +1,17 @@
 include "./types.sh"
 include "./class.sh"
-include "./function.sh"
+include "./inspect.sh"
 include "./exception.sh"
 
 function bashlib::singleton() {
     bashlib::string class=$1 && shift
     bashlib::string object
 
-    if bashlib::function::defined $class; then
+    if bashlib::defined $class; then
         bashlib::throw "$class is already defined"
     fi
 
-    bashlib::class::instantiate $class object "$@"
+    bashlib::create $class object "$@"
 
     source <(cat <<EOF
         function $class () {

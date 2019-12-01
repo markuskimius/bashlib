@@ -11,43 +11,43 @@ include "./types.sh"
 include "./char.sh"
 include "./int.sh"
 
-function bashlib::length() {
+function bashlib::string::length() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
 
     echo ${#1}
 }
 
-function bashlib::tolower() {
+function bashlib::string::tolower() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
 
     echo "${1,,}"
 }
 
-function bashlib::toupper() {
+function bashlib::string::toupper() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
 
     echo "${1^^}"
 }
 
-function bashlib::replacefirst() {
+function bashlib::string::replacefirst() {
     (( $# == 3 )) || bashlib::throw "Invalid argument count!"
 
     echo "${1/$2/$3}"
 }
 
-function bashlib::replaceall() {
+function bashlib::string::replaceall() {
     (( $# == 3 )) || bashlib::throw "Invalid argument count!"
 
     echo "${1//$2/$3}"
 }
 
-function bashlib::substr() {
+function bashlib::string::substr() {
     (( $# == 3 )) || bashlib::throw "Invalid argument count!"
 
     echo "${1:$2:$3}"
 }
 
-function bashlib::split() {
+function bashlib::string::split() {
     (( $# == 3 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string __bashlib_string=$1
@@ -57,7 +57,7 @@ function bashlib::split() {
     read -ra __bashlib_array <<< "$__bashlib_string"
 }
 
-function bashlib::join() {
+function bashlib::string::join() {
     (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string IFS="$1"
@@ -66,7 +66,7 @@ function bashlib::join() {
     echo "$*"
 }
 
-function bashlib::encode() {
+function bashlib::string::encode() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string value=$1
@@ -77,7 +77,7 @@ function bashlib::encode() {
 
     __bashlib_output=""
 
-    for ((i=0; i < $(bashlib::length "$value"); i++)); do
+    for ((i=0; i < $(bashlib::string::length "$value"); i++)); do
         c=${value:$i:1}
 
         case "$c" in
@@ -86,7 +86,7 @@ function bashlib::encode() {
             $'\r') c='\\r' ;;
             $'\n') c='\\n' ;;
             *)
-                bashlib::int o=$(bashlib::ord "$c")
+                bashlib::int o=$(bashlib::char::ord "$c")
 
                 if (( o < 0x20 || o == 0x7f )); then
                     c=$(printf "\\\\x%02x" "$o")
@@ -102,7 +102,7 @@ function bashlib::encode() {
     fi
 }
 
-function bashlib::decode() {
+function bashlib::string::decode() {
     (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string value=$1
@@ -123,37 +123,37 @@ function bashlib::string::__test__() {
     bashlib::string evilstring=$'$Hello, \n"world\\!'
     bashlib::string emptystring=""
 
-    [[ "$(bashlib::encode "$evilstring")" == '$Hello, \n"world\\!' ]]  || bashlib::throw
-    [[ "$(bashlib::decode "$(bashlib::encode "$evilstring")")" == "$evilstring" ]] || bashlib::throw
+    [[ "$(bashlib::string::encode "$evilstring")" == '$Hello, \n"world\\!' ]]  || bashlib::throw
+    [[ "$(bashlib::string::decode "$(bashlib::string::encode "$evilstring")")" == "$evilstring" ]] || bashlib::throw
 
-    [[ $(bashlib::length "$mystring") -eq 13 ]] || bashlib::throw
-    [[ $(bashlib::length "$emptystring") -eq 0 ]] || bashlib::throw
+    [[ $(bashlib::string::length "$mystring") -eq 13 ]] || bashlib::throw
+    [[ $(bashlib::string::length "$emptystring") -eq 0 ]] || bashlib::throw
 
-    [[ $(bashlib::tolower "$mystring") == "hello, world!" ]] || bashlib::throw
-    [[ $(bashlib::toupper "$mystring") == "HELLO, WORLD!" ]] || bashlib::throw
-    [[ $(bashlib::tolower "$emptystring") == "" ]] || bashlib::throw
-    [[ $(bashlib::toupper "$emptystring") == "" ]] || bashlib::throw
+    [[ $(bashlib::string::tolower "$mystring") == "hello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::toupper "$mystring") == "HELLO, WORLD!" ]] || bashlib::throw
+    [[ $(bashlib::string::tolower "$emptystring") == "" ]] || bashlib::throw
+    [[ $(bashlib::string::toupper "$emptystring") == "" ]] || bashlib::throw
 
-    [[ $(bashlib::replacefirst "$mystring" l L)       == "HeLlo, world!" ]] || bashlib::throw
-    [[ $(bashlib::replaceall   "$mystring" l L)       == "HeLLo, worLd!" ]] || bashlib::throw
-    [[ $(bashlib::replacefirst "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::throw
-    [[ $(bashlib::replaceall   "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::throw
-    [[ $(bashlib::replacefirst "$mystring" x X)       == "Hello, world!" ]] || bashlib::throw
-    [[ $(bashlib::replaceall   "$mystring" x X)       == "Hello, world!" ]] || bashlib::throw
-    [[ $(bashlib::replacefirst "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
-    [[ $(bashlib::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
-    [[ $(bashlib::replacefirst "$mystring" "?" "!")   == "!ello, world!" ]] || bashlib::throw
-    [[ $(bashlib::replaceall   "$mystring" "?" "!")   == "!!!!!!!!!!!!!" ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" l L)       == "HeLlo, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" l L)       == "HeLLo, worLd!" ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" world Joe) == "Hello, Joe!"   ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" x X)       == "Hello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" x X)       == "Hello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" ", " --)   == "Hello--world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replacefirst "$mystring" "?" "!")   == "!ello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::replaceall   "$mystring" "?" "!")   == "!!!!!!!!!!!!!" ]] || bashlib::throw
 
-    [[ $(bashlib::substr "$mystring" 0 99 ) == "Hello, world!" ]] || bashlib::throw
-    [[ $(bashlib::substr "$mystring" 0  3 ) == "Hel" ]] || bashlib::throw
-    [[ $(bashlib::substr "$mystring" 10 3 ) == "ld!" ]] || bashlib::throw
+    [[ $(bashlib::string::substr "$mystring" 0 99 ) == "Hello, world!" ]] || bashlib::throw
+    [[ $(bashlib::string::substr "$mystring" 0  3 ) == "Hel" ]] || bashlib::throw
+    [[ $(bashlib::string::substr "$mystring" 10 3 ) == "ld!" ]] || bashlib::throw
 
     bashlib::array myarray
-    bashlib::split "$mystring" "," myarray
+    bashlib::string::split "$mystring" "," myarray
     [[ "${myarray[0]}" == "Hello" ]] || bashlib::throw
     [[ "${myarray[1]}" == " world!" ]] || bashlib::throw
-    [[ $(bashlib::join "," "${myarray[@]}") == "$mystring" ]] || bashlib::throw
+    [[ $(bashlib::string::join "," "${myarray[@]}") == "$mystring" ]] || bashlib::throw
 
     echo "[PASS]"
 }

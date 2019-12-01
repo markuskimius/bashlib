@@ -11,7 +11,7 @@ include "./types.sh"
 include "./exception.sh"
 include "./int.sh"
 
-function bashlib::chr() {
+function bashlib::char::chr() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
     bashlib::isint "$1" || bashlib::throw "Argument must be integer -- '$1'"
 
@@ -21,7 +21,7 @@ function bashlib::chr() {
     printf -v __bashlib_output "\\u$(printf "%04x" "$ord")"
 }
 
-function bashlib::ord() {
+function bashlib::char::ord() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
     (( ${#1} == 1)) || bashlib::throw "Argument must be one character -- '$1'"
 
@@ -31,15 +31,15 @@ function bashlib::ord() {
 function bashlib::char::__test__() {
     bashlib::string c
 
-    [[ $(bashlib::ord 'A') == 65 ]] || bashlib::throw
-    [[ $(bashlib::ord ' ') == 32 ]] || bashlib::throw
-    [[ $(bashlib::ord $'\r') == 13 ]] || bashlib::throw
-    [[ $(bashlib::ord $'\n') == 10 ]] || bashlib::throw
+    [[ $(bashlib::char::ord 'A') == 65 ]] || bashlib::throw
+    [[ $(bashlib::char::ord ' ') == 32 ]] || bashlib::throw
+    [[ $(bashlib::char::ord $'\r') == 13 ]] || bashlib::throw
+    [[ $(bashlib::char::ord $'\n') == 10 ]] || bashlib::throw
 
-    bashlib::chr 65 c && [[ "$c" == 'A' ]] || bashlib::throw
-    bashlib::chr 32 c && [[ "$c" == ' ' ]] || bashlib::throw
-    bashlib::chr 13 c && [[ "$c" == $'\r' ]] || bashlib::throw
-    bashlib::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::throw
+    bashlib::char::chr 65 c && [[ "$c" == 'A' ]] || bashlib::throw
+    bashlib::char::chr 32 c && [[ "$c" == ' ' ]] || bashlib::throw
+    bashlib::char::chr 13 c && [[ "$c" == $'\r' ]] || bashlib::throw
+    bashlib::char::chr 10 c && [[ "$c" == $'\n' ]] || bashlib::throw
 
     echo "[PASS]"
 }

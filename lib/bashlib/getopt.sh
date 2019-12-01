@@ -37,7 +37,7 @@ function bashlib::getopt() {
     fi
 
     # Initial values
-    OPTOPT=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
+    OPTOPT=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
     OPTARG=""
 
     # Argument?
@@ -48,13 +48,13 @@ function bashlib::getopt() {
 
         -?)  # Short option
              if [[ "$shortopts" == *${OPTOPT#-}:* ]]; then
-                 OPTARG=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
+                 OPTARG=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
              fi
              ;;
 
         --*) # Long option
              if [[ ",$longopts" == *,${OPTOPT#--}:* ]]; then
-                 OPTARG=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
+                 OPTARG=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
              fi
              ;;
 

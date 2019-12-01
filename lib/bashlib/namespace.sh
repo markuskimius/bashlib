@@ -13,7 +13,7 @@ include "./exception.sh"
 include "./function.sh"
 include "./alias.sh"
 
-function bashlib::using() {
+function using() {
     (( $# >= 1 && $# <= 3 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string what=$1
@@ -60,7 +60,7 @@ function bashlib::using() {
                     source <(declare -f "$what" | sed "s/^${what}/${2-$what2}/")
                     ;;
 
-                *)  bashlib::throw "Invalid argument to 'bashlib::using' -- '$what'"
+                *)  bashlib::throw "Invalid argument to 'using' -- '$what'"
                     ;;
             esac
             ;;
@@ -87,7 +87,7 @@ function bashlib::namespace::__test__() {
     bashlib::defined myalias2 && bashlib::throw
     bashlib::defined myalias3 && bashlib::throw
 
-    bashlib::using mynamespace::myfunction2
+    using mynamespace::myfunction2
     bashlib::defined myfunction1 && bashlib::throw
     bashlib::defined myfunction2 || bashlib::throw
     bashlib::defined myfunction3 && bashlib::throw
@@ -96,7 +96,7 @@ function bashlib::namespace::__test__() {
     bashlib::defined myalias3 && bashlib::throw
     [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::throw
 
-    bashlib::using mynamespace::myalias2
+    using mynamespace::myalias2
     bashlib::defined myfunction1 && bashlib::throw
     bashlib::defined myfunction2 || bashlib::throw
     bashlib::defined myfunction3 && bashlib::throw
@@ -105,7 +105,7 @@ function bashlib::namespace::__test__() {
     bashlib::defined myalias3 && bashlib::throw
     [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::throw
 
-    bashlib::using namespace mynamespace
+    using namespace mynamespace
     bashlib::defined myfunction1 || bashlib::throw
     bashlib::defined myfunction2 || bashlib::throw
     bashlib::defined myfunction3 || bashlib::throw
@@ -119,7 +119,7 @@ function bashlib::namespace::__test__() {
     [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::throw
     [[ $(myalias3) == $(mynamespace::myalias3) ]] || bashlib::throw
 
-    bashlib::using mynamespace::myfunction2 anothernamespace::mynewfunction
+    using mynamespace::myfunction2 anothernamespace::mynewfunction
     bashlib::defined anothernamespace::mynewfunction || bashlib::throw
     bashlib::defined anothernamespace::myfunction1 && bashlib::throw
     bashlib::defined anothernamespace::myfunction2 && bashlib::throw
@@ -129,7 +129,7 @@ function bashlib::namespace::__test__() {
     bashlib::defined anothernamespace::myalias3 && bashlib::throw
     [[ $(mynamespace::myfunction2) == $(anothernamespace::mynewfunction) ]] || bashlib::throw
 
-    bashlib::using namespace mynamespace yetanothernamespace
+    using namespace mynamespace yetanothernamespace
     bashlib::defined yetanothernamespace::myfunction1 || bashlib::throw
     bashlib::defined yetanothernamespace::myfunction2 || bashlib::throw
     bashlib::defined yetanothernamespace::myfunction3 || bashlib::throw

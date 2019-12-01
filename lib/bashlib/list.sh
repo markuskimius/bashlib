@@ -75,7 +75,7 @@ function bashlib::lsearch() {
 }
 
 function bashlib::list::__encode__() {
-    bashlib::string encoded=$(bashlib::encode "$1")
+    bashlib::string encoded=$(bashlib::string::encode "$1")
 
     encoded="${encoded// /\\x20}"
 
@@ -87,7 +87,7 @@ function bashlib::list::__encode__() {
 }
 
 function bashlib::list::__decode__() {
-    bashlib::string decoded=$(bashlib::decode "$1")
+    bashlib::string decoded=$(bashlib::string::decode "$1")
 
     if [[ "$decoded" == \"*\" ]]; then
         decoded=${decoded#\"}

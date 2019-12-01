@@ -14,7 +14,7 @@ function bashlib::singleton() {
         bashlib::throw "$class is already defined"
     fi
 
-    bashlib::create $class object "$@"
+    bashlib::class::create $class object "$@"
 
     source <(cat <<....EOF
         function $class () {

@@ -41,17 +41,23 @@ The included libraries require BASH version 4.3 or later.
 
 include "bashlib/types.sh"
 include "bashlib/array.sh"
+include "bashlib/namespace.sh"
+include "bashlib/mode.sh"
+
+using namespace bashlib
+
+mode::strict
 
 function main() {
-    bashlib::array students
-    bashlib::string person
+    array students 
+    string person
 
-    bashlib::push students "John"
-    bashlib::push students "Jane"
-    bashlib::push students "Mary"
-    bashlib::push students "Steve"
+    array::push students "John"
+    array::push students "Jane"
+    array::push students "Mary"
+    array::push students "Steve"
 
-    echo "I have $(bashlib::count students) students in my class:"
+    echo "I have $(array::length students) students in my class:"
 
     for person in "${students[@]}"; do
         echo "* $person"

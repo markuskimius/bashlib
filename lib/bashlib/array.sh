@@ -12,16 +12,16 @@ include "./string.sh"
 include "./inspect.sh"
 include "./exception.sh"
 
-function bashlib::count() {
+function bashlib::array::length() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_array=$1
 
     echo ${#__bashlib_array[@]}
 }
 
-function bashlib::front() {
+function bashlib::array::front() {
     (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -36,7 +36,7 @@ function bashlib::front() {
     fi
 }
 
-function bashlib::back() {
+function bashlib::array::back() {
     (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -51,7 +51,7 @@ function bashlib::back() {
     fi
 }
 
-function bashlib::push() {
+function bashlib::array::push() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -61,7 +61,7 @@ function bashlib::push() {
     __bashlib_array+=( "$value" )
 }
 
-function bashlib::pop() {
+function bashlib::array::pop() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -70,7 +70,7 @@ function bashlib::pop() {
     unset __bashlib_array[-1]
 }
 
-function bashlib::shift() {
+function bashlib::array::shift() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -79,7 +79,7 @@ function bashlib::shift() {
     __bashlib_array=( "${__bashlib_array[@]:1}" )
 }
 
-function bashlib::unshift() {
+function bashlib::array::unshift() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -89,18 +89,7 @@ function bashlib::unshift() {
     __bashlib_array=( "$value" "${__bashlib_array[@]}" )
 }
 
-function bashlib::add() {
-    (( $# == 3 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") == hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
-
-    bashlib::reference __bashlib_hashmap=$1
-    bashlib::string key="$2"
-    bashlib::string value="$3"
-
-    __bashlib_hashmap["$key"]="$value"
-}
-
-function bashlib::insert() {
+function bashlib::array::insert() {
     (( $# >= 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -115,63 +104,47 @@ function bashlib::insert() {
     )
 }
 
-function bashlib::remove() {
+function bashlib::array::delete() {
     (( $# >= 2 )) || bashlib::throw "Invalid argument count!"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
-    case "$(bashlib::typeof "$1")" in
-        array)
-            (( $# == 2 || $# == 3 )) || bashlib::throw "Invalid argument count!"
-            bashlib::reference __bashlib_array=$1
-            bashlib::int index=$2
-            bashlib::int count=${3-1}
+    (( $# == 2 || $# == 3 )) || bashlib::throw "Invalid argument count!"
+    bashlib::reference __bashlib_array=$1
+    bashlib::int index=$2
+    bashlib::int count=${3-1}
 
-            __bashlib_array=(
-                "${__bashlib_array[@]::$index}"
-                "${__bashlib_array[@]:$(( index + count ))}"
-            )
-            ;;
-
-        hashmap)
-            bashlib::reference __bashlib_array=$1
-            bashlib::string key
-            shift 1
-
-            for key in "$@"; do
-                unset __bashlib_array["$key"]
-            done
-            ;;
-
-        *)  bashlib::throw "Invalid argument -- '$1'"
-            ;;
-    esac
+    __bashlib_array=(
+        "${__bashlib_array[@]::$index}"
+        "${__bashlib_array[@]:$(( index + count ))}"
+    )
 }
 
-function bashlib::dump() {
+function bashlib::array::dump() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_array="$1"
-    bashlib::string key
+    bashlib::int i
 
     echo "$1 = ("
-    for key in "${!__bashlib_array[@]}"; do
-        bashlib::string encoded_value=$(bashlib::encode "${__bashlib_array[$key]}")
+    for i in "${!__bashlib_array[@]}"; do
+        bashlib::string encoded_value=$(bashlib::string::encode "${__bashlib_array[$i]}")
 
-        echo "  [$key] = \"${encoded_value}\""
+        echo "  [$i] = \"${encoded_value}\""
     done
     echo ")"
 }
 
-function bashlib::clear() {
+function bashlib::array::clear() {
     (( $# == 1 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_array=$1
 
     __bashlib_array=()
 }
 
-function bashlib::hasindex() {
+function bashlib::array::hasindex() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -181,9 +154,9 @@ function bashlib::hasindex() {
     [[ -v __bashlib_array[$index] ]]
 }
 
-function bashlib::hasvalue() {
+function bashlib::array::hasvalue() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_array="$1"
     bashlib::string value="$2"
@@ -200,7 +173,7 @@ function bashlib::hasvalue() {
     (( $hasvalue ))
 }
 
-function bashlib::indexof() {
+function bashlib::array::indexof() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -219,55 +192,55 @@ function bashlib::indexof() {
     echo "$index"
 }
 
-function bashlib::valueof() {
+function bashlib::array::valueof() {
     (( $# == 2 || $# == 3 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_array="$1"
-    bashlib::string key="$2"
+    bashlib::int index="$2"
     bashlib::string value="${3-}"
 
-    if [[ -v __bashlib_array["$key"] ]]; then
-        value=${__bashlib_array["$key"]}
+    if [[ -v __bashlib_array[$index] ]]; then
+        value=${__bashlib_array[$index]}
     fi
 
     echo "$value"
 }
 
-function bashlib::copy() {
+function bashlib::array::copy() {
     (( $# == 2 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib_source="$1"
     bashlib::reference __bashlib_target="$2"
-    bashlib::string key
+    bashlib::int i
 
     __bashlib_target=()
 
-    for key in "${!__bashlib_source[@]}"; do
-        __bashlib_target["$key"]="${__bashlib_source[$key]}"
+    for i in "${!__bashlib_source[@]}"; do
+        __bashlib_target[$i]="${__bashlib_source[$i]}"
     done
 }
 
-function bashlib::map() {
+function bashlib::array::map() {
     (( $# == 2 || $# == 3 )) || bashlib::throw "Invalid argument count!"
-    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+    [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
     bashlib::reference __bashlib__source="$1"
     bashlib::reference __bashlib__target="${3-$1}"
     bashlib::string func="$2"
-    bashlib::string key
+    bashlib::int i
 
-    if [[ ! $(bashlib::typeof __bashlib__target) =~ array|hashmap ]]; then
+    if [[ ! $(bashlib::typeof __bashlib__target) == array ]]; then
         __bashlib_target=()
     fi
 
-    for key in "${!__bashlib__source[@]}"; do
-        __bashlib__target["$key"]=$("$func" "${__bashlib__source[$key]}")
+    for i in "${!__bashlib__source[@]}"; do
+        __bashlib__target[$i]=$("$func" "${__bashlib__source[$i]}")
     done
 }
 
-function bashlib::sort() {
+function bashlib::array::sort() {
     (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
     [[ $(bashlib::typeof "$1") == array ]] || bashlib::throw "Invalid argument -- '$1'"
 
@@ -275,119 +248,119 @@ function bashlib::sort() {
     bashlib::reference __bashlib_target="${2-$1}"
     bashlib::string IFS=$'\n'
 
-    bashlib::map __bashlib_source bashlib::encode __bashlib_target
+    bashlib::array::map __bashlib_source bashlib::string::encode __bashlib_target
     __bashlib_target=( $(sort <<<"${__bashlib_target[*]}") )
-    bashlib::map __bashlib_target bashlib::decode
+    bashlib::array::map __bashlib_target bashlib::string::decode
 }
 
 function bashlib::array::__test__() {
     # ( charlie delta echo )
     bashlib::array myarray=( "charlie" "delta" "echo" )
-    [[ $(bashlib::count myarray) -eq 3 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "charlie" ]] || bashlib::throw
-    [[ $(bashlib::back myarray) == "echo" ]]     || bashlib::throw
+    [[ $(bashlib::array::length myarray) -eq 3 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "charlie" ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "echo" ]]     || bashlib::throw
 
     # ( delta echo )
-    bashlib::shift myarray
-    [[ $(bashlib::count myarray) -eq 2 ]]     || bashlib::throw
-    [[ $(bashlib::front myarray) == "delta" ]] || bashlib::throw
-    [[ $(bashlib::back myarray) == "echo" ]]   || bashlib::throw
+    bashlib::array::shift myarray
+    [[ $(bashlib::array::length myarray) -eq 2 ]]     || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "delta" ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "echo" ]]   || bashlib::throw
 
     # ( delta echo foxtrot )
-    bashlib::push myarray "foxtrot"
-    [[ $(bashlib::count myarray) -eq 3 ]]      || bashlib::throw
-    [[ $(bashlib::front myarray) == "delta" ]]  || bashlib::throw
-    [[ $(bashlib::back myarray) == "foxtrot" ]] || bashlib::throw
+    bashlib::array::push myarray "foxtrot"
+    [[ $(bashlib::array::length myarray) -eq 3 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "delta" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
 
     # ( bravo delta echo foxtrot )
-    bashlib::unshift myarray "bravo"
-    [[ $(bashlib::count myarray) -eq 4 ]]      || bashlib::throw
-    [[ $(bashlib::front myarray) == "bravo" ]]  || bashlib::throw
-    [[ $(bashlib::back myarray) == "foxtrot" ]] || bashlib::throw
+    bashlib::array::unshift myarray "bravo"
+    [[ $(bashlib::array::length myarray) -eq 4 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
 
     # ( bravo charlie delta echo foxtrot )
-    bashlib::insert myarray 1 "charlie"
-    [[ $(bashlib::count myarray) -eq 5 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "bravo" ]]   || bashlib::throw
-    [[ $(bashlib::back myarray) == "foxtrot" ]]  || bashlib::throw
+    bashlib::array::insert myarray 1 "charlie"
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::throw
 
     # ( alpha bravo charlie delta echo foxtrot )
-    bashlib::insert myarray 0 "alpha"
-    [[ $(bashlib::count myarray) -eq 6 ]]      || bashlib::throw
-    [[ $(bashlib::front myarray) == "alpha" ]]  || bashlib::throw
-    [[ $(bashlib::back myarray) == "foxtrot" ]] || bashlib::throw
+    bashlib::array::insert myarray 0 "alpha"
+    [[ $(bashlib::array::length myarray) -eq 6 ]]      || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]  || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]] || bashlib::throw
 
     # ( alpha bravo charlie delta echo foxtrot golf )
-    bashlib::insert myarray 6 "golf"
-    [[ $(bashlib::count myarray) -eq 7 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "alpha" ]]   || bashlib::throw
-    [[ $(bashlib::back myarray) == "golf" ]]     || bashlib::throw
+    bashlib::array::insert myarray 6 "golf"
+    [[ $(bashlib::array::length myarray) -eq 7 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
 
-    bashlib::hasindex myarray 6       || bashlib::throw
-    bashlib::hasvalue myarray "delta" || bashlib::throw
+    bashlib::array::hasindex myarray 6       || bashlib::throw
+    bashlib::array::hasvalue myarray "delta" || bashlib::throw
 
     # ( alpha bravo charlie echo foxtrot golf )
-    bashlib::remove myarray 3
-    [[ $(bashlib::count myarray) -eq 6 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "alpha" ]]   || bashlib::throw
-    [[ $(bashlib::back myarray) == "golf" ]]     || bashlib::throw
+    bashlib::array::delete myarray 3
+    [[ $(bashlib::array::length myarray) -eq 6 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "alpha" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
 
-    bashlib::hasindex myarray 6       && bashlib::throw
-    bashlib::hasvalue myarray "delta" && bashlib::throw
+    bashlib::array::hasindex myarray 6       && bashlib::throw
+    bashlib::array::hasvalue myarray "delta" && bashlib::throw
 
     # ( bravo charlie echo foxtrot golf )
-    bashlib::remove myarray 0
-    [[ $(bashlib::count myarray) -eq 5 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "bravo" ]]   || bashlib::throw
-    [[ $(bashlib::back myarray) == "golf" ]]     || bashlib::throw
+    bashlib::array::delete myarray 0
+    [[ $(bashlib::array::length myarray) -eq 5 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "golf" ]]     || bashlib::throw
 
     # ( bravo charlie echo foxtrot )
-    bashlib::remove myarray 4
-    [[ $(bashlib::count myarray) -eq 4 ]]       || bashlib::throw
-    [[ $(bashlib::front myarray) == "bravo" ]]   || bashlib::throw
-    [[ $(bashlib::back myarray) == "foxtrot" ]]  || bashlib::throw
+    bashlib::array::delete myarray 4
+    [[ $(bashlib::array::length myarray) -eq 4 ]]       || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "foxtrot" ]]  || bashlib::throw
 
-    [[ $(bashlib::indexof myarray "bravo") == 0 ]]   || bashlib::throw
-    [[ $(bashlib::indexof myarray "charlie") == 1 ]] || bashlib::throw
-    [[ $(bashlib::indexof myarray "foxtrot") == 3 ]] || bashlib::throw
+    [[ $(bashlib::array::indexof myarray "bravo") == 0 ]]   || bashlib::throw
+    [[ $(bashlib::array::indexof myarray "charlie") == 1 ]] || bashlib::throw
+    [[ $(bashlib::array::indexof myarray "foxtrot") == 3 ]] || bashlib::throw
 
     # newarray=( ravo harlie cho oxtrot )
     function chopfirst() { echo "${1:1}"; }
-    bashlib::map myarray chopfirst newarray
-    [[ $(bashlib::front newarray) == "ravo" ]]   || bashlib::throw
-    [[ $(bashlib::back newarray)  == "oxtrot" ]] || bashlib::throw
-    [[ $(bashlib::front myarray)  != $(bashlib::front newarray) ]] || bashlib::throw
-    [[ $(bashlib::back myarray)   != $(bashlib::back newarray)  ]] || bashlib::throw
+    bashlib::array::map myarray chopfirst newarray
+    [[ $(bashlib::array::front newarray) == "ravo" ]]   || bashlib::throw
+    [[ $(bashlib::array::back newarray)  == "oxtrot" ]] || bashlib::throw
+    [[ $(bashlib::array::front myarray)  != $(bashlib::array::front newarray) ]] || bashlib::throw
+    [[ $(bashlib::array::back myarray)   != $(bashlib::array::back newarray)  ]] || bashlib::throw
 
     # newarray=( cho harlie oxtrot ravo )
-    bashlib::sort newarray
-    [[ $(bashlib::front newarray) == "cho" ]]  || bashlib::throw
-    [[ $(bashlib::back newarray)  == "ravo" ]] || bashlib::throw
+    bashlib::array::sort newarray
+    [[ $(bashlib::array::front newarray) == "cho" ]]  || bashlib::throw
+    [[ $(bashlib::array::back newarray)  == "ravo" ]] || bashlib::throw
 
-    [[ $(bashlib::dump myarray) == *0*bravo*   ]] || bashlib::throw
-    [[ $(bashlib::dump myarray) == *1*charlie* ]] || bashlib::throw
-    [[ $(bashlib::dump myarray) == *2*echo*    ]] || bashlib::throw
-    [[ $(bashlib::dump myarray) == *3*foxtrot* ]] || bashlib::throw
-    [[ $(bashlib::dump myarray | wc -l) -eq 6 ]]  || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *0*bravo*   ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *1*charlie* ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *2*echo*    ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray) == *3*foxtrot* ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 6 ]]  || bashlib::throw
 
     # ( bravo charlie echo )
-    bashlib::pop myarray
-    [[ $(bashlib::count myarray) -eq 3 ]]            || bashlib::throw
-    [[ $(bashlib::front myarray) == "bravo" ]]       || bashlib::throw
-    [[ $(bashlib::back myarray) == "echo" ]]         || bashlib::throw
-    [[ $(bashlib::valueof myarray 1) == "charlie" ]] || bashlib::throw
+    bashlib::array::pop myarray
+    [[ $(bashlib::array::length myarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::array::front myarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::array::back myarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::array::valueof myarray 1) == "charlie" ]] || bashlib::throw
 
-    bashlib::copy myarray newarray
-    [[ $(bashlib::count newarray) -eq 3 ]]            || bashlib::throw
-    [[ $(bashlib::front newarray) == "bravo" ]]       || bashlib::throw
-    [[ $(bashlib::back newarray) == "echo" ]]         || bashlib::throw
-    [[ $(bashlib::valueof newarray 1) == "charlie" ]] || bashlib::throw
+    bashlib::array::copy myarray newarray
+    [[ $(bashlib::array::length newarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::array::front newarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::array::back newarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::array::valueof newarray 1) == "charlie" ]] || bashlib::throw
 
-    bashlib::copy myarray newnewarray
-    [[ $(bashlib::count newnewarray) -eq 3 ]]            || bashlib::throw
-    [[ $(bashlib::front newnewarray) == "bravo" ]]       || bashlib::throw
-    [[ $(bashlib::back newnewarray) == "echo" ]]         || bashlib::throw
-    [[ $(bashlib::valueof newnewarray 1) == "charlie" ]] || bashlib::throw
+    bashlib::array::copy myarray newnewarray
+    [[ $(bashlib::array::length newnewarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::array::front newnewarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::array::back newnewarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::array::valueof newnewarray 1) == "charlie" ]] || bashlib::throw
 
     bashlib::array emptyarray=()
     bashlib::array unsetarray
@@ -402,10 +375,10 @@ function bashlib::array::__test__() {
     bashlib::isset unsetarray  && bashlib::throw
     bashlib::isset nosucharray && bashlib::throw
 
-    bashlib::clear myarray
-    [[ $(bashlib::count myarray) -eq 0 ]] || bashlib::throw
+    bashlib::array::clear myarray
+    [[ $(bashlib::array::length myarray) -eq 0 ]] || bashlib::throw
     [[ $(bashlib::typeof myarray) == array ]] || bashlib::throw
-    [[ $(bashlib::dump myarray | wc -l) -eq 2 ]] || bashlib::throw
+    [[ $(bashlib::array::dump myarray | wc -l) -eq 2 ]] || bashlib::throw
 
     echo "[PASS]"
 }

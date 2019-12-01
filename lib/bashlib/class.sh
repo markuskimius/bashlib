@@ -13,7 +13,7 @@ include "./exception.sh"
 
 bashlib::hashmap -g __bashlib_class__=( [COUNTER]=0 )
 
-function bashlib::create() {
+function bashlib::class::create() {
     (( $# >= 2 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string class=$1
@@ -87,7 +87,7 @@ function bashlib::create() {
     fi
 }
 
-function bashlib::destroy() {
+function bashlib::class::destroy() {
     (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
 
     bashlib::string object=$1
@@ -189,10 +189,10 @@ function bashlib::class::__test__() {
         $this __get__ counter
     }
 
-    bashlib::create IncrementingClass incr1  3
-    bashlib::create IncrementingClass incr2 17
-    bashlib::create DecrementingClass decr1  9
-    bashlib::create DecrementingClass decr2 25
+    bashlib::class::create IncrementingClass incr1  3
+    bashlib::class::create IncrementingClass incr2 17
+    bashlib::class::create DecrementingClass decr1  9
+    bashlib::class::create DecrementingClass decr2 25
 
     $incr1 next && [[ $($incr1 get) -eq  4 ]] || bashlib::throw
     $incr2 next && [[ $($incr2 get) -eq 18 ]] || bashlib::throw
@@ -209,10 +209,10 @@ function bashlib::class::__test__() {
     $decr1 test || bashlib::throw
     $decr2 test || bashlib::throw
 
-    [[ $(bashlib::destroy $incr1) == 5  ]] || bashlib::throw
-    [[ $(bashlib::destroy $incr2) == 19 ]] || bashlib::throw
-    [[ $(bashlib::destroy $decr1) == 7  ]] || bashlib::throw
-    [[ $(bashlib::destroy $decr2) == 23 ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $incr1) == 5  ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $incr2) == 19 ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $decr1) == 7  ]] || bashlib::throw
+    [[ $(bashlib::class::destroy $decr2) == 23 ]] || bashlib::throw
 
     echo "[PASS]"
 }

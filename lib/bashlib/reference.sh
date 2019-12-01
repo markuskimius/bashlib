@@ -8,8 +8,11 @@
 ##############################################################################
 
 include "./types.sh"
+include "./exception.sh"
 
 function bashlib::realvar() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::string varname="$1"
     bashlib::string decl=$(declare -p "$varname" 2>/dev/null || echo "? ? ?")
     bashlib::string decl_t=${decl#* } && decl_t=${decl_t%% *}  # 2nd part of declare -p
@@ -24,8 +27,6 @@ function bashlib::realvar() {
 }
 
 function bashlib::reference::__test__() {
-    include "./exception.sh"
-
     bashlib::string mystring
     bashlib::int myint
     bashlib::array myarray

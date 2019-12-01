@@ -40,8 +40,6 @@ function bashlib::exception::__handler__() {
 }
 
 function bashlib::exception::__test__() {
-    include "./mode.sh"
-
     function frame1() {
         bashlib::dump_stacktrace ${1-0}
     }
@@ -55,10 +53,6 @@ function bashlib::exception::__test__() {
             ;;
 
         2)  let 0
-            ;;
-
-        3)  bashlib::strictmode
-            let 0
             ;;
 
         *)  bashlib::throw "No such test: ${1}"

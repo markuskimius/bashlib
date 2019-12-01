@@ -8,12 +8,15 @@
 ##############################################################################
 
 include "./types.sh"
+include "./exception.sh"
 
 function bashlib::writelog() {
+    (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::string level=INFO
     bashlib::string message=$1
 
-    if (( $# >= 2 )); then
+    if (( $# == 2 )); then
         level=$1
         message=$2
     fi
@@ -29,8 +32,6 @@ function bashlib::writelog() {
 }
 
 function bashlib::logger::__test__() {
-    include "./exception.sh"
-
     unset BASHLIB_LOGLEVEL
     bashlib::writelog "Hello, world!"
     [[ $(bashlib::writelog "Hello, world!" 2>&1) == "" ]] || bashlib::throw

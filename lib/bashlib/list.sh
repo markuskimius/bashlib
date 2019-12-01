@@ -17,6 +17,8 @@ function bashlib::list() {
 }
 
 function bashlib::llength() {
+    (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::reference __bashlib_list=$1
     bashlib::array array=( $__bashlib_list )
 
@@ -24,8 +26,11 @@ function bashlib::llength() {
 }
 
 function bashlib::lappend() {
-    bashlib::reference __bashlib_list=$1 && shift
+    (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
+
+    bashlib::reference __bashlib_list=$1
     bashlib::string item
+    shift 1
 
     for item in "$@"; do
         if [[ -n "$__bashlib_list" ]]; then
@@ -39,6 +44,8 @@ function bashlib::lappend() {
 }
 
 function bashlib::lindex() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::reference __bashlib_list=$1
     bashlib::int index=$2
     bashlib::array array=( $__bashlib_list )
@@ -47,6 +54,8 @@ function bashlib::lindex() {
 }
 
 function bashlib::lsearch() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::reference __bashlib_list=$1
     bashlib::string item=$2
     bashlib::array array=( $__bashlib_list )
@@ -89,8 +98,6 @@ function bashlib::list::__decode__() {
 }
 
 function bashlib::list::__test__() {
-    include "./exception.sh"
-
     bashlib::string mylist=$(bashlib::list "alpha alpha" "\"bravo bravo\"" $'charlie\ncharlie')
     bashlib::string emptylist=$(bashlib::list)
 

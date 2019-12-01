@@ -60,7 +60,8 @@ function bashlib::split() {
 function bashlib::join() {
     (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
 
-    bashlib::string IFS="$1" && shift
+    bashlib::string IFS="$1"
+    shift 1
 
     echo "$*"
 }

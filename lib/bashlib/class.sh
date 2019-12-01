@@ -8,51 +8,63 @@
 ##############################################################################
 
 include "./types.sh"
+include "./inspect.sh"
 include "./exception.sh"
 
-if ! bashlib::defined __bashlib_class__; then
-    bashlib::hashmap -g __bashlib_class__=( [COUNTER]=0 )
-fi
+bashlib::hashmap -g __bashlib_class__=( [COUNTER]=0 )
 
 function bashlib::create() {
-    bashlib::string class=$1 && shift
-    bashlib::reference __bashlib_object=$1 && shift
+    (( $# >= 2 )) || bashlib::throw "Invalid argument count!"
+
+    bashlib::string class=$1
+    bashlib::reference __bashlib_object=$2
+    shift 2
 
     __bashlib_object="__bashlib_class__${class}__$((__bashlib_class__[COUNTER]++))"
 
     # Build the object
     source <(cat <<....EOF
         function ${__bashlib_object}() {
-            bashlib::string method=\$1 && shift
+            (( \$# >= 1 )) || bashlib::throw "Invalid argument count!"
+            bashlib::string method=\$1
 
             case "\$method" in
                 __get__)
+                    (( \$# == 2 )) || bashlib::throw "Invalid argument count!"
+
                     # Get a member variable
-                    bashlib::string name=\$1 && shift
+                    bashlib::string name=\$2
                     echo "\${__bashlib_class__["${__bashlib_object}.\$name"]}"
                     ;;
 
                 __set__)
+                    (( \$# == 3 )) || bashlib::throw "Invalid argument count!"
+
                     # Set a member variable
-                    bashlib::string name=\$1 && shift
-                    bashlib::string value=\$1 && shift
+                    bashlib::string name=\$2
+                    bashlib::string value=\$3
                     __bashlib_class__["${__bashlib_object}.\$name"]="\$value"
                     ;;
 
                 __unset__)
+                    (( \$# == 2 )) || bashlib::throw "Invalid argument count!"
+
                     # Unset a member variable
-                    bashlib::string name=\$1 && shift
+                    bashlib::string name=\$2
                     unset __bashlib_class__["${__bashlib_object}.\$name"]
                     ;;
 
                 __has__)
+                    (( \$# == 2 )) || bashlib::throw "Invalid argument count!"
+
                     # Test for a member variable
-                    bashlib::string name=\$1 && shift
+                    bashlib::string name=\$2
                     [[ -v __bashlib_class__["${__bashlib_object}.\$name"] ]] || return 1
                     ;;
 
                 *)
                     bashlib::string method2="${class}::\${method}"
+                    shift 1
 
                     if bashlib::defined "\${method2}"; then
                         "\${method2}" "${__bashlib_object}" "\$@" || return \$?
@@ -76,8 +88,11 @@ function bashlib::create() {
 }
 
 function bashlib::destroy() {
-    bashlib::string object=$1 && shift
+    (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
+
+    bashlib::string object=$1
     bashlib::string class=$( ${object} __get__ "__classname__" )
+    shift 1
 
     # Call the destructor, if any
     if bashlib::defined "${class}::__destructor__"; then

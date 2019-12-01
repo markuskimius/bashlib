@@ -4,8 +4,11 @@ include "./inspect.sh"
 include "./exception.sh"
 
 function bashlib::singleton() {
-    bashlib::string class=$1 && shift
+    (( $# >= 1 )) || bashlib::throw "Invalid argument count!"
+
+    bashlib::string class=$1
     bashlib::string object
+    shift 1
 
     if bashlib::defined $class; then
         bashlib::throw "$class is already defined"
@@ -23,13 +26,15 @@ function bashlib::singleton() {
 
 function bashlib::singleton::__test__() {
     function myclass::__constructor__() {
-        bashlib::string this=$1 && shift
+        bashlib::string this=$1
+        shift 1
 
         $this __set__ value "$@"
     }
 
     function myclass::read() {
-        bashlib::string this=$1 && shift
+        bashlib::string this=$1
+        shift 1
 
         $this __get__ value "$@"
     }

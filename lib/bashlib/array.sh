@@ -221,6 +221,8 @@ function bashlib::indexof() {
 
 function bashlib::valueof() {
     (( $# == 2 || $# == 3 )) || bashlib::throw "Invalid argument count!"
+    [[ $(bashlib::typeof "$1") =~ array|hashmap ]] || bashlib::throw "Invalid argument -- '$1'"
+
     bashlib::reference __bashlib_array="$1"
     bashlib::string key="$2"
     bashlib::string value="${3-}"
@@ -279,8 +281,6 @@ function bashlib::sort() {
 }
 
 function bashlib::array::__test__() {
-    include "./exception.sh"
-
     # ( charlie delta echo )
     bashlib::array myarray=( "charlie" "delta" "echo" )
     [[ $(bashlib::count myarray) -eq 3 ]]       || bashlib::throw
@@ -369,6 +369,25 @@ function bashlib::array::__test__() {
     [[ $(bashlib::dump myarray) == *2*echo*    ]] || bashlib::throw
     [[ $(bashlib::dump myarray) == *3*foxtrot* ]] || bashlib::throw
     [[ $(bashlib::dump myarray | wc -l) -eq 6 ]]  || bashlib::throw
+
+    # ( bravo charlie echo )
+    bashlib::pop myarray
+    [[ $(bashlib::count myarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::front myarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::back myarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::valueof myarray 1) == "charlie" ]] || bashlib::throw
+
+    bashlib::copy myarray newarray
+    [[ $(bashlib::count newarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::front newarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::back newarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::valueof newarray 1) == "charlie" ]] || bashlib::throw
+
+    bashlib::copy myarray newnewarray
+    [[ $(bashlib::count newnewarray) -eq 3 ]]            || bashlib::throw
+    [[ $(bashlib::front newnewarray) == "bravo" ]]       || bashlib::throw
+    [[ $(bashlib::back newnewarray) == "echo" ]]         || bashlib::throw
+    [[ $(bashlib::valueof newnewarray 1) == "charlie" ]] || bashlib::throw
 
     bashlib::array emptyarray=()
     bashlib::array unsetarray

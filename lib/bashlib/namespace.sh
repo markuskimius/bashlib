@@ -8,26 +8,31 @@
 ##############################################################################
 
 include "./types.sh"
-include "./alias.sh"
-include "./function.sh"
+include "./inspect.sh"
 include "./exception.sh"
+include "./function.sh"
+include "./alias.sh"
 
 function bashlib::using() {
-    what=$1
+    (( $# == 1 || $# == 2 )) || bashlib::throw "Invalid argument count!"
+
+    bashlib::string what=$1
 
     case "$what" in
         namespace)
+            (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
             bashlib::string namespace=$2
             bashlib::string target
             bashlib::int count=0
 
             for target in $(bashlib::function::names "^${namespace}::"); do
-                source <(bashlib::function::definition_of "$target" | sed "s/^${namespace}:://")
+                source <(declare -f "$target" | sed "s/^${namespace}:://")
                 count="count + 1"
             done
 
             for target in $(bashlib::alias::names "^${namespace}::"); do
-                source <(bashlib::alias::definition_of "$target" | sed "s/^alias ${namespace}::/alias /i")
+                source <(alias "$target" | sed "s/^alias ${namespace}::/alias /")
                 count="count + 1"
             done
 
@@ -37,27 +42,22 @@ function bashlib::using() {
             ;;
 
         *::*)
+            (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
             bashlib::string namespace=${what%::*}
-            bashlib::int count=0
 
-            if bashlib::function::defined "$what"; then
-                source <(bashlib::function::definition_of "$what" | sed "s/^${namespace}:://i")
-                count="count + 1"
-            fi
+            case "$(bashlib::typeof "$what")" in
+                alias)
+                    source <(alias "$what" | sed "s/^alias ${namespace}::/alias /")
+                    ;;
 
-            if bashlib::alias::defined "$what"; then
-                source <(bashlib::alias::definition_of "$what" | sed "s/^alias ${namespace}::/alias /i")
-                count="count + 1"
-            fi
+                function)
+                    source <(declare -f "$what" | sed "s/^${namespace}:://")
+                    ;;
 
-            if (( ! $count )); then
-                bashlib::throw "Invalid function or alias -- '$what'"
-            fi
-            ;;
-
-        *)
-            bashlib::throw "Invalid argument to 'bashlib::using' -- '$what'"
-            ;;
+                *)  bashlib::throw "Invalid argument to 'bashlib::using' -- '$what'"
+                    ;;
+            esac
     esac
 }
 
@@ -70,38 +70,38 @@ function bashlib::namespace::__test__() {
     alias mynamespace::myalias2='echo "myalias 2"'
     alias mynamespace::myalias3='echo "myalias 3"'
 
-    bashlib::function::defined myfunction1 && bashlib::throw
-    bashlib::function::defined myfunction2 && bashlib::throw
-    bashlib::function::defined myfunction3 && bashlib::throw
-    bashlib::alias::defined myalias1 && bashlib::throw
-    bashlib::alias::defined myalias2 && bashlib::throw
-    bashlib::alias::defined myalias3 && bashlib::throw
+    bashlib::defined myfunction1 && bashlib::throw
+    bashlib::defined myfunction2 && bashlib::throw
+    bashlib::defined myfunction3 && bashlib::throw
+    bashlib::defined myalias1 && bashlib::throw
+    bashlib::defined myalias2 && bashlib::throw
+    bashlib::defined myalias3 && bashlib::throw
 
     bashlib::using mynamespace::myfunction2
-    bashlib::function::defined myfunction1 && bashlib::throw
-    bashlib::function::defined myfunction2 || bashlib::throw
-    bashlib::function::defined myfunction3 && bashlib::throw
-    bashlib::alias::defined myalias1 && bashlib::throw
-    bashlib::alias::defined myalias2 && bashlib::throw
-    bashlib::alias::defined myalias3 && bashlib::throw
+    bashlib::defined myfunction1 && bashlib::throw
+    bashlib::defined myfunction2 || bashlib::throw
+    bashlib::defined myfunction3 && bashlib::throw
+    bashlib::defined myalias1 && bashlib::throw
+    bashlib::defined myalias2 && bashlib::throw
+    bashlib::defined myalias3 && bashlib::throw
     [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::throw
 
     bashlib::using mynamespace::myalias2
-    bashlib::function::defined myfunction1 && bashlib::throw
-    bashlib::function::defined myfunction2 || bashlib::throw
-    bashlib::function::defined myfunction3 && bashlib::throw
-    bashlib::alias::defined myalias1 && bashlib::throw
-    bashlib::alias::defined myalias2 || bashlib::throw
-    bashlib::alias::defined myalias3 && bashlib::throw
+    bashlib::defined myfunction1 && bashlib::throw
+    bashlib::defined myfunction2 || bashlib::throw
+    bashlib::defined myfunction3 && bashlib::throw
+    bashlib::defined myalias1 && bashlib::throw
+    bashlib::defined myalias2 || bashlib::throw
+    bashlib::defined myalias3 && bashlib::throw
     [[ $(myalias2) == $(mynamespace::myalias2) ]] || bashlib::throw
 
     bashlib::using namespace mynamespace
-    bashlib::function::defined myfunction1 || bashlib::throw
-    bashlib::function::defined myfunction2 || bashlib::throw
-    bashlib::function::defined myfunction3 || bashlib::throw
-    bashlib::alias::defined myalias1 || bashlib::throw
-    bashlib::alias::defined myalias2 || bashlib::throw
-    bashlib::alias::defined myalias3 || bashlib::throw
+    bashlib::defined myfunction1 || bashlib::throw
+    bashlib::defined myfunction2 || bashlib::throw
+    bashlib::defined myfunction3 || bashlib::throw
+    bashlib::defined myalias1 || bashlib::throw
+    bashlib::defined myalias2 || bashlib::throw
+    bashlib::defined myalias3 || bashlib::throw
     [[ $(myfunction1) == $(mynamespace::myfunction1) ]] || bashlib::throw
     [[ $(myfunction2) == $(mynamespace::myfunction2) ]] || bashlib::throw
     [[ $(myfunction3) == $(mynamespace::myfunction3) ]] || bashlib::throw

@@ -10,16 +10,20 @@
 include "./types.sh"
 include "./array.sh"
 include "./inspect.sh"
+include "./exception.sh"
 
 __bashlib_getopt_bin__=$(command -v getopt)
 
 function bashlib::getopt() {
+    (( $# >= 2 )) || bashlib::throw "Invalid argument count!"
+
     bashlib::array -g OPTARRAY
     bashlib::string -g OPTOPT
     bashlib::string -g OPTARG
-    bashlib::string shortopts=$1 && shift
-    bashlib::string longopts=$1 && shift
+    bashlib::string shortopts=$1
+    bashlib::string longopts=$2
     bashlib::int errcount=0
+    shift 2
 
     # Set up the positional parameters
     if ! bashlib::isset OPTARRAY; then
@@ -63,8 +67,6 @@ function bashlib::getopt() {
 }
 
 function bashlib::getopt::__test__() {
-    include "./exception.sh"
-
     function main() {
         local OPTARRAY
         local OPTOPT

@@ -10,29 +10,6 @@
 include "./types.sh"
 include "./string.sh"
 
-function bashlib::list::encode() {
-    bashlib::string encoded=$(bashlib::string::encode "$1")
-
-    encoded="${encoded// /\\x20}"
-
-    if [[ "$encoded" == *\"* ]]; then
-        encoded="\"$encoded\""
-    fi
-
-    echo "$encoded"
-}
-
-function bashlib::list::decode() {
-    bashlib::string decoded=$(bashlib::string::decode "$1")
-
-    if [[ "$decoded" == \"*\" ]]; then
-        decoded=${decoded#\"}
-        decoded=${decoded%\"}
-    fi
-
-    echo "$decoded"
-}
-
 function bashlib::list() {
     bashlib::string list=""
 
@@ -51,11 +28,11 @@ function bashlib::lappend() {
     bashlib::string item
 
     for item in "$@"; do
-        if [[ -n $__bashlib_list ]]; then
+        if [[ -n "$__bashlib_list" ]]; then
             __bashlib_list+=" "
         fi
 
-        __bashlib_list+=$(bashlib::list::encode "$item")
+        __bashlib_list+=$(bashlib::list::__encode__ "$item")
     done
 
     echo "$__bashlib_list"
@@ -66,7 +43,7 @@ function bashlib::lindex() {
     bashlib::int index=$2
     bashlib::array array=( $__bashlib_list )
 
-    echo "$(bashlib::list::decode "${array[$index]}")"
+    echo "$(bashlib::list::__decode__ "${array[$index]}")"
 }
 
 function bashlib::lsearch() {
@@ -77,7 +54,7 @@ function bashlib::lsearch() {
     bashlib::int i
 
     for ((i=0; i < ${#array[@]}; i++)); do
-        bashlib::string decoded=$(bashlib::list::decode "${array[$i]}")
+        bashlib::string decoded=$(bashlib::list::__decode__ "${array[$i]}")
 
         if [[ "$decoded" == "$item" ]]; then
             index=i
@@ -86,6 +63,29 @@ function bashlib::lsearch() {
     done
 
     echo $index
+}
+
+function bashlib::list::__encode__() {
+    bashlib::string encoded=$(bashlib::encode "$1")
+
+    encoded="${encoded// /\\x20}"
+
+    if [[ "$encoded" == *\"* ]]; then
+        encoded="\"$encoded\""
+    fi
+
+    echo "$encoded"
+}
+
+function bashlib::list::__decode__() {
+    bashlib::string decoded=$(bashlib::decode "$1")
+
+    if [[ "$decoded" == \"*\" ]]; then
+        decoded=${decoded#\"}
+        decoded=${decoded%\"}
+    fi
+
+    echo "$decoded"
 }
 
 function bashlib::list::__test__() {

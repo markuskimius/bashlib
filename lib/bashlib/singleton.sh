@@ -13,11 +13,11 @@ function bashlib::singleton() {
 
     bashlib::create $class object "$@"
 
-    source <(cat <<EOF
+    source <(cat <<....EOF
         function $class () {
             $object "\$@"
         }
-EOF
+....EOF
     )
 }
 

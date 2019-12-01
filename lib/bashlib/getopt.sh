@@ -9,6 +9,7 @@
 
 include "./types.sh"
 include "./array.sh"
+include "./inspect.sh"
 
 __bashlib_getopt_bin__=$(command -v getopt)
 
@@ -21,7 +22,7 @@ function bashlib::getopt() {
     bashlib::int errcount=0
 
     # Set up the positional parameters
-    if ! bashlib::array::isset OPTARRAY; then
+    if ! bashlib::isset OPTARRAY; then
         bashlib::string optstring
         
         optstring=$("$__bashlib_getopt_bin__" -o "$shortopts" --long "$longopts" -- "$@") || errcount=1
@@ -32,7 +33,7 @@ function bashlib::getopt() {
     fi
 
     # Initial values
-    OPTOPT=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
+    OPTOPT=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
     OPTARG=""
 
     # Argument?
@@ -43,13 +44,13 @@ function bashlib::getopt() {
 
         -?)  # Short option
              if [[ "$shortopts" == *${OPTOPT#-}:* ]]; then
-                 OPTARG=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
+                 OPTARG=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
              fi
              ;;
 
         --*) # Long option
              if [[ ",$longopts" == *,${OPTOPT#--}:* ]]; then
-                 OPTARG=$(bashlib::array::front OPTARRAY) && bashlib::array::shift OPTARRAY
+                 OPTARG=$(bashlib::front OPTARRAY) && bashlib::shift OPTARRAY
              fi
              ;;
 

@@ -21,7 +21,7 @@ function bashlib::create() {
     __bashlib_object="__bashlib_class__${class}__$((__bashlib_class__[COUNTER]++))"
 
     # Build the object
-    source <(cat <<EOF
+    source <(cat <<....EOF
         function ${__bashlib_object}() {
             bashlib::string method=\$1 && shift
 
@@ -62,7 +62,7 @@ function bashlib::create() {
                     ;;
             esac
         }
-EOF
+....EOF
     )
 
     # Populate default member variables

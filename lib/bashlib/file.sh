@@ -7,57 +7,82 @@
 # https://github.com/markuskimius/bashlib/blob/master/LICENSE
 ##############################################################################
 
+include "./exception.sh"
+
 function bashlib::file::exists() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -e "$1" ]]
 }
 
 function bashlib::file::isdir() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -d "$1" ]]
 }
 
 function bashlib::file::isfile() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -f "$1" ]]
 }
 
 function bashlib::file::isreadable() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -r "$1" ]]
 }
 
 function bashlib::file::iswritable() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -w "$1" ]]
 }
 
 function bashlib::file::isempty() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ ! -s "$1" ]]
 }
 
 function bashlib::file::isexecutable() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -x "$1" ]]
 }
 
 function bashlib::file::issymlink() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -h "$1" ]]
 }
 
 function bashlib::file::isnonempty() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+
     [[ -s "$1" ]]
 }
 
 function bashlib::file::is() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     [[ "$1" -ef "$2" ]]
 }
 
 function bashlib::file::isnewerthan() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     [[ "$1" -nt "$2" ]]
 }
 
 function bashlib::file::isolderthan() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+
     [[ "$1" -ot "$2" ]]
 }
 
 function bashlib::file::__test__() {
     include "./types.sh"
-    include "./exception.sh"
 
     bashlib::string mydir=$(mktemp -d)
     bashlib::string myfile1=$(mktemp)

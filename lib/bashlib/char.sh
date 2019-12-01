@@ -8,8 +8,13 @@
 ##############################################################################
 
 include "./types.sh"
+include "./exception.sh"
+include "./int.sh"
 
 function bashlib::chr() {
+    (( $# == 2 )) || bashlib::throw "Invalid argument count!"
+    bashlib::isint "$1" || bashlib::throw "Argument must be integer -- '$1'"
+
     bashlib::int ord=$1
     bashlib::reference __bashlib_output=$2
 
@@ -17,12 +22,13 @@ function bashlib::chr() {
 }
 
 function bashlib::ord() {
+    (( $# == 1 )) || bashlib::throw "Invalid argument count!"
+    (( ${#1} == 1)) || bashlib::throw "Argument must be one character -- '$1'"
+
     printf "%d" "'${1}"
 }
 
 function bashlib::char::__test__() {
-    include "./exception.sh"
-
     bashlib::string c
 
     [[ $(bashlib::ord 'A') == 65 ]] || bashlib::throw

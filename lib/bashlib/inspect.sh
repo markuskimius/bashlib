@@ -8,6 +8,7 @@
 ##############################################################################
 
 include "./types.sh"
+include "./reference.sh"
 
 function bashlib::defined() {
     [[ $(bashlib::typeof "$1") != "undefined" ]]
@@ -18,20 +19,6 @@ function bashlib::isset() {
     bashlib::string decl=$(declare -p "$varname" 2>/dev/null || :)
 
     bashlib::defined "$varname" && [[ "$decl" == *=* ]]
-}
-
-function bashlib::realvar() {
-    bashlib::string varname="$1"
-    bashlib::string decl=$(declare -p "$varname" 2>/dev/null || echo "? ? ?")
-    bashlib::string decl_t=${decl#* } && decl_t=${decl_t%% *}  # 2nd part of declare -p
-
-    if [[ "$decl_t" == *n* ]]; then
-        bashlib::string decl_q=${decl#*\"} && decl_q=${decl_q%\"}  # Quoted part of declare -p
-
-        varname=$(bashlib::realvar "$decl_q")
-    fi
-
-    echo "$varname"
 }
 
 function bashlib::typeof() {
@@ -45,10 +32,10 @@ function bashlib::typeof() {
         *A*)    return_t="hashmap"                                         ;;
         *i*)    return_t="int"                                             ;;
         *n*)    return_t=$(bashlib::typeof $(bashlib::realvar "$varname")) ;;
-        \?)     if alias "$1" &>/dev/null; then
-                    return_t="alias"
-                elif declare -F "$varname" &>/dev/null; then
+        \?)     if declare -F "$varname" &>/dev/null; then
                     return_t="function"
+                elif alias "$1" &>/dev/null; then
+                    return_t="alias"
                 else
                     return_t="undefined"
                 fi                                                         ;;

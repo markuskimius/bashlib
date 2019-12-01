@@ -9,14 +9,8 @@
 
 include "./types.sh"
 
-trap "bashlib::exception::__handler__" ERR      # Trap any nonzero return values
-set -o errtrace                        # ERR traps are inherited by function calls
-
-function bashlib::exception::__handler__() {
-    echo "Unhandled nonzero return value" 1>&2
-
-    bashlib::dump_stacktrace ${2-1}
-}
+trap "bashlib::exception::__handler__" ERR    # Trap any nonzero return values
+set -o errtrace                               # ERR traps are inherited by function calls
 
 function bashlib::throw() {
     echo "${1-"bashlib::throw() called"}" 1>&2
@@ -37,6 +31,12 @@ function bashlib::dump_stacktrace() {
         echo -e "\tat $file:$lineno in $func() [$frame]" 1>&2
         frame="frame + 1"
     done
+}
+
+function bashlib::exception::__handler__() {
+    echo "Unhandled nonzero return value" 1>&2
+
+    bashlib::dump_stacktrace ${2-1}
 }
 
 function bashlib::exception::__test__() {

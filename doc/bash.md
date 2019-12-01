@@ -92,7 +92,7 @@ function myfunction() {
 }
 
 myfunction returned
-echo $returned
+echo "$returned"
 ```
 
 There is a caveat, however, that if the name of the variable passed to
@@ -108,7 +108,7 @@ function myfunction() {
 }
 
 myfunction returned
-echo $returned
+echo "$returned"
 ```
 
 To avoid such error, it is a good practice to use a unique name for all

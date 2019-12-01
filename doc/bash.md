@@ -104,7 +104,7 @@ an error:
 ```bash
 function myfunction() {
     bashlib::reference returned=$1    # returned=returned is a circular reference
-                             # declare: warning: returned: circular name reference
+                                      # declare: warning: returned: circular name reference
     returned="Hello, world!"
 }
 

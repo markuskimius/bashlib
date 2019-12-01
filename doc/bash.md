@@ -29,15 +29,15 @@ Declaring a variable is done natively in BASH using `declare`, `typeset`, or
 `local` keywords and passing the appropriate flags.  To make the code more
 readable BASHLIB provides the following aliases:
 
-* `string`
-* `int`
-* `array` for an indexed string array, `array -i` for the integer variant.
-* `hashmap` for an associative string array, `array -i` for the integer variant.
-* `const` for a read-only string, `const -i` for the integer variant.
-* `reference` for a reference.
+* `bashlib::string`
+* `bashlib::int`
+* `bashlib::array` for an indexed string array, `array -i` for the integer variant.
+* `bashlib::hashmap` for an associative string array, `array -i` for the integer variant.
+* `bashlib::const` for a read-only string, `const -i` for the integer variant.
+* `bashlib::reference` for a reference.
 
-`-a` and `-A` may also be passed to `const` to declare a indexed or associative
-array, respectively.
+`-a` and `-A` may also be passed to `bashlib::const` to declare a indexed or
+associative array, respectively.
 
 These aliases are provided in `bashlib/types.sh`.
 
@@ -87,7 +87,7 @@ variable to the function to which it wants the value(s) written.  For example:
 
 ```bash
 function myfunction() {
-    reference to_be_returned=$1
+    bashlib::reference to_be_returned=$1
 
     to_be_returned="Hello, world!"
 }
@@ -103,7 +103,7 @@ an error:
 
 ```bash
 function myfunction() {
-    reference returned=$1    # returned=returned is a circular reference
+    bashlib::reference returned=$1    # returned=returned is a circular reference
                              # declare: warning: returned: circular name reference
     returned="Hello, world!"
 }
@@ -192,7 +192,7 @@ myvar = "Hello, world!"    # Bad
 If the variable is an integer, the value may be an arithmetic calculation:
 
 ```bash
-int myint
+bashlib::int myint
 
 myint="3**2 + 7"           # myint=16
 ```
@@ -200,7 +200,7 @@ To perform an arithmetic calculation and assign it to a non-integer variable,
 use `$(())` instead:
 
 ```
-string myvar
+bashlib::string myvar
 
 myvar=$((3**2 + 7))        # myvar=16
 ```

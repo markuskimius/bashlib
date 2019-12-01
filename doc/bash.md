@@ -75,14 +75,15 @@ example:
 myvar=$(myfunction)
 ```
 
-As noted in the [scope section](#scope), however, any modification made to the
-environment within the subshell are lost upon its completion, so a function
-called in such manner must be stateless.
+However, when a value is passed in such manner any _trailing_ newlines are
+inconveniently removed.  Also, as noted in the [scope section](#scope), any
+modification made to the environment within the subshell are lost upon its
+completion, so a function called in such manner must be stateless.
 
-To write a stateful function that also returns a value, the value must be
-returned without a subshell using a different technique.  One such technique is
-for the caller to pass the name of a variable to the function to which it wants
-the value(s) written.  For example:
+To write a stateful function that also returns a value, or a function that may
+return trailing newlines, the value must be returned without a subshell, using
+another technique.  One such technique is for the caller to pass the name of a
+variable to the function to which it wants the value(s) written.  For example:
 
 ```bash
 function myfunction() {

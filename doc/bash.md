@@ -293,7 +293,11 @@ See the BASH manual for the list of operations available to `[[]]`.
 
 ## License
 
-[Apache 2.0]
+BASHLIB and this documentation is licensed under the [Apache 2.0] License.
+
+BASH itself has a different license.  Visit the [GNU BASH Homepage] for the
+details.
 
 
+[GNU BASH Homepage]: <https://www.gnu.org/software/bash/>
 [Apache 2.0]: <https://github.com/markuskimius/bashlib/blob/master/LICENSE>

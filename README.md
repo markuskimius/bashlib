@@ -43,15 +43,15 @@ include "bashlib/types.sh"
 include "bashlib/array.sh"
 
 function main() {
-    array students
-    string person
+    bashlib::array students
+    bashlib::string person
 
-    array::push students "John"
-    array::push students "Jane"
-    array::push students "Mary"
-    array::push students "Steve"
+    bashlib::push students "John"
+    bashlib::push students "Jane"
+    bashlib::push students "Mary"
+    bashlib::push students "Steve"
 
-    echo "I have $(array::length students) students in my class:"
+    echo "I have $(bashlib::count students) students in my class:"
 
     for person in "${students[@]}"; do
         echo "* $person"

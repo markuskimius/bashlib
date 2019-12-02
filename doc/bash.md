@@ -301,44 +301,44 @@ braces.  Refer to section for the details.
 These are used to access and transform string variables.  They can also be used
 with integers where applicable.
 
-|                                        | Usage                            | Notes                                                                                             |
-| -------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `${name}` or<br>`$name`                | `myvar=${mystring}`              | Set `myvar` to the value of `mystring`.                                                           |
-| `${#name}`                             | `myvar=${#mystring}`             | Set `myvar` to the length of `mystring`.                                                          |
-| `${name-value}` or<br>`${name:-value}` | `myvar=${mystring-0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0`.                                           |
-| `${name=value}` or<br>`${name:=value}` | `myvar=${mystring=0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0` and set `mystring` to `0`.                 |
-| `${name+value}` or<br>`${name:+value}` | `myvar=${mystring+0}`            | Set `myvar` to `0` if `mystring` is set, otherwise an empty string.                               |
-| `${name?value}` or<br>`${name:?value}` | `myvar=${mystring?Uh oh!}`       | Set `myvar` to `$mystring` if it is set, otherwise exit with the error message "Uh oh!".          |
-| `${name:start:len}`                    | `myvar=${mystring:5:3}`          | Set `myvar` to the 3 characters from `$mystring` after the first 5.                               |
-| `${name::len}`                         | `myvar=${mystring::3}`           | Set `myvar` to the first 3 characters from `$mystring`.                                           |
-| `${name:start}`                        | `myvar=${mystring:5}`            | Set `myvar` to all characters from `$mystring` after the first 5.                                 |
-| `${name#glob}`                         | `myvar=${mystring#* }`           | Set `myvar` to `$mystring` with all characters up to the first space removed.                     |
-| `${name##glob}`                        | `myvar=${mystring##* }`          | Set `myvar` to `$mystring` with all characters up to the last space removed.                      |
-| `${name%glob}`                         | `myvar=${mystring% *}`           | Set `myvar` to `$mystring` with all characters after the last space removed.                      |
-| `${name%%glob}`                        | `myvar=${mystring%% *}`          | Set `myvar` to `$mystring` with all characters after the first space removed.                     |
-| `${name/glob/value}`                   | `myvar=${mystring/jam/jelly}`    | Set `myvar` to `$mystring` with the first instance of `jam` replaced by `jelly`.                  |
-| `${name//glob/value}`                  | `myvar=${mystring//jam/jelly}`   | Set `myvar` to `$mystring` with all instances of `jam` replaced by `jelly`.                       |
-| `${name/#glob/value}`                  | `myvar=${mystring/#jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that begins the string replaced by `jelly`. |
-| `${name/%glob/value}`                  | `myvar=${mystring/%jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that ends the string replaced by `jelly`.   |
-| `${name,}`                             | `myvar=${mystring,}`             | Set `myvar` to `$mystring` with the first letter in lowercase.                                    |
-| `${name,,}`                            | `myvar=${mystring,,}`            | Set `myvar` to `$mystring` with all letters in lowercase.                                         |
-| `${name^}`                             | `myvar=${mystring^}`             | Set `myvar` to `$mystring` with the first letter in uppercase.                                    |
-| `${name^^}`                            | `myvar=${mystring^^}`            | Set `myvar` to `$mystring` with all letters in uppercase.                                         |
-| `${!glob}`                             | `myarray=( ${!my*} )`            | Set `myarray` to the list of variable names that begin with `my`.                                 |
+|                                        | Usage                      | Notes                                                         |
+| -------------------------------------- | -------------------------- | ------------------------------------------------------------- |
+| `${name}` or<br>`$name`                | `${mystring}`              | Value of `mystring`.                                          |
+| `${#name}`                             | `${#mystring}`             | Length of `mystring`.                                         |
+| `${name-value}` or<br>`${name:-value}` | `${mystring-0}`            | `$mystring` if defined, otherwise `0`.                        |
+| `${name=value}` or<br>`${name:=value}` | `${mystring=0}`            | `$mystring` if defined, otherwise `mystring` set to `0`.      |
+| `${name+value}` or<br>`${name:+value}` | `${mystring+0}`            | `0` if `mystring` is defined, otherwise empty string.         |
+| `${name?value}` or<br>`${name:?value}` | `${mystring?Uh oh!}`       | `$mystring` if defined, otherwise exit with error, "Uh oh!".  |
+| `${name:start:len}`                    | `${mystring:5:3}`          | 3 characters starting at index 5.                             |
+| `${name::len}`                         | `${mystring::3}`           | 3 characters starting at index 0.                             |
+| `${name:start}`                        | `${mystring:5}`            | Characters starting at index 5 to the end.                    |
+| `${name#glob}`                         | `${mystring#* }`           | All but the characters to the first space removed.            |
+| `${name##glob}`                        | `${mystring##* }`          | All but the characters to the last space removed.             |
+| `${name%glob}`                         | `${mystring% *}`           | Last space to the end removed.                                |
+| `${name%%glob}`                        | `${mystring%% *}`          | First space to the end removed.                               |
+| `${name/glob/value}`                   | `${mystring/jam/jelly}`    | First instance of `jam` replaced by `jelly`.                  |
+| `${name//glob/value}`                  | `${mystring//jam/jelly}`   | All instances of `jam` replaced by `jelly`.                   |
+| `${name/#glob/value}`                  | `${mystring/#jam/jelly}`   | Instance of `jam` that begins the string replaced by `jelly`. |
+| `${name/%glob/value}`                  | `${mystring/%jam/jelly}`   | Instance of `jam` that ends the string replaced by `jelly`.   |
+| `${name,}`                             | `${mystring,}`             | First letter in lowercase.                                    |
+| `${name,,}`                            | `${mystring,,}`            | All letters in lowercase.                                     |
+| `${name^}`                             | `${mystring^}`             | First letter in uppercase.                                    |
+| `${name^^}`                            | `${mystring^^}`            | All letters in uppercase.                                     |
+| `${!glob}`                             | `myarray=( ${!my*} )`      | All variable names that begin with `my`.                      |
 
 These operations apply to both indexed arrays as well as associative arrays where applicable:
 
-|                        | Usage                               | Notes                                                                                               |
-| ---------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `${name[index]}`       | `myvar=${myarray[3]}`               | Set `myvar` to the value in `myarray`, index 3.                                                     |
-| `${name[key]}`         | `myvar=${myhashmap["my key"]}`      | Set `myvar` to the value in `myhashmap`, at key `my key`                                            |
-| `${#name[@]}`          | `myvar=${#myarray[@]}`              | Set `myvar` to the number of elements in `myarray`.                                                 |
-| `${name[*]}`           | `myvar=${myarray[*]}`               | Set `myvar` to one string with the values of `myarray`, delimited by the first character in `$IFS`. |
-| `${name[@]}`           | `for v in "${myarray[@]}"; do ...`  | Iterate through the values of `myarray`.                                                            |
-| `${!name[@]}`          | `for i in "${!myarray[@]}"; do ...` | Iterate through the indexes/keys of `myarray`.                                                      |
-| `${name[@]:start:len}` | `newarray=( "${myarray[@]:5:3}" )`  | Copy 3 elements from `myarray` to `newarray` starting at index 5.                                   |
-| `${name[@]:start}`     | `newarray=( "${myarray[@]:5}" )`    | Copy all elements from `myarray` to `newarray` starting at index 5.                                 |
-| `${name[@]::len}`      | `newarray=( "${myarray[@]::3}" )`   | Copy the first 3 elements from `myarray` to `newarray`.                                             |
+|                        | Usage                               | Notes                                                    |
+| ---------------------- | ----------------------------------- | -------------------------------------------------------- |
+| `${name[index]}`       | `mystring=${myarray[3]}`            | Value at index 3.                                        |
+| `${name[key]}`         | `mystring=${myhashmap["my key"]}`   | Value at key `my key`                                    |
+| `${#name[@]}`          | `mystring=${#myarray[@]}`           | Number of elements.                                      |
+| `${name[*]}`           | `mystring=${myarray[*]}`            | All values in `myarray` as a string, joined by `$IFS`.   |
+| `${name[@]}`           | `for v in "${myarray[@]}"; do ...`  | Iterate array elements.                                  |
+| `${!name[@]}`          | `for i in "${!myarray[@]}"; do ...` | Iterate indexes/keys.                                    |
+| `${name[@]:start:len}` | `newarray=( "${myarray[@]:5:3}" )`  | 3 values in `myarray` starting at index 5.               |
+| `${name[@]::len}`      | `newarray=( "${myarray[@]::3}" )`   | 3 values in `myarray` starting at index 0.               |
+| `${name[@]:start}`     | `newarray=( "${myarray[@]:5}" )`    | Values in `myarray` starting at index 5.                 |
 
 If the placement of braces are difficult to memorize, treat `$` as having the
 highest order of operation, requiring braces around the rest of the operation

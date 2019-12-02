@@ -8,7 +8,7 @@ These notes are current as of BASH 4.4.
 The only primitive type BASH supports natively is the string, which is the
 default type if a variable is used without a declaration.  BASH also offers an
 integer type that is effectively a string type that enforces a valid integer
-representation in the decimal format; an integer variable defaults to 0 if it's
+representation in the decimal format -- an integer variable defaults to 0 if it's
 not initialized, or an invalid integer representation is attempted to be
 assigned to it.
 
@@ -119,9 +119,10 @@ references.  In BASHLIB, all references are namedspaced with the prefix
 
 ## <a name="quoting"></a>Quoting
 
-Variables and values containing one or more whitespace are almost always
-required to be quoted.  Since it's rarely known in advance whether a variable
-contains a whitespace, variables should almost always be quoted.
+Variables and values containing one or more whitespaces (or, more precisely,
+any character in `$IFS`) are almost always required to be quoted.  Since it's
+rarely known in advance whether a variable contains a whitespace, variables
+should almost always be quoted.
 
 Frustratingly, occasionally quoting does not yield the expected result.  For
 example, `[[]]` supports wildcard matching:
@@ -208,7 +209,7 @@ myvar=$((3**2 + 7))        # myvar=16
 For other ways to perform arithmetic calculations, see [Groupings](#grouping)
 
 
-## <a name='grouping'></a>Groupings (Or, why do they have to be so confusing?)
+## <a name="grouping"></a>Groupings (Or, why do they have to be so confusing?)
 
 These are used to execute commands:
 
@@ -290,6 +291,67 @@ used only when writing a script that needs to be backward compatible with older
 versions of BASH or Bourne Shell.
 
 See the BASH manual for the list of operations available to `[[]]`.
+
+[Variable operations](#varops) have syntax similar to grouping, but using
+braces.  Refer to section for the details.
+
+
+## <a name="varops"></a>Variable Operations
+
+These are used to access and transform string variables.  They can also be used
+with integers where applicable.
+
+|                        | Alternate Form   | Usage                            | Notes                                                                                             |
+| ---------------------- | ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `${name}`              | `$name`          | `myvar=${mystring}`              | Set `myvar` to the value of `mystring`.                                                           |
+| `${#name}`             |                  | `myvar=${#mystring}`             | Set `myvar` to the length of `mystring`.                                                          |
+| `${name-value}`        | `${name:-value}` | `myvar=${mystring-0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0`.                                           |
+| `${name=value}`        | `${name:=value}` | `myvar=${mystring=0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0` and set `mystring` to `0`.                 |
+| `${name+value}`        | `${name:+value}` | `myvar=${mystring+0}`            | Set `myvar` to `0` if `mystring` is set, otherwise an empty string.                               |
+| `${name?value}`        | `${name:?value}` | `myvar=${mystring?Uh oh!}`       | Set `myvar` to `$mystring` if it is set, otherwise exit with the error message "Uh oh!".          |
+| `${name:start:len}`    |                  | `myvar=${mystring:5:3}`          | Set `myvar` to the 3 characters from `$mystring` after the first 5.                               |
+| `${name::len}`         |                  | `myvar=${mystring::3}`           | Set `myvar` to the first 3 characters from `$mystring`.                                           |
+| `${name:start}`        |                  | `myvar=${mystring:5}`            | Set `myvar` to all characters from `$mystring` after the first 5.                                 |
+| `${name#glob}`         |                  | `myvar=${mystring#* }`           | Set `myvar` to `$mystring` with all characters up to the first space removed.                     |
+| `${name##glob}`        |                  | `myvar=${mystring##* }`          | Set `myvar` to `$mystring` with all characters up to the last space removed.                      |
+| `${name%glob}`         |                  | `myvar=${mystring% *}`           | Set `myvar` to `$mystring` with all characters after the last space removed.                      |
+| `${name%%glob}`        |                  | `myvar=${mystring%% *}`          | Set `myvar` to `$mystring` with all characters after the first space removed.                     |
+| `${name/glob/value}`   |                  | `myvar=${mystring/jam/jelly}`    | Set `myvar` to `$mystring` with the first instance of `jam` replaced by `jelly`.                  |
+| `${name//glob/value}`  |                  | `myvar=${mystring//jam/jelly}`   | Set `myvar` to `$mystring` with all instances of `jam` replaced by `jelly`.                       |
+| `${name/#glob/value}`  |                  | `myvar=${mystring/#jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that begins the string replaced by `jelly`. |
+| `${name/%glob/value}`  |                  | `myvar=${mystring/%jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that ends the string replaced by `jelly`.   |
+| `${name,}`             |                  | `myvar=${mystring,}`             | Set `myvar` to `$mystring` with the first letter in lowercase.                                    |
+| `${name,,}`            |                  | `myvar=${mystring,,}`            | Set `myvar` to `$mystring` with all letters in lowercase.                                         |
+| `${name^}`             |                  | `myvar=${mystring^}`             | Set `myvar` to `$mystring` with the first letter in uppercase.                                    |
+| `${name^^}`            |                  | `myvar=${mystring^^}`            | Set `myvar` to `$mystring` with all letters in uppercase.                                         |
+| `${!glob}`             |                  | `myarray=( ${!my*} )`            | Set `myarray` to the list of variable names that begin with `my`.                                 |
+
+These operations apply to both indexed arrays as well as associative arrays where applicable:
+
+|                        | Usage                               | Notes                                                                                               |
+| ---------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `${name[index]}`       | `myvar=${myarray[3]}`               | Set `myvar` to the value in `myarray`, index 3.                                                     |
+| `${name[key]}`         | `myvar=${myhashmap["my key"]}`      | Set `myvar` to the value in `myhashmap`, at key `my key`                                            |
+| `${#name[@]}`          | `myvar=${#myarray[@]}`              | Set `myvar` to the number of elements in `myarray`.                                                 |
+| `${name[*]}`           | `myvar=${myarray[*]}`               | Set `myvar` to one string with the values of `myarray`, delimited by the first character in `$IFS`. |
+| `${name[@]}`           | `for v in "${myarray[@]}"; do ...`  | Iterate through the values of `myarray`.                                                            |
+| `${!name[@]}`          | `for i in "${!myarray[@]}"; do ...` | Iterate through the indexes/keys of `myarray`.                                                      |
+| `${name[@]:start:len}` | `newarray=( "${myarray[@]:5:3}" )`  | Copy 3 elements from `myarray` to `newarray` starting at index 5.                                   |
+| `${name[@]:start}`     | `newarray=( "${myarray[@]:5}" )`    | Copy all elements from `myarray` to `newarray` starting at index 5.                                 |
+| `${name[@]::len}`      | `newarray=( "${myarray[@]::3}" )`   | Copy the first 3 elements from `myarray` to `newarray`.                                             |
+
+If the placement of braces are difficult to memorize, treat `$` as having the
+highest order of operation, requiring braces around the rest of the operation
+that needs to be performed to the variable.
+
+Quotes are often necessary around `${...}` if the value contains any whitespace
+(see [quoting](#quoting) for more on this).  Variable assignment is one of the
+rare instances where quotes are always optional, which is the reason they are
+not shown in the above tables.  Where it is necessary, they are shown above;
+generally speaking, whenever an array operation is expected to return more than
+one element they should be quoted, otherwise an element that contains a space
+may be treated as two separate elements (but sometimes this is the desired
+effect.)
 
 
 ## License

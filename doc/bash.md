@@ -353,6 +353,9 @@ one element they should be quoted, otherwise an element that contains a space
 may be treated as two separate elements (but sometimes this is the desired
 effect.)
 
+To make these operations easier to remember, BASHLIB provides function calls
+in `bashlib/string.sh`, `bashlib/array.sh`, and `bashlib/hashmap.sh`.
+
 
 ## License
 

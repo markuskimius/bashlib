@@ -301,30 +301,30 @@ braces.  Refer to section for the details.
 These are used to access and transform string variables.  They can also be used
 with integers where applicable.
 
-|                        | Alternate Form   | Usage                            | Notes                                                                                             |
-| ---------------------- | ---------------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `${name}`              | `$name`          | `myvar=${mystring}`              | Set `myvar` to the value of `mystring`.                                                           |
-| `${#name}`             |                  | `myvar=${#mystring}`             | Set `myvar` to the length of `mystring`.                                                          |
-| `${name-value}`        | `${name:-value}` | `myvar=${mystring-0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0`.                                           |
-| `${name=value}`        | `${name:=value}` | `myvar=${mystring=0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0` and set `mystring` to `0`.                 |
-| `${name+value}`        | `${name:+value}` | `myvar=${mystring+0}`            | Set `myvar` to `0` if `mystring` is set, otherwise an empty string.                               |
-| `${name?value}`        | `${name:?value}` | `myvar=${mystring?Uh oh!}`       | Set `myvar` to `$mystring` if it is set, otherwise exit with the error message "Uh oh!".          |
-| `${name:start:len}`    |                  | `myvar=${mystring:5:3}`          | Set `myvar` to the 3 characters from `$mystring` after the first 5.                               |
-| `${name::len}`         |                  | `myvar=${mystring::3}`           | Set `myvar` to the first 3 characters from `$mystring`.                                           |
-| `${name:start}`        |                  | `myvar=${mystring:5}`            | Set `myvar` to all characters from `$mystring` after the first 5.                                 |
-| `${name#glob}`         |                  | `myvar=${mystring#* }`           | Set `myvar` to `$mystring` with all characters up to the first space removed.                     |
-| `${name##glob}`        |                  | `myvar=${mystring##* }`          | Set `myvar` to `$mystring` with all characters up to the last space removed.                      |
-| `${name%glob}`         |                  | `myvar=${mystring% *}`           | Set `myvar` to `$mystring` with all characters after the last space removed.                      |
-| `${name%%glob}`        |                  | `myvar=${mystring%% *}`          | Set `myvar` to `$mystring` with all characters after the first space removed.                     |
-| `${name/glob/value}`   |                  | `myvar=${mystring/jam/jelly}`    | Set `myvar` to `$mystring` with the first instance of `jam` replaced by `jelly`.                  |
-| `${name//glob/value}`  |                  | `myvar=${mystring//jam/jelly}`   | Set `myvar` to `$mystring` with all instances of `jam` replaced by `jelly`.                       |
-| `${name/#glob/value}`  |                  | `myvar=${mystring/#jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that begins the string replaced by `jelly`. |
-| `${name/%glob/value}`  |                  | `myvar=${mystring/%jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that ends the string replaced by `jelly`.   |
-| `${name,}`             |                  | `myvar=${mystring,}`             | Set `myvar` to `$mystring` with the first letter in lowercase.                                    |
-| `${name,,}`            |                  | `myvar=${mystring,,}`            | Set `myvar` to `$mystring` with all letters in lowercase.                                         |
-| `${name^}`             |                  | `myvar=${mystring^}`             | Set `myvar` to `$mystring` with the first letter in uppercase.                                    |
-| `${name^^}`            |                  | `myvar=${mystring^^}`            | Set `myvar` to `$mystring` with all letters in uppercase.                                         |
-| `${!glob}`             |                  | `myarray=( ${!my*} )`            | Set `myarray` to the list of variable names that begin with `my`.                                 |
+|                                        | Usage                            | Notes                                                                                             |
+| -------------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `${name}` or<br>`$name`                | `myvar=${mystring}`              | Set `myvar` to the value of `mystring`.                                                           |
+| `${#name}`                             | `myvar=${#mystring}`             | Set `myvar` to the length of `mystring`.                                                          |
+| `${name-value}` or<br>`${name:-value}` | `myvar=${mystring-0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0`.                                           |
+| `${name=value}` or<br>`${name:=value}` | `myvar=${mystring=0}`            | Set `myvar` to `$mystring` if it is set, otherwise `0` and set `mystring` to `0`.                 |
+| `${name+value}` or<br>`${name:+value}` | `myvar=${mystring+0}`            | Set `myvar` to `0` if `mystring` is set, otherwise an empty string.                               |
+| `${name?value}` or<br>`${name:?value}` | `myvar=${mystring?Uh oh!}`       | Set `myvar` to `$mystring` if it is set, otherwise exit with the error message "Uh oh!".          |
+| `${name:start:len}`                    | `myvar=${mystring:5:3}`          | Set `myvar` to the 3 characters from `$mystring` after the first 5.                               |
+| `${name::len}`                         | `myvar=${mystring::3}`           | Set `myvar` to the first 3 characters from `$mystring`.                                           |
+| `${name:start}`                        | `myvar=${mystring:5}`            | Set `myvar` to all characters from `$mystring` after the first 5.                                 |
+| `${name#glob}`                         | `myvar=${mystring#* }`           | Set `myvar` to `$mystring` with all characters up to the first space removed.                     |
+| `${name##glob}`                        | `myvar=${mystring##* }`          | Set `myvar` to `$mystring` with all characters up to the last space removed.                      |
+| `${name%glob}`                         | `myvar=${mystring% *}`           | Set `myvar` to `$mystring` with all characters after the last space removed.                      |
+| `${name%%glob}`                        | `myvar=${mystring%% *}`          | Set `myvar` to `$mystring` with all characters after the first space removed.                     |
+| `${name/glob/value}`                   | `myvar=${mystring/jam/jelly}`    | Set `myvar` to `$mystring` with the first instance of `jam` replaced by `jelly`.                  |
+| `${name//glob/value}`                  | `myvar=${mystring//jam/jelly}`   | Set `myvar` to `$mystring` with all instances of `jam` replaced by `jelly`.                       |
+| `${name/#glob/value}`                  | `myvar=${mystring/#jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that begins the string replaced by `jelly`. |
+| `${name/%glob/value}`                  | `myvar=${mystring/%jam/jelly}`   | Set `myvar` to `$mystring` with the instance of `jam` that ends the string replaced by `jelly`.   |
+| `${name,}`                             | `myvar=${mystring,}`             | Set `myvar` to `$mystring` with the first letter in lowercase.                                    |
+| `${name,,}`                            | `myvar=${mystring,,}`            | Set `myvar` to `$mystring` with all letters in lowercase.                                         |
+| `${name^}`                             | `myvar=${mystring^}`             | Set `myvar` to `$mystring` with the first letter in uppercase.                                    |
+| `${name^^}`                            | `myvar=${mystring^^}`            | Set `myvar` to `$mystring` with all letters in uppercase.                                         |
+| `${!glob}`                             | `myarray=( ${!my*} )`            | Set `myarray` to the list of variable names that begin with `my`.                                 |
 
 These operations apply to both indexed arrays as well as associative arrays where applicable:
 

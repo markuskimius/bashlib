@@ -305,17 +305,17 @@ with integers where applicable.
 | -------------------------------------- | -------------------------- | ------------------------------------------------------------- |
 | `${name}` or<br>`$name`                | `${mystring}`              | Value of `mystring`.                                          |
 | `${#name}`                             | `${#mystring}`             | Length of `mystring`.                                         |
-| `${name-value}` or<br>`${name:-value}` | `${mystring-0}`            | `$mystring` if defined, otherwise `0`.                        |
-| `${name=value}` or<br>`${name:=value}` | `${mystring=0}`            | `$mystring` if defined, otherwise `mystring` set to `0`.      |
-| `${name+value}` or<br>`${name:+value}` | `${mystring+0}`            | `0` if `mystring` is defined, otherwise empty string.         |
-| `${name?value}` or<br>`${name:?value}` | `${mystring?Uh oh!}`       | `$mystring` if defined, otherwise exit with error, "Uh oh!".  |
+| `${name:-value}` or<br>`${name-value}` | `${mystring-0}`            | `$mystring` if defined, otherwise `0`.                        |
+| `${name:=value}` or<br>`${name=value}` | `${mystring=0}`            | `$mystring` if defined, otherwise `mystring` set to `0`.      |
+| `${name:+value}` or<br>`${name+value}` | `${mystring+0}`            | `0` if `mystring` is defined, otherwise empty string.         |
+| `${name:?value}` or<br>`${name?value}` | `${mystring?Uh oh!}`       | `$mystring` if defined, otherwise exit with error, "Uh oh!".  |
 | `${name:start:len}`                    | `${mystring:5:3}`          | 3 characters starting at index 5.                             |
 | `${name::len}`                         | `${mystring::3}`           | 3 characters starting at index 0.                             |
 | `${name:start}`                        | `${mystring:5}`            | Characters starting at index 5 to the end.                    |
-| `${name#glob}`                         | `${mystring#* }`           | All but the characters to the first space removed.            |
-| `${name##glob}`                        | `${mystring##* }`          | All but the characters to the last space removed.             |
-| `${name%glob}`                         | `${mystring% *}`           | Last space to the end removed.                                |
-| `${name%%glob}`                        | `${mystring%% *}`          | First space to the end removed.                               |
+| `${name#glob}`                         | `${mystring#* }`           | First lazy pattern matching `* ` removed.                     |
+| `${name##glob}`                        | `${mystring##* }`          | First greedy pattern matching `* ` removed.                   |
+| `${name%glob}`                         | `${mystring% *}`           | Last lazy pattern matching ` *` removed.                      |
+| `${name%%glob}`                        | `${mystring%% *}`          | Last greedy pattern matching ` *` removed.                    |
 | `${name/glob/value}`                   | `${mystring/jam/jelly}`    | First instance of `jam` replaced by `jelly`.                  |
 | `${name//glob/value}`                  | `${mystring//jam/jelly}`   | All instances of `jam` replaced by `jelly`.                   |
 | `${name/#glob/value}`                  | `${mystring/#jam/jelly}`   | Instance of `jam` that begins the string replaced by `jelly`. |

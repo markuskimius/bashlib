@@ -51,15 +51,16 @@ function include() {
                 ;;
 
         *)      # Search $BASHLIB_PATH
-                local search_paths
+                local -a search_paths
                 local dir
 
                 # Convert the paths to array
                 if [[ -v BASHLIB_PATH ]]; then
                     IFS=':' read -r -a search_paths <<<"$BASHLIB_PATH"
-                else
-                    search_paths=( "$BASHLIB/lib" )
                 fi
+
+                # $BASHLIB/lib is always in the search path
+                search_paths+=( "$BASHLIB/lib" )
 
                 # Look for $lib in the search paths
                 for dir in "${search_paths[@]}"; do

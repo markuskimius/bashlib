@@ -31,7 +31,7 @@ BASHLIB itself comes with several useful libraries.  See the [API Reference]
 for the details.  See also [BASH Notes] for some notes about BASH
 programming.
 
-The included libraries require BASH version 4.3 or later.
+The included libraries require BASH version 4.4 or later.
 
 
 ## Example

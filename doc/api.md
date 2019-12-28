@@ -2,32 +2,31 @@
 
 Table of Contents:
 
-* [`bashlib/globals.sh`](#globals) - predefined globals.
-* [`bashlib/mode.sh`](#mode) - for enabling/disabling strict mode.
-* [`bashlib/types.sh`](#types) - for declaring variables.
-* [`bashlib/inspect.sh`](#inspect) - for inspecting variables.
-
-* [`bashlib/string.sh`](#string) - string operations.
-* [`bashlib/char.sh`](#char) - character operations.
-* [`bashlib/int.sh`](#int) - integer operations.
-* [`bashlib/array.sh`](#array) - array operations.
-* [`bashlib/hashmap.sh`](#hashmap) - hashmap operations.
-* [`bashlib/reference.sh`](#reference) - reference operations.
-
-* [`bashlib/list.sh`](#list) - creation and manipulation of space-separated values.
-* [`bashlib/class.sh`](#class) - class operations.
-* [`bashlib/singleton.sh`](#singleton) - a class type that should be instantiated only once.
-
-* [`bashlib/namespace.sh`](#namespace) - manipulation of namespaces.
-* [`bashlib/exception.sh`](#exception) - exception handling.
-
-* [`bashlib/file.sh`](#file) - file operations.
-* [`bashlib/alias.sh`](#alias) - alias operations.
-* [`bashlib/function.sh`](#function) - function operations.
-
-* [`bashlib/getopt.sh`](#getopt) - GNU-like getopt that accepts long options, optional arguments, etc.
-* [`bashlib/logger.sh`](#logger) - For logging messages.
-
+* General
+    * [`bashlib/globals.sh`](#globals) - predefined globals
+    * [`bashlib/mode.sh`](#mode) - for enabling/disabling strict mode
+    * [`bashlib/types.sh`](#types) - for declaring variables
+    * [`bashlib/inspect.sh`](#inspect) - for inspecting variables
+    * [`bashlib/alias.sh`](#alias) - for inspecting aliases
+    * [`bashlib/function.sh`](#function) - for inspecting functions
+* Built-in Types
+    * [`bashlib/string.sh`](#string) - string operations
+    * [`bashlib/char.sh`](#char) - character operations
+    * [`bashlib/int.sh`](#int) - integer operations
+    * [`bashlib/array.sh`](#array) - array operations
+    * [`bashlib/hashmap.sh`](#hashmap) - hashmap operations
+    * [`bashlib/reference.sh`](#reference) - reference operations
+* Custom Types
+    * [`bashlib/list.sh`](#list) - creation and manipulation of space-separated values
+    * [`bashlib/class.sh`](#class) - class operations
+    * [`bashlib/singleton.sh`](#singleton) - a class type that is instantiated only once
+* Control
+    * [`bashlib/namespace.sh`](#namespace) - manipulation of namespaces
+    * [`bashlib/exception.sh`](#exception) - exception handling
+* Utilities
+    * [`bashlib/file.sh`](#file) - file operations
+    * [`bashlib/logger.sh`](#logger) - For logging messages
+    * [`bashlib/getopt.sh`](#getopt) - GNU-like getopt that accepts long options, optional arguments, etc.
 
 ## <a name="globals"></a>`bashlib/globals.sh`
 
@@ -90,6 +89,8 @@ the first pass; it will not be accessible in a function.
   `myvariable` is a reference, the type of the variable it references is
   returned instead.
 
+## <a name="alias"></a>`bashlib/alias.sh`
+## <a name="function"></a>`bashlib/function.sh`
 
 ## <a name="string"></a>`bashlib/string.sh`
 ## <a name="char"></a>`bashlib/char.sh`
@@ -106,11 +107,8 @@ the first pass; it will not be accessible in a function.
 ## <a name="exception"></a>`bashlib/exception.sh`
 
 ## <a name="file"></a>`bashlib/file.sh`
-## <a name="alias"></a>`bashlib/alias.sh`
-## <a name="function"></a>`bashlib/function.sh`
-
-## <a name="getopt"></a>`bashlib/getopt.sh`
 ## <a name="logger"></a>`bashlib/logger.sh`
+## <a name="getopt"></a>`bashlib/getopt.sh`
 
 
 ## License

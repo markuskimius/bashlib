@@ -349,5 +349,5 @@ Reserved methods:
 
 
 [Apache 2.0]: <https://github.com/markuskimius/bashlib/blob/master/LICENSE>
-[getopt.sh]: <https://github.com/markuskimius/bashlib/blob/master/src/bashlib/lib/bashlib/getopt.sh>
+[getopt.sh]: <https://github.com/markuskimius/bashlib/blob/master/lib/bashlib/getopt.sh>
 

@@ -324,6 +324,7 @@ with integers where applicable.
 | `${name,,}`                            | `${mystring,,}`            | All letters in lowercase.                                     |
 | `${name^}`                             | `${mystring^}`             | First letter in uppercase.                                    |
 | `${name^^}`                            | `${mystring^^}`            | All letters in uppercase.                                     |
+| `${!name}`                             | `${!myvar}`                | Value of the variable whose name is the value of `myvar`.     |
 | `${!glob}`                             | `myarray=( ${!my*} )`      | All variable names that begin with `my`.                      |
 
 These operations apply to both indexed arrays as well as associative arrays where applicable:
